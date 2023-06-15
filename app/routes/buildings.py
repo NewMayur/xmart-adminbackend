@@ -40,6 +40,33 @@ def building():
         message="Success", status=200, data={"building_id": building.id}
     )
 
+@app.route("/building/update", methods=["PUT"])
+def update_building():
+    try:
+        building_id = request.json["building_id"]
+        building = Building.query.get(building_id)
+        if not building:
+            return response_base(message="Building not found", status=404)
+
+        building.name = request.json.get("name", building.name)
+        building.number = request.json.get("building_number", building.number)
+        building.number_of_floors = request.json.get("number_of_floors", building.number_of_floors)
+        db.session.commit()
+
+        for floor_data in request.json.get("floors", []):
+            floor_id = floor_data.get("floor_id")
+            if floor_id:
+                floor = Floor.query.get(floor_id)
+                if floor:
+                    floor.name = floor_data.get("name", floor.name)
+                    floor.number = floor_data.get("floor_number", floor.number)
+                    db.session.commit()
+
+        return response_base(message="Building updated successfully", status=200, data={"building_id": building_id})
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(e)
+        return response_base(message="Server error", status=500)
 
 @app.route("/building/view", methods=["POST"])
 def building_view():
@@ -66,6 +93,7 @@ def building_view():
         return response_base(message="Success", status=200, data=[buidling_data])
     else:
         return response_base(message="Failed", status=404)
+
 
 
 @app.route("/building/list", methods=["POST"])
