@@ -1,0 +1,10 @@
+Flask
+Flask-Cors
+Flask-Login
+Flask-Bcrypt
+Flask-Caching
+Flask-SQLAlchemy
+black
+gunicorn
+python-dotenv
+Werkzeug==2.3.7
