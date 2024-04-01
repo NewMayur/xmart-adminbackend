@@ -4,6 +4,7 @@ from flask import Flask
 from werkzeug.serving import run_simple
 from flask_bcrypt import Bcrypt
 from app.extensions.responses import response_base
+
 # Other modules
 import os
 
@@ -40,6 +41,7 @@ def create_app(debug: bool = False):
 
     # Initialize extensions
     from app.extensions import db
+
     # print(db.db.ini)
     db.db.init_app(app)
 
@@ -64,15 +66,20 @@ bcrypt = Bcrypt(app)
 if __name__ == "__main__":
     from app.routes.auth import *
     from app.routes.property import *
+    from app.routes.buildings import *
+    from app.routes.master import *
+    from app.routes.rooms import *
 
     @app.errorhandler(Exception)
     def server_error(err):
         app.logger.exception(err)
         return response_base("Server Error", 500)
+
     basedir = os.path.abspath(os.path.dirname(__file__))
-    app.config['SQLALCHEMY_DATABASE_URI'] =\
-        'sqlite:///' + os.path.join(basedir, 'database.db')
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+        basedir, "database.db"
+    )
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     # app.run()
     run_simple(
         application=app,
