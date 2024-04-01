@@ -16,6 +16,25 @@ from server import app
 
 @app.route("/room/create", methods=["POST"])
 def create_room():
+    building_id = None
+    floor_id = None
+    room_number_list = []
+    for room in request.json:
+        building_id = room["building_id"]
+        floor_id = room["floor_id"]
+        room_number_list.append(room["number"])
+    dupicate_room_check = (
+        Room.query.filter(Room.number.in_(room_number_list))
+        .filter(Room.building_id == building_id)
+        .filter(Room.floor_id == floor_id)
+        .all()
+    )
+
+    if len(dupicate_room_check) > 0:
+        duplicate_data = []
+        for data in dupicate_room_check:
+            duplicate_data.append({"number": data.number, "name": data.name})
+        return response_base(message="Failed", status=409, data=duplicate_data)
     created_room_ids = []
     try:
         # print(request.json)
@@ -70,7 +89,7 @@ def get_room():
                 "id": room.id,
                 "name": room.name,
                 "number": room.number,
-                "building": room.building.name,
+                "building": room.buildings.name,
                 "room_type": room.room_type.name,
                 "sub_room_types": [subtype.name for subtype in room.room_sub_types],
             }
