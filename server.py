@@ -83,8 +83,8 @@ if __name__ == "__main__":
     # app.run()
     run_simple(
         application=app,
-        hostname="localhost",
-        port=5000,
+        hostname=os.environ.get("BASE_IP", "0.0.0.0"),
+        port=os.environ.get("PORT", 5000),
         use_debugger=True,
         use_reloader=True,
     )
