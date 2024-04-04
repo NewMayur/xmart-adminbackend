@@ -4,7 +4,7 @@ from flask import Flask
 from werkzeug.serving import run_simple
 from flask_bcrypt import Bcrypt
 from app.extensions.responses import response_base
-
+from flask_cors import CORS
 # Other modules
 import os
 
@@ -22,7 +22,7 @@ def create_app(debug: bool = False):
         static_folder="./static",
         static_url_path="/",
     )
-
+    CORS(app)
     # Set current_app context
     app.app_context().push()
 
