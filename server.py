@@ -22,7 +22,6 @@ def create_app(debug: bool = False):
         static_folder="./static",
         static_url_path="/",
     )
-
     # Set current_app context
     app.app_context().push()
 
@@ -69,6 +68,7 @@ if __name__ == "__main__":
     from app.routes.buildings import *
     from app.routes.master import *
     from app.routes.rooms import *
+    from app.routes.guest import *
 
     @app.errorhandler(Exception)
     def server_error(err):
