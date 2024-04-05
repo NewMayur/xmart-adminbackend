@@ -56,6 +56,26 @@ class RoomRoomSubType(db.Model):
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
 
+class RoomDevice(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    room_id = db.Column(db.Integer, db.ForeignKey("room.id"), nullable=False)
+    device_type_id = db.Column(
+        db.Integer, db.ForeignKey("master_device_type.id"), nullable=False
+    )
+    device_sub_type_id = db.Column(
+        db.Integer, db.ForeignKey("master_device_sub_type.id"), nullable=False
+    )
+    room_sub_type_id = db.Column(
+        db.Integer, db.ForeignKey("master_sub_room_type.id"), nullable=False
+    )
+    device_config = db.Column(db.String(255), nullable=False)
+    is_published = db.Column(db.Boolean)
+    add_to_home_screen = db.Column(db.Boolean)
+    remark = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+
+
 class RoomDeviceType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey("room.id"), nullable=False)

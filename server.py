@@ -5,6 +5,7 @@ from werkzeug.serving import run_simple
 from flask_bcrypt import Bcrypt
 from app.extensions.responses import response_base
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 # Other modules
 import os
@@ -24,6 +25,7 @@ def create_app(debug: bool = False):
         static_url_path="/",
     )
     CORS(app)
+    JWTManager(app)
     # Set current_app context
     app.app_context().push()
 
