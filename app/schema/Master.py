@@ -67,17 +67,17 @@ class MasterDeviceSubType(db.Model):
     # deleted_at = db.Column(db.DateTime(timezone=True))
 
     def __repr__(self):
-        return f"<MasterDeviceType {self.name}>"
+        return f"<MasterDeviceSubType {self.name}>"
 
 
-# class MasterKnxAddress(db.Model):
+# class MasterKnxAddressName(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
 #     name = db.Column(db.String(80), nullable=False)
 #     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 #     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
 #     def __repr__(self):
-#         return f"<MasterKNX {self.name}>"
+#         return f"<MasterKNXAddressName {self.name}>"
 
 
 # class MasterValueDataType(db.Model):

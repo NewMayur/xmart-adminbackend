@@ -32,9 +32,6 @@ class Room(db.Model):
     room_sub_types: Mapped[List[MasterSubRoomType]] = db.relationship(
         secondary="room_room_sub_type"
     )
-    room_device_types: Mapped[List[MasterDeviceType]] = db.relationship(
-        secondary="room_device_type"
-    )
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
@@ -68,12 +65,26 @@ class RoomDevice(db.Model):
     room_sub_type_id = db.Column(
         db.Integer, db.ForeignKey("master_sub_room_type.id"), nullable=False
     )
-    device_config = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(80), nullable=False)
+    group_name = db.Column(db.String(80), nullable=False)
+    device_make = db.Column(db.String(80), nullable=False)
+    device_model = db.Column(db.String(80), nullable=False)
+    device_config = db.Column(db.Text, nullable=False)
     is_published = db.Column(db.Boolean)
+    is_group = db.Column(db.Boolean)
     add_to_home_screen = db.Column(db.Boolean)
     remark = db.Column(db.String(255))
+    icon = db.Column(db.String(80))
+    is_service = db.Column(db.Boolean)
+    floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
+    building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    room_sub_type = db.relationship("MasterSubRoomType", backref="master_sub_room_type")
+    device_sub_type = db.relationship(
+        "MasterDeviceSubType", backref="master_device_sub_type"
+    )
+    device_type = db.relationship("MasterDeviceType", backref="master_device_type")
 
 
 class RoomDeviceType(db.Model):

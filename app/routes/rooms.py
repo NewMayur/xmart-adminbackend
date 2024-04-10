@@ -153,3 +153,36 @@ def room_config_view():
         return response_base(message="Success", status=200, data=[room])
     else:
         return response_base(message="Failed", status=404)
+
+
+@app.route("/room/edit", methods=["POST"])
+def edit_room():
+    print(request.json)
+    room = Room.query.get_or_404(request.json["room_id"])
+    if room is not None:
+        # update device types
+        for device in request.json["device_types_insert"]:
+            room_device_type = RoomDeviceType(room_id=room.id, device_type_id=device)
+            db.session.add(room_device_type)
+        for device in request.json["device_types_delete"]:
+            room_device_type = RoomDeviceType.query.filter_by(
+                room_id=room.id, device_type_id=device
+            ).first()
+            db.session.delete(room_device_type)
+        # Update subroom types
+        for subroom in request.json["sub_room_types_insert"]:
+            room_sub_type = RoomRoomSubType(room_id=room.id, room_sub_type_id=subroom)
+            db.session.add(room_sub_type)
+        for subroom in request.json["sub_room_types_delete"]:
+            room_sub_type = RoomRoomSubType.query.filter_by(
+                room_id=room.id, room_sub_type_id=subroom
+            ).first()
+            db.session.delete(room_sub_type)
+        room.name = request.json["name"]
+        room.number = request.json["number"]
+        room.room_type_id = request.json["room_type_id"]
+        room.floor_id = request.json["floor_id"]
+        db.session.commit()
+        return response_base(message="Success", status=200, data=[])
+    else:
+        return response_base(message="Failed", status=404)

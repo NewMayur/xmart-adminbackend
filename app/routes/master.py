@@ -4,6 +4,7 @@ from app.schema.User import User
 from app.schema.Master import MasterRoomType, MasterSubRoomType, MasterDeviceType
 from app.extensions.db import db
 from app.extensions.responses import response_base
+from app.seeder.seed import seed
 
 
 @app.route("/master/roomtype/list", methods=["GET"])
@@ -34,3 +35,10 @@ def device_type_fetch():
         data = {"id": device_type.id, "name": device_type.name}
         final_list.append(data)
     return response_base(message="Success", status=200, data=final_list)
+
+
+@app.route("/master/_seed", methods=["GET"])
+def seed_db():
+    print("datata")
+    seed()
+    return response_base(message="Success", status=200, data=[])

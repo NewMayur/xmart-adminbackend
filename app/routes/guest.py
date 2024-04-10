@@ -3,6 +3,7 @@ from server import app
 from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.extensions.utils import token_required
+from app.schema.Room import RoomDevice
 import jwt
 from flask_jwt_extended import (
     jwt_required,
@@ -10,6 +11,8 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 from app.schema.Device import KnxDeviceSubTypeData
+import json
+import ast
 
 
 @app.route("/guest/auth", methods=["POST"])
@@ -29,7 +32,71 @@ def guest_room_auth():
 
 
 @app.route("/guest/room/config", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def load_room_config():
-    current_user = get_jwt_identity()
-    return response_base(message="Success", status=200, data=current_user)
+    # current_user = get_jwt_identity()
+    room_device = RoomDevice.query.filter_by(
+        room_id=request.json["room_id"],
+    ).all()
+    devices = {}
+    if len(room_device) > 0 and room_device:
+
+        final_devices = {"devices": {}, "scenes": [], "services": []}
+        for device in room_device:
+            print(device.is_service)
+            print(device.device_sub_type)
+            if device.is_service:
+                final_devices["services"].append(
+                    {
+                        "id": device.id,
+                        "name": device.name,
+                        "add_to_home_screen": device.add_to_home_screen,
+                        "sub_room": device.room_sub_type.name,
+                        "type": device.device_sub_type.name,
+                        "knx": json.loads(
+                            ast.literal_eval(device.device_config),
+                        ),
+                        "icon": device.icon,
+                        "bacnet": {},
+                    }
+                )
+                continue
+            if device.device_type.name not in devices.keys():
+                print("hello")
+                devices[device.device_type.name] = [
+                    {
+                        "id": device.id,
+                        "name": device.name,
+                        "add_to_home_screen": device.add_to_home_screen,
+                        "sub_room": device.room_sub_type.name,
+                        "type": device.device_sub_type.name,
+                        "knx": json.loads(
+                            ast.literal_eval(device.device_config),
+                        ),
+                        "icon": device.icon,
+                        "bacnet": {},
+                    }
+                ]
+                # print(devices)
+            else:
+                print(devices)
+                devices[device.device_type.name].append(
+                    {
+                        "id": device.id,
+                        "name": device.name,
+                        "add_to_home_screen": device.add_to_home_screen,
+                        "type": device.device_sub_type.name,
+                        "knx": json.loads(
+                            ast.literal_eval(device.device_config),
+                        ),
+                        "sub_room": device.room_sub_type.name,
+                        "icon": device.icon,
+                        "bacnet": {},
+                    }
+                )
+        final_devices["devices"].update(devices)
+        # print(devices)
+        return response_base(message="Success", status=200, data=final_devices)
+    else:
+
+        return response_base(message="Failure", status=404, data=[])
