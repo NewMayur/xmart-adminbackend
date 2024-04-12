@@ -1,9 +1,11 @@
-from app.schema.Room import Room, RoomRoomSubType, RoomDeviceType
-from app.schema.Building import Building, Floor
-from flask import request, current_app
+from flask import current_app, request
+
 from app.extensions.db import db
 from app.extensions.responses import response_base
+from app.schema.Building import Building, Floor
+from app.schema.Room import Room, RoomDevice, RoomDeviceType, RoomRoomSubType
 from server import app
+import json
 
 """
     A function to create a new room in the database based on the provided JSON data.
@@ -184,5 +186,154 @@ def edit_room():
         room.floor_id = request.json["floor_id"]
         db.session.commit()
         return response_base(message="Success", status=200, data=[])
+    else:
+        return response_base(message="Failed", status=404)
+
+
+@app.route("/room/device/add", methods=["POST"])
+def add_device_to_room():
+    print(request.json)
+    room = Room.query.get_or_404(request.json["room_id"])
+    if room is not None:
+        print(request.json)
+        room_device = RoomDevice(
+            room_id=room.id,
+            floor_id=request.json["floor_id"],
+            building_id=request.json["building_id"],
+            device_type_id=request.json["device_type_id"],
+            device_sub_type_id=request.json["sub_device_type_id"],
+            room_sub_type_id=request.json["sub_room_type_id"],
+            is_published=request.json["is_published"],
+            add_to_home_screen=request.json["add_to_home_screen"],
+            icon=request.json["icon"],
+            remark=request.json["remark"],
+            protocol_id=request.json["protocol_id"],
+            name=request.json["device_name"],
+            group_name=request.json["device_group_name"],
+            is_group=request.json["is_multiple"],
+            is_service=request.json["is_service"],
+            device_make=request.json["device_make"],
+            device_model=request.json["device_model"],
+            device_config=json.dumps(request.json["device_config"]),
+        )
+        db.session.add(room_device)
+        db.session.commit()
+        return response_base(
+            message="Success", status=200, data=[{"id": room_device.id}]
+        )
+    else:
+        return response_base(message="Failed", status=404)
+
+
+@app.route("/room/device/delete", methods=["DELETE"])
+def delete_device_from_room():
+    # print(request.json)
+    room_device = RoomDevice.query.filter_by(
+        id=request.json["device_id"], room_id=request.json["room_id"]
+    )
+    if room_device is not None:
+        room_device.delete()
+        db.session.commit()
+        return response_base(message="Success", status=200, data=[])
+    else:
+        return response_base(message="Failed", status=404)
+
+
+@app.route("/room/device/view", methods=["POST"])
+def view_device_in_room():
+    # print(request.json)
+    room_device = RoomDevice.query.filter_by(
+        id=request.json["device_id"], room_id=request.json["room_id"]
+    ).first()
+    print(room_device)
+    if room_device is not None:
+        print(room_device.room_sub_type)
+        final_data = {
+            "floor_id": room_device.floor_id,
+            "building_id": room_device.building_id,
+            "room_id": room_device.room_id,
+            "device_name": room_device.name,
+            "protocol_id": room_device.protocol_id,
+            "device_type_id": room_device.device_type_id,
+            "sub_room_type_id": room_device.room_sub_type_id,
+            "sub_device_type_id": room_device.device_sub_type_id,
+            "is_multiple": room_device.is_group,
+            "device_group_name": room_device.group_name,
+            "icon": room_device.icon,
+            "add_to_home_screen": room_device.add_to_home_screen,
+            "is_published": room_device.is_published,
+            "remark": room_device.remark,
+            "device_make": room_device.device_make,
+            "device_model": room_device.device_model,
+            "device_config": json.loads(room_device.device_config),
+            "is_service": room_device.is_service,
+            "room_sub_type": {
+                "name": room_device.room_sub_type.name,
+                "id": room_device.room_sub_type.id,
+            },
+            "device_type": {
+                "name": room_device.device_type.name,
+                "id": room_device.device_type.id,
+            },
+            "sub_room_type": {
+                "name": room_device.device_sub_type.name,
+                "id": room_device.device_sub_type.id,
+            },
+        }
+
+        return response_base(message="Success", status=200, data=[final_data])
+    else:
+        return response_base(message="Failed", status=404)
+
+
+@app.route("/room/device/edit", methods=["POST"])
+def edit_device_in_room():
+    print(request.json)
+    device = RoomDevice.query.get_or_404(request.json["device_id"])
+    if device is not None:
+        print(request.json)
+        device.device_type_id = request.json["device_type_id"]
+        device.device_sub_type_id = request.json["sub_device_type_id"]
+        device.room_sub_type_id = request.json["sub_room_type_id"]
+        device.is_published = request.json["is_published"]
+        device.add_to_home_screen = request.json["add_to_home_screen"]
+        device.icon = request.json["icon"]
+        device.remark = request.json["remark"]
+        device.protocol_id = request.json["protocol_id"]
+        device.name = request.json["device_name"]
+        device.group_name = request.json["device_group_name"]
+        device.is_group = request.json["is_multiple"]
+        device.is_service = request.json["is_service"]
+        device.device_make = request.json["device_make"]
+        device.device_model = request.json["device_model"]
+        device.device_config = json.dumps(request.json["device_config"])
+        db.session.commit()
+        return response_base(message="Success", status=200, data=[{"id": device.id}])
+    else:
+        return response_base(message="Failed", status=404)
+
+
+@app.route("/room/device/list", methods=["POST"])
+def list_device_in_room():
+    print(request.json)
+    final_data = {}
+    room_device = RoomDevice.query.filter_by(room_id=request.json["room_id"]).all()
+    for device in room_device:
+        devicez = {}
+        devicez["device_id"] = device.id
+        devicez["device_name"] = device.name
+        devicez["device_sub_type"] = device.device_sub_type.name
+        devicez["room_sub_type"] = device.room_sub_type.name
+        devicez["device_type"] = device.device_type.name
+        devicez["is_published"] = device.is_published
+        devicez["icon"] = device.icon
+        devicez["protocol"] = device.protocol.name
+        if device.device_type.technical_name not in final_data.keys():
+            final_data[device.device_type.technical_name] = [devicez]
+        else:
+            final_data[device.device_type.technical_name].append(devicez)
+    print(final_data)
+    if room_device is not None:
+        return response_base(message="Success", status=200, data=final_data)
     else:
         return response_base(message="Failed", status=404)

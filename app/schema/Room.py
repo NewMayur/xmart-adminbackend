@@ -32,6 +32,9 @@ class Room(db.Model):
     room_sub_types: Mapped[List[MasterSubRoomType]] = db.relationship(
         secondary="room_room_sub_type"
     )
+    room_device_types: Mapped[List[MasterDeviceType]] = db.relationship(
+        secondary="room_device_type"
+    )
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
@@ -78,6 +81,7 @@ class RoomDevice(db.Model):
     is_service = db.Column(db.Boolean)
     floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
     building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)
+    protocol_id = db.Column(db.Integer, db.ForeignKey("master_protocol.id"))
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     room_sub_type = db.relationship("MasterSubRoomType", backref="master_sub_room_type")
@@ -85,10 +89,12 @@ class RoomDevice(db.Model):
         "MasterDeviceSubType", backref="master_device_sub_type"
     )
     device_type = db.relationship("MasterDeviceType", backref="master_device_type")
+    protocol = db.relationship("MasterProtocol", backref="master_protocol")
 
 
 class RoomDeviceType(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    # id = db.Column(db.Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey("room.id"), nullable=False)
     device_type_id = db.Column(
         db.Integer, db.ForeignKey("master_device_type.id"), nullable=False

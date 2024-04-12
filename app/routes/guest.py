@@ -3,7 +3,7 @@ from server import app
 from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.extensions.utils import token_required
-from app.schema.Room import RoomDevice
+from app.schema.Room import RoomDevice, Room
 import jwt
 from flask_jwt_extended import (
     jwt_required,
@@ -35,68 +35,76 @@ def guest_room_auth():
 # @jwt_required()
 def load_room_config():
     # current_user = get_jwt_identity()
-    room_device = RoomDevice.query.filter_by(
-        room_id=request.json["room_id"],
+    room = Room.query.filter_by(
+        number=request.json["room_number"],
+        floor_id=request.json["floor_id"],
+        building_id=request.json["building_id"],
     ).all()
-    devices = {}
-    if len(room_device) > 0 and room_device:
+    print(room)
+    if len(room) > 0:
+        print(room[0].id)
+        room_device = RoomDevice.query.filter_by(
+            room_id=room[0].id,
+        ).all()
+        devices = {}
+        if len(room_device) > 0 and room_device:
 
-        final_devices = {"devices": {}, "scenes": [], "services": []}
-        for device in room_device:
-            print(device.is_service)
-            print(device.device_sub_type)
-            if device.is_service:
-                final_devices["services"].append(
-                    {
-                        "id": device.id,
-                        "name": device.name,
-                        "add_to_home_screen": device.add_to_home_screen,
-                        "sub_room": device.room_sub_type.name,
-                        "type": device.device_sub_type.name,
-                        "knx": json.loads(
-                            ast.literal_eval(device.device_config),
-                        ),
-                        "icon": device.icon,
-                        "bacnet": {},
-                    }
-                )
-                continue
-            if device.device_type.name not in devices.keys():
-                print("hello")
-                devices[device.device_type.name] = [
-                    {
-                        "id": device.id,
-                        "name": device.name,
-                        "add_to_home_screen": device.add_to_home_screen,
-                        "sub_room": device.room_sub_type.name,
-                        "type": device.device_sub_type.name,
-                        "knx": json.loads(
-                            ast.literal_eval(device.device_config),
-                        ),
-                        "icon": device.icon,
-                        "bacnet": {},
-                    }
-                ]
-                # print(devices)
-            else:
-                print(devices)
-                devices[device.device_type.name].append(
-                    {
-                        "id": device.id,
-                        "name": device.name,
-                        "add_to_home_screen": device.add_to_home_screen,
-                        "type": device.device_sub_type.name,
-                        "knx": json.loads(
-                            ast.literal_eval(device.device_config),
-                        ),
-                        "sub_room": device.room_sub_type.name,
-                        "icon": device.icon,
-                        "bacnet": {},
-                    }
-                )
-        final_devices["devices"].update(devices)
-        # print(devices)
-        return response_base(message="Success", status=200, data=final_devices)
+            final_devices = {
+                "devices": {},
+                "scenes": [],
+                "services": [],
+                "air_conditioner": [],
+            }
+            for device in room_device:
+                print(device.is_service)
+                print(device.device_sub_type)
+                if device.is_service:
+                    final_devices["services"].append(
+                        {
+                            "id": device.id,
+                            "name": device.name,
+                            "add_to_home_screen": device.add_to_home_screen,
+                            "sub_room": device.room_sub_type.name,
+                            "type": device.device_sub_type.name,
+                            "knx": json.loads(device.device_config),
+                            "icon": device.icon,
+                            "bacnet": {},
+                        }
+                    )
+                    continue
+                if device.device_type.name not in devices.keys():
+                    print("hello")
+                    devices[device.device_type.name] = [
+                        {
+                            "id": device.id,
+                            "name": device.name,
+                            "add_to_home_screen": device.add_to_home_screen,
+                            "sub_room": device.room_sub_type.name,
+                            "type": device.device_sub_type.name,
+                            "knx": json.loads(device.device_config),
+                            "icon": device.icon,
+                            "bacnet": {},
+                        }
+                    ]
+                    # print(devices)
+                else:
+                    devices[device.device_type.name].append(
+                        {
+                            "id": device.id,
+                            "name": device.name,
+                            "add_to_home_screen": device.add_to_home_screen,
+                            "type": device.device_sub_type.name,
+                            "knx": json.loads(device.device_config),
+                            "sub_room": device.room_sub_type.name,
+                            "icon": device.icon,
+                            "bacnet": {},
+                        }
+                    )
+            final_devices["devices"].update(devices)
+            # print(devices)
+            return response_base(message="Success", status=200, data=final_devices)
+        else:
+
+            return response_base(message="Failure", status=404, data=[])
     else:
-
         return response_base(message="Failure", status=404, data=[])

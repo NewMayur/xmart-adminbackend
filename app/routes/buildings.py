@@ -86,10 +86,24 @@ def floor_list():
     ).all()
     final_list = []
     for floor in floors:
+        print(floor.rooms)
+        room_data = []
+        for room in floor.rooms:
+            room_data.append(
+                {
+                    "id": room.id,
+                    "name": room.name,
+                    "number": room.number,
+                    "building": room.buildings.name,
+                    "room_type": room.room_type.name,
+                    "sub_room_types": [subtype.name for subtype in room.room_sub_types],
+                }
+            )
         data = {
             "id": floor.id,
             "name": floor.name,
             "number": floor.number,
+            "rooms": room_data,
         }
         final_list.append(data)
     return response_base(message="Success", status=200, data=final_list)

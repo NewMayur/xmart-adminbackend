@@ -128,13 +128,6 @@ def seed():
         sub_type = MasterSubRoomType(name=type)
         db.session.add(sub_type)
 
-    # for type in device_sub_type:
-    #     device_type = MasterDeviceType(name=type["name"])
-    #     db.session.add(device_type)
-    #     for sub_t in type["sub_type"]:
-    #         sub_type = MasterDeviceSubType(name=sub_t, master_device_type_id=device_type.id,protocol_id)
-    #         db.session.add(sub_type)
-
     db.session.commit()
 
 

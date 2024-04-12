@@ -21,17 +21,26 @@ def property():
         logo_path = save_base64_file(request.json["logo_base64"])
     else:
         pass
-    property = Property(name=request.json["name"],
-                        property_type_master_id=request.json["property_id"], country_master_id=request.json["country_id"],
-                        state_master_id=request.json["state_id"], city_master_id=request.json["city_id"],
-                        address1=request.json["address1"], address2=request.json["address2"],
-                        banner_image_path=banner_path, logo_image_path=logo_path)
+    property = Property(
+        name=request.json["name"],
+        property_type_master_id=request.json["property_master_id"],
+        country_master_id=request.json["country_id"],
+        state_master_id=request.json["state_id"],
+        city_master_id=request.json["city_id"],
+        address1=request.json["address1"],
+        address2=request.json["address2"],
+        banner_image_path=banner_path,
+        logo_image_path=logo_path,
+    )
     db.session.add(property)
     db.session.commit()
-    contact = PropertyContact(name=request.json["primary_contact_name"],
-                              email=request.json["primary_contact_email"],
-                              phone_number=request.json["primary_contact_contact_number"],
-                              job_title=request.json["primary_contact_job_title"], property_id=property.id)
+    contact = PropertyContact(
+        name=request.json["primary_contact_name"],
+        email=request.json["primary_contact_email"],
+        phone_number=request.json["primary_contact_contact_number"],
+        job_title=request.json["primary_contact_job_title"],
+        property_id=property.id,
+    )
     db.session.add(contact)
     db.session.commit()
 
@@ -41,6 +50,7 @@ def property():
 @app.route("/property/view", methods=["POST"])
 def property_fetch():
     import os
+
     # print(os.path.abspath(os.path.dirname(__file__)))
     property = Property.query.get_or_404(request.json["property_id"])
     data = {
@@ -59,11 +69,11 @@ def property_fetch():
         "primary_contact_job_title": property.property_contact[0].job_title,
         "primary_contact_email": property.property_contact[0].email,
         "primary_contact_contact_number": property.property_contact[0].phone_number,
-        "banner_url": app.config['IMAGE_URL'] + property.banner_image_path
+        "banner_url": app.config["IMAGE_URL"] + property.banner_image_path,
     }
     return response_base(message="Success", status=200, data=[data])
 
 
-@app.route('/images')
+@app.route("/images")
 def flask_logo():
-    return current_app.send_static_file(request.args.get('image_name'))
+    return current_app.send_static_file(request.args.get("image_name"))
