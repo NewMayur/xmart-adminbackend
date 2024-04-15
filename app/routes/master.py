@@ -1,7 +1,12 @@
 from flask import request, jsonify
 from server import app
 from app.schema.User import User
-from app.schema.Master import MasterRoomType, MasterSubRoomType, MasterDeviceType
+from app.schema.Master import (
+    MasterRoomType,
+    MasterSubRoomType,
+    MasterDeviceType,
+    MasterDeviceSubType,
+)
 from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.seeder.seed import seed
@@ -32,7 +37,25 @@ def device_type_fetch():
     device_types = MasterDeviceType.query.all()
     final_list = []
     for device_type in device_types:
-        data = {"id": device_type.id, "name": device_type.name}
+        data = {
+            "id": device_type.id,
+            "name": device_type.name,
+            "technical_name": device_type.technical_name,
+        }
+        final_list.append(data)
+    return response_base(message="Success", status=200, data=final_list)
+
+
+@app.route("/master/devicesubtype/list", methods=["GET"])
+def device_sub_type_fetch():
+    device_sub_types = MasterDeviceSubType.query.all()
+    final_list = []
+    for device_sub_type in device_sub_types:
+        data = {
+            "id": device_sub_type.id,
+            "name": device_sub_type.name,
+            "technical_name": device_sub_type.technical_name,
+        }
         final_list.append(data)
     return response_base(message="Success", status=200, data=final_list)
 
