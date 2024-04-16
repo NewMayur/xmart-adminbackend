@@ -40,11 +40,11 @@ def load_room_config():
         floor_id=request.json["floor_id"],
         building_id=request.json["building_id"],
     ).all()
-    # if
 
     final_data = {"device_data": [], "experience_data": [], "services_data": []}
     for device in room_devices:
-        if device.is_service == 0:
+        print(device.is_service)
+        if device.is_service == True:
             final_data["device_data"].append(
                 {
                     "id": device.id,
@@ -88,8 +88,8 @@ def load_room_config():
                     "device_sub_type_id": device.device_sub_type_id,
                 }
             )
-        return response_base(
-            message="Success",
-            status=200,
-            data=final_data,
-        )
+    return response_base(
+        message="Success",
+        status=200,
+        data=final_data,
+    )
