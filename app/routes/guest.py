@@ -44,7 +44,7 @@ def load_room_config():
     final_data = {"device_data": [], "experience_data": [], "services_data": []}
     for device in room_devices:
         print(device.is_service)
-        if device.is_service == True:
+        if device.is_service == False:
             final_data["device_data"].append(
                 {
                     "id": device.id,
