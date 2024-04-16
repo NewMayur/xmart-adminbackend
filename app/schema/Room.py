@@ -78,6 +78,7 @@ class RoomDevice(db.Model):
     add_to_home_screen = db.Column(db.Boolean)
     remark = db.Column(db.String(255))
     icon = db.Column(db.String(80))
+    room_number = db.Column(db.String(80), nullable=False)
     is_service = db.Column(db.Boolean)
     floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
     building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)

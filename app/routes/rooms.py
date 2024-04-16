@@ -215,6 +215,7 @@ def add_device_to_room():
             device_make=request.json["device_make"],
             device_model=request.json["device_model"],
             device_config=json.dumps(request.json["device_config"]),
+            room_number=room.number,
         )
         db.session.add(room_device)
         db.session.commit()
@@ -307,6 +308,7 @@ def edit_device_in_room():
         device.device_make = request.json["device_make"]
         device.device_model = request.json["device_model"]
         device.device_config = json.dumps(request.json["device_config"])
+        # room_number = room.number
         db.session.commit()
         return response_base(message="Success", status=200, data=[{"id": device.id}])
     else:

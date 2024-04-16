@@ -35,76 +35,61 @@ def guest_room_auth():
 # @jwt_required()
 def load_room_config():
     # current_user = get_jwt_identity()
-    room = Room.query.filter_by(
-        number=request.json["room_number"],
+    room_devices = RoomDevice.query.filter_by(
+        room_number=request.json["room_number"],
         floor_id=request.json["floor_id"],
         building_id=request.json["building_id"],
     ).all()
-    print(room)
-    if len(room) > 0:
-        print(room[0].id)
-        room_device = RoomDevice.query.filter_by(
-            room_id=room[0].id,
-        ).all()
-        devices = {}
-        if len(room_device) > 0 and room_device:
+    # if
 
-            final_devices = {
-                "devices": {},
-                "scenes": [],
-                "services": [],
-                "air_conditioner": [],
-            }
-            for device in room_device:
-                print(device.is_service)
-                print(device.device_sub_type)
-                if device.is_service:
-                    final_devices["services"].append(
-                        {
-                            "id": device.id,
-                            "name": device.name,
-                            "add_to_home_screen": device.add_to_home_screen,
-                            "sub_room": device.room_sub_type.name,
-                            "type": device.device_sub_type.name,
-                            "knx": json.loads(device.device_config),
-                            "icon": device.icon,
-                            "bacnet": {},
-                        }
-                    )
-                    continue
-                if device.device_type.name not in devices.keys():
-                    print("hello")
-                    devices[device.device_type.name] = [
-                        {
-                            "id": device.id,
-                            "name": device.name,
-                            "add_to_home_screen": device.add_to_home_screen,
-                            "sub_room": device.room_sub_type.name,
-                            "type": device.device_sub_type.name,
-                            "knx": json.loads(device.device_config),
-                            "icon": device.icon,
-                            "bacnet": {},
-                        }
-                    ]
-                    # print(devices)
-                else:
-                    devices[device.device_type.name].append(
-                        {
-                            "id": device.id,
-                            "name": device.name,
-                            "add_to_home_screen": device.add_to_home_screen,
-                            "type": device.device_sub_type.name,
-                            "knx": json.loads(device.device_config),
-                            "sub_room": device.room_sub_type.name,
-                            "icon": device.icon,
-                            "bacnet": {},
-                        }
-                    )
-            final_devices["devices"].update(devices)
-            # print(devices)
-            return response_base(message="Success", status=200, data=final_devices)
+    final_data = {"device_data": [], "experience_data": [], "services_data": []}
+    for device in room_devices:
+        if device.is_service == 0:
+            final_data["device_data"].append(
+                {
+                    "id": device.id,
+                    "name": device.name,
+                    "add_to_home_screen": device.add_to_home_screen,
+                    "sub_room": device.room_sub_type.name,
+                    "device_sub_type": device.device_sub_type.name,
+                    "device_type": device.device_type.name,
+                    "protocol": device.protocol.name,
+                    "controls": json.loads(device.device_config),
+                    "icon": device.icon,
+                    "floor_id": device.floor_id,
+                    "building_id": device.building_id,
+                    "room_id": device.room_id,
+                    "room_number": device.room_number,
+                    "device_make": device.device_make,
+                    "device_model": device.device_model,
+                    "device_type_id": device.device_type_id,
+                    "device_sub_type_id": device.device_sub_type_id,
+                }
+            )
         else:
-
-            return response_base(message="Failure", status=404, data=[])
-    else:
-        return response_base(message="Failure", status=404, data=[])
+            final_data["services_data"].append(
+                {
+                    "id": device.id,
+                    "name": device.name,
+                    "add_to_home_screen": device.add_to_home_screen,
+                    "sub_room": device.room_sub_type.name,
+                    "device_sub_type": device.device_sub_type.name,
+                    "device_type": device.device_type.name,
+                    "protocol": device.protocol.name,
+                    "controls": json.loads(device.device_config),
+                    "icon": device.icon,
+                    "floor_id": device.floor_id,
+                    "building_id": device.building_id,
+                    "room_id": device.room_id,
+                    "room_number": device.room_number,
+                    "device_make": device.device_make,
+                    "device_model": device.device_model,
+                    "device_type_id": device.device_type_id,
+                    "device_sub_type_id": device.device_sub_type_id,
+                }
+            )
+        return response_base(
+            message="Success",
+            status=200,
+            data=final_data,
+        )
