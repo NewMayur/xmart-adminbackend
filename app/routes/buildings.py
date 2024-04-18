@@ -89,6 +89,7 @@ def floor_list():
         print(floor.rooms)
         room_data = []
         for room in floor.rooms:
+            print(room.__dict__)
             room_data.append(
                 {
                     "id": room.id,

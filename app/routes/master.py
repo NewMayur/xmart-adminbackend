@@ -63,5 +63,24 @@ def device_sub_type_fetch():
 @app.route("/master/_seed", methods=["GET"])
 def seed_db():
     print("datata")
-    seed()
+    import pandas as pd
+
+    data = pd.read_excel(file_path)
+    # seed()
     return response_base(message="Success", status=200, data=[])
+
+
+@app.route("/master/devicesubdevicetype/list", methods=["GET"])
+def device_sub_types():
+    device_type = MasterDeviceType.query.all()
+    final_list = []
+    for device in device_type:
+        device_data = {}
+        device_data["name"] = device.name
+        device_data["technical_name"] = device.technical_name
+        device_data["device_sub_type"] = [
+            sub_dev.name for sub_dev in device.device_sub_type_1
+        ]
+        print(device.device_sub_type_1)
+        final_list.append(device_data)
+    return response_base(message="Success", status=200, data=final_list)

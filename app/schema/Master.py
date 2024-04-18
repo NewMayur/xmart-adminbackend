@@ -36,6 +36,9 @@ class MasterDeviceType(db.Model):
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
+    device_sub_type_1 = db.relationship(
+        "MasterDeviceSubType", backref="master_device_sub_type_1"
+    )
 
     def __repr__(self):
         return f"<MasterDeviceType {self.name}>"

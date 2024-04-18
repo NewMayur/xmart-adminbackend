@@ -111,7 +111,9 @@ def get_room():
 
 @app.route("/room/view", methods=["POST"])
 def view_room():
-    room = Room.query.get_or_404(request.json["room_id"])
+    print(request.json)
+    room = Room.query.filter_by(id=request.json["room_id"]).first()
+    # print(room)
     if room is not None:
         room = {
             "name": room.name,
@@ -160,22 +162,49 @@ def room_config_view():
 @app.route("/room/edit", methods=["POST"])
 def edit_room():
     print(request.json)
-    room = Room.query.get_or_404(request.json["room_id"])
+    room = Room.query.filter_by(id=request.json["room_id"]).first()
     if room is not None:
+        new_entries_devices = []
+        old_entries_devices = []
+        new_entries_room_sub = []
+        old_entries_room_sub = []
+        for dev in request.json["device_type_new"]:
+            if dev not in request.json["device_type_old"]:
+                new_entries_devices.append(dev)
+            else:
+                pass
+        for dev in request.json["device_type_old"]:
+            if dev not in request.json["device_type_new"]:
+                old_entries_devices.append(dev)
+            else:
+                pass
+        for dev in request.json["sub_room_type_new"]:
+            if dev not in request.json["sub_room_type_old"]:
+                new_entries_room_sub.append(dev)
+            else:
+                pass
+        for dev in request.json["sub_room_type_old"]:
+            if dev not in request.json["sub_room_type_new"]:
+                old_entries_room_sub.append(dev)
+            else:
+                pass
+        # print(new_entries_devices)
+        # print(old_entries_devices)
+        # exit()
         # update device types
-        for device in request.json["device_types_insert"]:
+        for device in new_entries_devices:
             room_device_type = RoomDeviceType(room_id=room.id, device_type_id=device)
             db.session.add(room_device_type)
-        for device in request.json["device_types_delete"]:
+        for device in old_entries_devices:
             room_device_type = RoomDeviceType.query.filter_by(
                 room_id=room.id, device_type_id=device
             ).first()
             db.session.delete(room_device_type)
         # Update subroom types
-        for subroom in request.json["sub_room_types_insert"]:
+        for subroom in new_entries_room_sub:
             room_sub_type = RoomRoomSubType(room_id=room.id, room_sub_type_id=subroom)
             db.session.add(room_sub_type)
-        for subroom in request.json["sub_room_types_delete"]:
+        for subroom in old_entries_room_sub:
             room_sub_type = RoomRoomSubType.query.filter_by(
                 room_id=room.id, room_sub_type_id=subroom
             ).first()
@@ -233,7 +262,7 @@ def delete_device_from_room():
         id=request.json["device_id"], room_id=request.json["room_id"]
     )
     if room_device is not None:
-        room_device.delete()
+        db.session.delete(room_device)
         db.session.commit()
         return response_base(message="Success", status=200, data=[])
     else:
@@ -337,5 +366,27 @@ def list_device_in_room():
     print(final_data)
     if room_device is not None:
         return response_base(message="Success", status=200, data=final_data)
+    else:
+        return response_base(message="Failed", status=404)
+
+
+@app.route("/room/delete", methods=["DELETE"])
+def delete_room():
+    # print(request.json)
+    room = Room.query.filter_by(id=request.json["room_id"]).first()
+    # print(room.id)
+    if room is not None:
+        db.session.delete(room)
+        for sub_type in room.room_sub_types:
+            db.session.delete(sub_type)
+        for device in room.room_device_types:
+            db.session.delete(device)
+        for types in room.room_type:
+            db.session.delete(types)
+        room_devices = RoomDevice.query.filter(room_id=request.json["room_id"]).all()
+        for dev in room_devices:
+            db.session.delete(dev)
+        db.session.commit()
+        return response_base(message="Success", status=200, data=[])
     else:
         return response_base(message="Failed", status=404)
