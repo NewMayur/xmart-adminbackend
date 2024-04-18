@@ -44,6 +44,7 @@ class Room(db.Model):
 
 
 class RoomRoomSubType(db.Model):
+    __mapper_args__ = {"confirm_deleted_rows": False}
     id: Mapped[int] = mapped_column(primary_key=True)
     # id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey("room.id"), nullable=False)
@@ -57,6 +58,7 @@ class RoomRoomSubType(db.Model):
 
 
 class RoomDevice(db.Model):
+    __mapper_args__ = {"confirm_deleted_rows": False}
     id = db.Column(db.Integer, primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey("room.id"), nullable=False)
     device_type_id = db.Column(
@@ -94,6 +96,7 @@ class RoomDevice(db.Model):
 
 
 class RoomDeviceType(db.Model):
+    __mapper_args__ = {"confirm_deleted_rows": False}
     # id = db.Column(db.Integer, primary_key=True)
     id: Mapped[int] = mapped_column(primary_key=True)
     room_id = db.Column(db.Integer, db.ForeignKey("room.id"), nullable=False)

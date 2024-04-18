@@ -374,18 +374,26 @@ def list_device_in_room():
 def delete_room():
     # print(request.json)
     room = Room.query.filter_by(id=request.json["room_id"]).first()
-    # print(room.id)
+    print(room.name)
     if room is not None:
-        db.session.delete(room)
-        for sub_type in room.room_sub_types:
-            db.session.delete(sub_type)
-        for device in room.room_device_types:
-            db.session.delete(device)
-        for types in room.room_type:
-            db.session.delete(types)
-        room_devices = RoomDevice.query.filter(room_id=request.json["room_id"]).all()
+        # db.session.delete(room)
+        # print(room.room_sub_types)
+        # exit()
+        sub_rooms = RoomRoomSubType.query.filter_by(
+            room_id=request.json["room_id"]
+        ).all()
+        for sub_room in sub_rooms:
+            db.session.delete(sub_room)
+        room_devices = RoomDevice.query.filter_by(room_id=request.json["room_id"]).all()
         for dev in room_devices:
+            print(dev)
             db.session.delete(dev)
+        room_device_types = RoomDeviceType.query.filter_by(
+            room_id=request.json["room_id"]
+        ).all()
+        for room_device_type in room_device_types:
+            db.session.delete(room_device_type)
+        db.session.delete(room)
         db.session.commit()
         return response_base(message="Success", status=200, data=[])
     else:
