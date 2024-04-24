@@ -221,8 +221,8 @@ def edit_room():
 
 @app.route("/room/device/add", methods=["POST"])
 def add_device_to_room():
-    print(request.json)
-    room = Room.query.get_or_404(request.json["room_id"])
+    # print(request.json)
+    room = Room.query.filter_by(id=request.json["room_id"]).first()
     if room is not None:
         print(request.json)
         room_device = RoomDevice(
@@ -241,8 +241,7 @@ def add_device_to_room():
             group_name=request.json["device_group_name"],
             is_group=request.json["is_multiple"],
             is_service=request.json["is_service"],
-            device_make=request.json["device_make"],
-            device_model=request.json["device_model"],
+            device_meta=json.dumps(request.json["device_meta"]),
             device_config=json.dumps(request.json["device_config"]),
             room_number=room.number,
         )
@@ -260,7 +259,7 @@ def delete_device_from_room():
     # print(request.json)
     room_device = RoomDevice.query.filter_by(
         id=request.json["device_id"], room_id=request.json["room_id"]
-    )
+    ).first()
     if room_device is not None:
         db.session.delete(room_device)
         db.session.commit()
@@ -293,9 +292,8 @@ def view_device_in_room():
             "add_to_home_screen": room_device.add_to_home_screen,
             "is_published": room_device.is_published,
             "remark": room_device.remark,
-            "device_make": room_device.device_make,
-            "device_model": room_device.device_model,
             "device_config": json.loads(room_device.device_config),
+            "device_meta": json.loads(room_device.device_meta),
             "is_service": room_device.is_service,
             "room_sub_type": {
                 "name": room_device.room_sub_type.name,
@@ -337,6 +335,7 @@ def edit_device_in_room():
         device.device_make = request.json["device_make"]
         device.device_model = request.json["device_model"]
         device.device_config = json.dumps(request.json["device_config"])
+        device.device_meta = json.dumps(request.json["device_meta"])
         # room_number = room.number
         db.session.commit()
         return response_base(message="Success", status=200, data=[{"id": device.id}])
@@ -359,6 +358,7 @@ def list_device_in_room():
         devicez["is_published"] = device.is_published
         devicez["icon"] = device.icon
         devicez["protocol"] = device.protocol.name
+        # devicez["is_service"] = device.is_service
         if device.device_type.technical_name not in final_data.keys():
             final_data[device.device_type.technical_name] = [devicez]
         else:

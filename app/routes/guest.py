@@ -60,10 +60,11 @@ def load_room_config():
                     "building_id": device.building_id,
                     "room_id": device.room_id,
                     "room_number": device.room_number,
-                    "device_make": device.device_make,
-                    "device_model": device.device_model,
+                    # "device_make": device.device_make,
+                    # "device_model": device.device_model,
                     "device_type_id": device.device_type_id,
                     "device_sub_type_id": device.device_sub_type_id,
+                    "is_service": device.is_service,
                 }
             )
         else:

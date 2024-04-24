@@ -64,42 +64,9 @@ class MasterDeviceSubType(db.Model):
     master_device_type_id = db.Column(
         db.Integer, db.ForeignKey("master_device_type.id"), nullable=False
     )
-    protocol_id = db.Column(
-        db.Integer, db.ForeignKey("master_protocol.id"), nullable=False
-    )
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
 
     def __repr__(self):
         return f"<MasterDeviceSubType {self.name}>"
-
-
-# class MasterKnxAddressName(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(80), nullable=False)
-#     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
-#     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
-
-#     def __repr__(self):
-#         return f"<MasterKNXAddressName {self.name}>"
-
-
-# class MasterValueDataType(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(80), nullable=False)
-#     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
-#     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
-
-#     def __repr__(self):
-#         return f"<MasterKnxValueDataType {self.name}>"
-
-
-# class MasterDataTypeRange(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(80), nullable=False)
-#     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
-#     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
-
-#     def __repr__(self):
-#         return f"<MasterKnxRange {self.name}>"
