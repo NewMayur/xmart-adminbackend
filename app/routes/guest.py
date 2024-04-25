@@ -41,55 +41,31 @@ def load_room_config():
         building_id=request.json["building_id"],
     ).all()
 
-    final_data = {"device_data": [], "experience_data": [], "services_data": []}
+    final_data = {"device_data": [], "experience_data": []}
     for device in room_devices:
         print(device.is_service)
-        if device.is_service == False:
-            final_data["device_data"].append(
-                {
-                    "id": device.id,
-                    "name": device.name,
-                    "add_to_home_screen": device.add_to_home_screen,
-                    "sub_room": device.room_sub_type.name,
-                    "device_sub_type": device.device_sub_type.name,
-                    "device_type": device.device_type.name,
-                    "protocol": device.protocol.name,
-                    "controls": json.loads(device.device_config),
-                    "icon": device.icon,
-                    "floor_id": device.floor_id,
-                    "building_id": device.building_id,
-                    "room_id": device.room_id,
-                    "room_number": device.room_number,
-                    # "device_make": device.device_make,
-                    # "device_model": device.device_model,
-                    "device_type_id": device.device_type_id,
-                    "device_sub_type_id": device.device_sub_type_id,
-                    "is_service": device.is_service,
-                }
-            )
-        else:
-            final_data["services_data"].append(
-                {
-                    "id": device.id,
-                    "name": device.name,
-                    "add_to_home_screen": device.add_to_home_screen,
-                    "sub_room": device.room_sub_type.name,
-                    "device_sub_type": device.device_sub_type.name,
-                    "device_type": device.device_type.name,
-                    "protocol": device.protocol.name,
-                    "controls": json.loads(device.device_config),
-                    "icon": device.icon,
-                    "floor_id": device.floor_id,
-                    "building_id": device.building_id,
-                    "room_id": device.room_id,
-                    "room_number": device.room_number,
-                    "device_meta": json.loads(device.device_meta),
-                    # "device_make": device.device_make,
-                    # "device_model": device.device_model,
-                    "device_type_id": device.device_type_id,
-                    "device_sub_type_id": device.device_sub_type_id,
-                }
-            )
+        final_data["device_data"].append(
+            {
+                "id": device.id,
+                "name": device.name,
+                "add_to_home_screen": device.add_to_home_screen,
+                "sub_room": device.room_sub_type.name,
+                "device_sub_type": device.device_sub_type.name,
+                "device_type": device.device_type.name,
+                "protocol": device.protocol.name,
+                "controls": json.loads(device.device_config),
+                "icon": device.icon,
+                "floor_id": device.floor_id,
+                "building_id": device.building_id,
+                "room_id": device.room_id,
+                "room_number": device.room_number,
+                # "device_make": device.device_make,
+                # "device_model": device.device_model,
+                "device_type_id": device.device_type_id,
+                "device_sub_type_id": device.device_sub_type_id,
+                "is_service": device.is_service,
+            }
+        )
     return response_base(
         message="Success",
         status=200,
