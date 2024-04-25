@@ -6,6 +6,7 @@ from app.schema.Master import (
     MasterSubRoomType,
     MasterDeviceType,
     MasterDeviceSubType,
+    MasterProtocol,
 )
 from app.extensions.db import db
 from app.extensions.responses import response_base
@@ -100,6 +101,20 @@ def device_sub_types_per_device_type():
         device_data["id"] = device.id
         # print(device.device_sub_type_1)
         final_list.append(device_data)
+    return response_base(message="Success", status=200, data=final_list)
+
+
+@app.route("/master/protocol/list", methods=["GET"])
+def master_protocol_list():
+    protocols = MasterProtocol.query.all()
+    final_list = []
+    for protocol in protocols:
+        proto_data = {}
+        proto_data["name"] = protocol.name
+        proto_data["id"] = protocol.id
+        # device_data["id"] = device.id
+        # print(device.device_sub_type_1)
+        final_list.append(proto_data)
     return response_base(message="Success", status=200, data=final_list)
 
 
