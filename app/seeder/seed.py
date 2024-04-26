@@ -57,7 +57,13 @@ def seed():
     device_sub_type = [
         {
             "name": "Lights",
-            "sub_type": ["ON/OFF Light", "Dimmer Light", "RGB Light", "CCT Light"],
+            "sub_type": [
+                "ON/OFF Light",
+                "Dimmer Light",
+                "RGB Light",
+                "CCT Light",
+                "Service Light",
+            ],
         },
         {
             "name": "Air Conditioner",

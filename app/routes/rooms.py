@@ -4,6 +4,7 @@ from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.schema.Building import Building, Floor
 from app.schema.Room import Room, RoomDevice, RoomDeviceType, RoomRoomSubType
+from app.schema.Experience import Experience, ExperienceRoomType, ExperienceDevice
 from server import app
 import json
 
@@ -144,18 +145,6 @@ def view_room_sub_room():
         subroom = [
             {"name": subtype.name, "id": subtype.id} for subtype in room.room_sub_types
         ]
-        # room = {
-        #     "name": room.name,
-        #     "number": room.number,
-        #     "room_type": {"name": room.room_type.name, "id": room.room_type.id},
-        #     "floor": {"name": room.floors.name, "id": room.floors.id},
-        #     "building": {"name": room.buildings.name, "id": room.buildings.id},
-        #     "sub_room_types": ,
-        #     "device_types": [
-        #         {"id": device.id, "name": device.name}
-        #         for device in room.room_device_types
-        #     ],
-        # }
         return response_base(message="Success", status=200, data=subroom)
     else:
         return response_base(message="Failed", status=404)

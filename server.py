@@ -73,6 +73,7 @@ if __name__ == "__main__":
     from app.routes.master import *
     from app.routes.rooms import *
     from app.routes.guest import *
+    from app.routes.experience import *
 
     @app.errorhandler(Exception)
     def server_error(err):

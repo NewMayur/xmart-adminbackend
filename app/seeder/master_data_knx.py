@@ -209,6 +209,22 @@ knx_master = [
         "value_data_type": "2 byte",
         "vale_data_range": "1000k to 10000k",
     },
+    {
+        "device_type_id": 1,
+        "sub_device_type_id": 5,
+        "address_name_technical": "on_off",
+        "address_name": "On/Off",
+        "value_data_type": "On/Off",
+        "vale_data_range": "0 or 1",
+    },
+    {
+        "device_type_id": 1,
+        "sub_device_type_id": 5,
+        "address_name_technical": "on_off_status",
+        "address_name": "On/Off Status",
+        "value_data_type": "On/Off",
+        "vale_data_range": "0 or 1",
+    },
     ## AC- HVAC
     {
         "device_type_id": 2,
