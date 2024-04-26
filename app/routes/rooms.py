@@ -361,24 +361,40 @@ def edit_device_in_room():
 @app.route("/room/device/list", methods=["POST"])
 def list_device_in_room():
     print(request.json)
-    final_data = {}
-    room_device = RoomDevice.query.filter_by(room_id=request.json["room_id"]).all()
+    final_data = []
+    room_device = RoomDevice.query.filter_by(
+        room_id=request.json["room_id"], device_type_id=request.json["device_type_id"]
+    ).all()
     for device in room_device:
-        devicez = {}
-        devicez["device_id"] = device.id
-        devicez["device_name"] = device.name
-        devicez["device_sub_type"] = device.device_sub_type.name
-        devicez["room_sub_type"] = device.room_sub_type.name
-        devicez["device_type"] = device.device_type.name
-        devicez["is_published"] = device.is_published
-        devicez["icon"] = device.icon
-        devicez["protocol"] = device.protocol.name
-        # devicez["is_service"] = device.is_service
-        if device.device_type.technical_name not in final_data.keys():
-            final_data[device.device_type.technical_name] = [devicez]
-        else:
-            final_data[device.device_type.technical_name].append(devicez)
-    print(final_data)
+        final_data.append(
+            {
+                "device_id": device.id,
+                "device_name": device.name,
+                "device_sub_type": device.device_sub_type.name,
+                "room_sub_type": device.room_sub_type.name,
+                "device_type": device.device_type.name,
+                "is_published": device.is_published,
+                "icon": device.icon,
+                "protocol": device.protocol.name,
+                "is_service": device.is_service,
+            }
+        )
+    # for device in room_device:
+    #     devicez = {}
+    #     devicez["device_id"] = device.id
+    #     devicez["device_name"] = device.name
+    #     devicez["device_sub_type"] = device.device_sub_type.name
+    #     devicez["room_sub_type"] = device.room_sub_type.name
+    #     devicez["device_type"] = device.device_type.name
+    #     devicez["is_published"] = device.is_published
+    #     devicez["icon"] = device.icon
+    #     devicez["protocol"] = device.protocol.name
+    #     # devicez["is_service"] = device.is_service
+    #     if device.device_type.technical_name not in final_data.keys():
+    #         final_data[device.device_type.technical_name] = [devicez]
+    #     else:
+    #         final_data[device.device_type.technical_name].append(devicez)
+    # print(final_data)
     if room_device is not None:
         return response_base(message="Success", status=200, data=final_data)
     else:
