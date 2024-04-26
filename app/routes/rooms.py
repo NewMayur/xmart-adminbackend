@@ -347,8 +347,8 @@ def edit_device_in_room():
         device.group_name = request.json["device_group_name"]
         device.is_group = request.json["is_multiple"]
         device.is_service = request.json["is_service"]
-        device.device_make = request.json["device_make"]
-        device.device_model = request.json["device_model"]
+        # device.device_make = request.json["device_make"]
+        # device.device_model = request.json["device_model"]
         device.device_config = json.dumps(request.json["device_config"])
         device.device_meta = json.dumps(request.json["device_meta"])
         # room_number = room.number
