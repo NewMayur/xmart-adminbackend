@@ -126,6 +126,7 @@ def device_sub_data():
             device_type_id=request.json["device_type_id"],
             sub_device_type_id=request.json["device_sub_type_id"],
         ).all()
+        print(data)
         for dat in data:
             final_list.append(
                 {
@@ -147,8 +148,9 @@ def device_sub_data():
                     "id": dat.id,
                     "function": dat.function,
                     "object_instance": dat.object_instance,
-                    "value_data_type": dat.value_data_type,
-                    "vale_data_range": dat.vale_data_range,
+                    "object_type": dat.object_type,
+                    "range": dat.range,
+                    "read_write": dat.read_write,
                 }
             )
     return response_base(message="Success", status=200, data=final_list)
