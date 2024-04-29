@@ -8,13 +8,17 @@ from app.schema.Master import (
 from app.schema.Property import MasterPropertyType
 from app.extensions.db import db
 from app.seeder.master_data_knx import knx_master
-from app.schema.Device import KnxDeviceSubTypeData
+from app.seeder.master_bacnet_data import bacnet_master
+from app.schema.Device import KnxDeviceSubTypeData, BacNetDeviceSubTypeData
 
 
 def seed():
     print(knx_master)
     for dev_data in knx_master:
         db.session.add(KnxDeviceSubTypeData(**dev_data))
+    db.session.commit()
+    for dev_data in bacnet_master:
+        db.session.add(BacNetDeviceSubTypeData(**dev_data))
     db.session.commit()
     exit()
     # property_type = [

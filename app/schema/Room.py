@@ -65,10 +65,10 @@ class RoomDevice(db.Model):
         db.Integer, db.ForeignKey("master_device_type.id"), nullable=False
     )
     device_sub_type_id = db.Column(
-        db.Integer, db.ForeignKey("master_device_sub_type.id"), nullable=True
+        db.Integer, db.ForeignKey("master_device_sub_type.id"), nullable=False
     )
     room_sub_type_id = db.Column(
-        db.Integer, db.ForeignKey("master_sub_room_type.id"), nullable=False
+        db.Integer, db.ForeignKey("master_sub_room_type.id"), nullable=True
     )
     name = db.Column(db.String(80), nullable=False)
     group_name = db.Column(db.String(80), nullable=False)

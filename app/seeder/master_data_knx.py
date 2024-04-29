@@ -209,6 +209,7 @@ knx_master = [
         "value_data_type": "2 byte",
         "vale_data_range": "1000k to 10000k",
     },
+    # Service Light
     {
         "device_type_id": 1,
         "sub_device_type_id": 5,
@@ -228,7 +229,7 @@ knx_master = [
     ## AC- HVAC
     {
         "device_type_id": 2,
-        "sub_device_type_id": 5,
+        "sub_device_type_id": 6,
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
@@ -236,7 +237,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 5,
+        "sub_device_type_id": 6,
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
@@ -244,7 +245,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 5,
+        "sub_device_type_id": 6,
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
@@ -253,7 +254,7 @@ knx_master = [
     ## AC Split
     {
         "device_type_id": 2,
-        "sub_device_type_id": 6,
+        "sub_device_type_id": 7,
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
@@ -261,7 +262,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 6,
+        "sub_device_type_id": 7,
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
@@ -269,7 +270,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 6,
+        "sub_device_type_id": 7,
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
@@ -278,7 +279,7 @@ knx_master = [
     ## AHU Split
     {
         "device_type_id": 2,
-        "sub_device_type_id": 7,
+        "sub_device_type_id": 8,
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
@@ -286,7 +287,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 7,
+        "sub_device_type_id": 8,
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
@@ -294,7 +295,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 7,
+        "sub_device_type_id": 8,
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
@@ -328,7 +329,7 @@ knx_master = [
     ## FCU Split
     {
         "device_type_id": 2,
-        "sub_device_type_id": 8,
+        "sub_device_type_id": 9,
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
@@ -336,7 +337,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 8,
+        "sub_device_type_id": 9,
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
@@ -344,7 +345,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 8,
+        "sub_device_type_id": 9,
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
@@ -353,7 +354,7 @@ knx_master = [
     ## VRV Split
     {
         "device_type_id": 2,
-        "sub_device_type_id": 9,
+        "sub_device_type_id": 10,
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
@@ -361,7 +362,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 9,
+        "sub_device_type_id": 10,
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
@@ -369,7 +370,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 9,
+        "sub_device_type_id": 10,
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
@@ -378,7 +379,7 @@ knx_master = [
     ## VFV Split
     {
         "device_type_id": 2,
-        "sub_device_type_id": 10,
+        "sub_device_type_id": 11,
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
@@ -386,7 +387,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 10,
+        "sub_device_type_id": 11,
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
@@ -394,7 +395,7 @@ knx_master = [
     },
     {
         "device_type_id": 2,
-        "sub_device_type_id": 10,
+        "sub_device_type_id": 11,
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
@@ -403,7 +404,7 @@ knx_master = [
     ## Curtain Horizonatal
     {
         "device_type_id": 3,
-        "sub_device_type_id": 11,
+        "sub_device_type_id": 12,
         "address_name_technical": "shutter_move",
         "address_name": "Shutter Move",
         "value_data_type": "1 byte",
@@ -411,7 +412,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 11,
+        "sub_device_type_id": 12,
         "address_name_technical": "shutter_stop",
         "address_name": "Shutter Stop",
         "value_data_type": "1 byte",
@@ -419,7 +420,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 11,
+        "sub_device_type_id": 12,
         "address_name_technical": "shutter_direct_position",
         "address_name": "Shutter Direct Position",
         "value_data_type": "1 byte",
@@ -427,7 +428,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 11,
+        "sub_device_type_id": 12,
         "address_name_technical": "shutter_position_status",
         "address_name": "Shutter Position status",
         "value_data_type": "1 byte",
@@ -436,7 +437,7 @@ knx_master = [
     ## Curtain Vertical
     {
         "device_type_id": 3,
-        "sub_device_type_id": 12,
+        "sub_device_type_id": 13,
         "address_name_technical": "shutter_move",
         "address_name": "Shutter Move",
         "value_data_type": "1 byte",
@@ -444,7 +445,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 12,
+        "sub_device_type_id": 13,
         "address_name_technical": "shutter_stop",
         "address_name": "Shutter Stop",
         "value_data_type": "1 byte",
@@ -452,7 +453,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 12,
+        "sub_device_type_id": 13,
         "address_name_technical": "shutter_direct_position",
         "address_name": "Shutter Direct Position",
         "value_data_type": "1 byte",
@@ -460,7 +461,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 12,
+        "sub_device_type_id": 13,
         "address_name_technical": "shutter_direct_status",
         "address_name": "Shutter Position status",
         "value_data_type": "1 byte",
@@ -469,7 +470,7 @@ knx_master = [
     ## Curtains Blinds
     {
         "device_type_id": 3,
-        "sub_device_type_id": 13,
+        "sub_device_type_id": 14,
         "address_name_technical": "shutter_move",
         "address_name": "Shutter Move",
         "value_data_type": "1 byte",
@@ -477,7 +478,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 13,
+        "sub_device_type_id": 14,
         "address_name_technical": "shutter_stop",
         "address_name": "Shutter Stop",
         "value_data_type": "1 byte",
@@ -485,7 +486,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 13,
+        "sub_device_type_id": 14,
         "address_name_technical": "shutter_direct_position",
         "address_name": "Shutter Direct Position",
         "value_data_type": "1 byte",
@@ -493,7 +494,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 13,
+        "sub_device_type_id": 14,
         "address_name_technical": "shutter_position_status",
         "address_name": "Shutter Position status",
         "value_data_type": "1 byte",
@@ -502,7 +503,7 @@ knx_master = [
     ## Fan AC
     {
         "device_type_id": 3,
-        "sub_device_type_id": 14,
+        "sub_device_type_id": 15,
         "address_name_technical": "fan_on_off",
         "address_name": "Fan on/off",
         "value_data_type": "On/Off",
@@ -510,7 +511,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 14,
+        "sub_device_type_id": 15,
         "address_name_technical": "fan_speed",
         "address_name": "Fan speed",
         "value_data_type": "1 byte",
@@ -518,7 +519,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 14,
+        "sub_device_type_id": 15,
         "address_name_technical": "fan_status",
         "address_name": "Fan Status",
         "value_data_type": "1 byte",
@@ -527,7 +528,7 @@ knx_master = [
     ## Fan DC
     {
         "device_type_id": 3,
-        "sub_device_type_id": 15,
+        "sub_device_type_id": 16,
         "address_name_technical": "fan_on_off",
         "address_name": "Fan on/off",
         "value_data_type": "On/Off",
@@ -535,7 +536,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 15,
+        "sub_device_type_id": 16,
         "address_name_technical": "fan_speed",
         "address_name": "Fan speed",
         "value_data_type": "1 byte",
@@ -543,7 +544,7 @@ knx_master = [
     },
     {
         "device_type_id": 3,
-        "sub_device_type_id": 15,
+        "sub_device_type_id": 16,
         "address_name_technical": "fan_status",
         "address_name": "Fan Status",
         "value_data_type": "1 byte",

@@ -11,7 +11,7 @@ from app.schema.Master import (
 from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.seeder.seed import seed
-from app.schema.Device import KnxDeviceSubTypeData
+from app.schema.Device import KnxDeviceSubTypeData, BacNetDeviceSubTypeData
 
 
 @app.route("/master/roomtype/list", methods=["GET"])
@@ -137,5 +137,18 @@ def device_sub_data():
                 }
             )
     else:
-        pass
+        data = BacNetDeviceSubTypeData.query.filter_by(
+            device_type_id=request.json["device_type_id"],
+            sub_device_type_id=request.json["device_sub_type_id"],
+        )
+        for dat in data:
+            final_list.append(
+                {
+                    "id": dat.id,
+                    "function": dat.function,
+                    "object_instance": dat.object_instance,
+                    "value_data_type": dat.value_data_type,
+                    "vale_data_range": dat.vale_data_range,
+                }
+            )
     return response_base(message="Success", status=200, data=final_list)

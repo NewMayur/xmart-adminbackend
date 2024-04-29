@@ -246,7 +246,11 @@ def add_device_to_room():
             building_id=request.json["building_id"],
             device_type_id=request.json["device_type_id"],
             device_sub_type_id=request.json["sub_device_type_id"],
-            room_sub_type_id=request.json["sub_room_type_id"],
+            room_sub_type_id=(
+                request.json["sub_room_type_id"]
+                if request.json["sub_room_type_id"] not in ["0", 0, None]
+                else None
+            ),
             is_published=request.json["is_published"],
             add_to_home_screen=request.json["add_to_home_screen"],
             icon=request.json["icon"],
@@ -255,7 +259,7 @@ def add_device_to_room():
             name=request.json["device_name"],
             group_name=request.json["device_group_name"],
             is_group=request.json["is_multiple"],
-            is_service=request.json["is_service"],
+            is_service=1 if request.json["sub_device_type_id"] == 5 else 0,
             device_meta=json.dumps(request.json["device_meta"]),
             device_config=json.dumps(request.json["device_config"]),
             room_number=room.number,
@@ -310,15 +314,19 @@ def view_device_in_room():
             "device_config": json.loads(room_device.device_config),
             "device_meta": json.loads(room_device.device_meta),
             "is_service": room_device.is_service,
-            "room_sub_type": {
-                "name": room_device.room_sub_type.name,
-                "id": room_device.room_sub_type.id,
-            },
+            "room_sub_type": (
+                {
+                    "name": room_device.room_sub_type.name,
+                    "id": room_device.room_sub_type.id,
+                }
+                if room_device.room_sub_type is not None
+                else None
+            ),
             "device_type": {
                 "name": room_device.device_type.name,
                 "id": room_device.device_type.id,
             },
-            "sub_room_type": {
+            "sub_device_type": {
                 "name": room_device.device_sub_type.name,
                 "id": room_device.device_sub_type.id,
             },
@@ -334,7 +342,6 @@ def edit_device_in_room():
     print(request.json)
     device = RoomDevice.query.get_or_404(request.json["device_id"])
     if device is not None:
-        print(request.json)
         device.device_type_id = request.json["device_type_id"]
         device.device_sub_type_id = request.json["sub_device_type_id"]
         device.room_sub_type_id = request.json["sub_room_type_id"]
@@ -347,8 +354,6 @@ def edit_device_in_room():
         device.group_name = request.json["device_group_name"]
         device.is_group = request.json["is_multiple"]
         device.is_service = request.json["is_service"]
-        # device.device_make = request.json["device_make"]
-        # device.device_model = request.json["device_model"]
         device.device_config = json.dumps(request.json["device_config"])
         device.device_meta = json.dumps(request.json["device_meta"])
         # room_number = room.number
