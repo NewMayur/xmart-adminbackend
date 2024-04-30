@@ -1,4 +1,5 @@
-from flask import request
+from flask import request, jsonify, make_response
+
 from server import app
 from app.extensions.db import db
 from app.extensions.responses import response_base
@@ -26,7 +27,10 @@ def guest_room_auth():
                 "building_id": request.json["building_id"],
             }
         )
-        return response_base(message="Success", status=200, data=[{"token": token}])
+        response = jsonify({"token": token})
+        response.headers["auth-token"] = token
+        return response
+        # return response_base(message="Success", status=200, data=[{"token": token}]).headers['auth-token'] = token
     else:
         return response_base(message="Failed", status=404)
 
