@@ -296,7 +296,7 @@ def view_device_in_room():
     room_device = RoomDevice.query.filter_by(
         id=request.json["device_id"], room_id=request.json["room_id"]
     ).first()
-    print(room_device.protocol)
+    # print(room_device.protocol)
     if room_device is not None:
         print(room_device.room_sub_type)
         final_data = {
