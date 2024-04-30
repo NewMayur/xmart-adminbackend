@@ -43,6 +43,7 @@ def load_room_config():
         room_number=request.json["room_number"],
         floor_id=request.json["floor_id"],
         building_id=request.json["building_id"],
+        is_published=1,
     ).all()
 
     final_data = {"device_data": [], "experience_data": []}
@@ -50,9 +51,9 @@ def load_room_config():
         print(device.is_service)
         final_config = {}
         print(json.loads(device.device_config))
-        # for dev_con in json.loads(device.device_config):
-        #     print(dev_con)
-        #     final_config[dev_con["technical_name"]] = dev_con["address"]
+        for dev_con in json.loads(device.device_config):
+            print(dev_con)
+            final_config[dev_con["technical_name"]] = dev_con["address"]
         final_data["device_data"].append(
             {
                 "id": device.id,
@@ -62,8 +63,8 @@ def load_room_config():
                 "device_sub_type": device.device_sub_type.name,
                 "device_type": device.device_type.name,
                 "protocol": device.protocol.name,
-                "controls": json.loads(device.device_config),
-                # "controls": final_config,
+                # "controls": json.loads(device.device_config),
+                "controls": final_config,
                 "icon": device.icon,
                 "floor_id": device.floor_id,
                 "building_id": device.building_id,
