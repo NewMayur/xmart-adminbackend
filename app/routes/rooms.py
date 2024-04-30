@@ -276,15 +276,18 @@ def add_device_to_room():
 @app.route("/room/device/delete", methods=["DELETE"])
 def delete_device_from_room():
     # print(request.json)
-    room_device = RoomDevice.query.filter_by(
-        id=request.json["device_id"], room_id=request.json["room_id"]
-    ).first()
-    if room_device is not None:
-        db.session.delete(room_device)
-        db.session.commit()
-        return response_base(message="Success", status=200, data=[])
-    else:
-        return response_base(message="Failed", status=404)
+    for device_id in request.json["device_ids"]:
+        room_device = RoomDevice.query.filter_by(
+            id=device_id, room_id=request.json["room_id"]
+        ).first()
+        if room_device is not None:
+            db.session.delete(room_device)
+            db.session.commit()
+
+        else:
+            pass
+            # return response_base(message="Failed", status=404)
+    return response_base(message="Success", status=200, data=[])
 
 
 @app.route("/room/device/view", methods=["POST"])
