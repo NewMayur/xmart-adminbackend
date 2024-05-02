@@ -51,9 +51,14 @@ def load_room_config():
         print(device.is_service)
         final_config = {}
         print(json.loads(device.device_config))
-        for dev_con in json.loads(device.device_config):
-            print(dev_con)
-            final_config[dev_con["technical_name"]] = dev_con["address"]
+        if isinstance(
+            json.loads(device.device_config), dict
+        ):  # json.loads(device.device_config)
+            for dev_con in json.loads(device.device_config):
+                print(dev_con)
+                final_config[dev_con["technical_name"]] = dev_con["address"]
+        else:
+            final_config = json.loads(device.device_config)
         final_data["device_data"].append(
             {
                 "id": device.id,
