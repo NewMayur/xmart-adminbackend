@@ -51,7 +51,7 @@ def load_room_config():
         print(device.is_service)
         final_config = {}
         print(json.loads(device.device_config))
-        if isinstance(
+        if not isinstance(
             json.loads(device.device_config), dict
         ):  # json.loads(device.device_config)
             for dev_con in json.loads(device.device_config):
