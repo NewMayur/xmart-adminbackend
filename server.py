@@ -1,6 +1,6 @@
 # from app import create_app
 # Flask modules
-from flask import Flask
+from flask import Flask, render_template, send_from_directory
 from werkzeug.serving import run_simple
 from flask_bcrypt import Bcrypt
 from app.extensions.responses import response_base
@@ -74,6 +74,24 @@ if __name__ == "__main__":
     from app.routes.rooms import *
     from app.routes.guest import *
     from app.routes.experience import *
+
+    FLUTTER_WEB_APP = "templates"
+
+    @app.route("/web/")
+    def render_page_web():
+        return render_template("/index.html")
+
+    @app.route("/web/<path:name>")
+    def return_flutter_doc(name):
+
+        datalist = str(name).split("/")
+        DIR_NAME = FLUTTER_WEB_APP
+
+        if len(datalist) > 1:
+            for i in range(0, len(datalist) - 1):
+                DIR_NAME += "/" + datalist[i]
+
+        return send_from_directory(DIR_NAME, datalist[-1])
 
     @app.errorhandler(Exception)
     def server_error(err):
