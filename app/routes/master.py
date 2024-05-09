@@ -163,3 +163,9 @@ def device_sub_data():
                 }
             )
     return response_base(message="Success", status=200, data=final_list)
+
+
+@app.route("/health", methods=["GET"])
+def heatlh_check():
+
+    return response_base(message="Connected to server.", status=200, data=[])
