@@ -1,8 +1,9 @@
 bacnet_master = [
     # HVAC
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 6,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "hvac",
+        "technica_name": "get_temp_status",
         "function": "Room Temp. (Get Temp. Status)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -10,8 +11,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 6,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "hvac",
+        "technica_name": "set_temp_thermostat",
         "function": "Set Temp ( Get set temp. from thermostat)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -19,8 +21,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 6,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "hvac",
+        "technica_name": "set_temp_ac",
         "function": "Set Point ( Set Temp. on AC)",
         "object_instance": "",
         "object_type": "Analogue Output",
@@ -29,8 +32,9 @@ bacnet_master = [
     },
     # AHU
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 7,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "ahu",
+        "technica_name": "get_temp_status",
         "function": "Room Temp. (Get Temp. Status)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -38,8 +42,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 7,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "ahu",
+        "technica_name": "set_temp_thermostat",
         "function": "Set Temp ( Get set temp. from thermostat)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -47,18 +52,20 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 7,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "ahu",
+        "technica_name": "set_temp_ac",
         "function": "Set Point ( Set Temp. on AC)",
         "object_instance": "",
         "object_type": "Analogue Output",
         "range": "Deg C",
         "read_write": "Write",
     },
-    # AHU
+    # split ac
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 8,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "split_ac",
+        "technica_name": "get_temp_status",
         "function": "Room Temp. (Get Temp. Status)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -66,8 +73,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 8,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "split_ac",
+        "technica_name": "set_temp_thermostat",
         "function": "Set Temp ( Get set temp. from thermostat)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -75,8 +83,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 8,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "split_ac",
+        "technica_name": "set_temp_ac",
         "function": "Set Point ( Set Temp. on AC)",
         "object_instance": "",
         "object_type": "Analogue Output",
@@ -85,8 +94,9 @@ bacnet_master = [
     },
     # FCU
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 9,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "fcu",
+        "technica_name": "get_temp_status",
         "function": "Room Temp. (Get Temp. Status)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -94,8 +104,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 9,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "fcu",
+        "technica_name": "set_temp_thermostat",
         "function": "Set Temp ( Get set temp. from thermostat)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -103,8 +114,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 9,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "fcu",
+        "technica_name": "set_temp_ac",
         "function": "Set Point ( Set Temp. on AC)",
         "object_instance": "",
         "object_type": "Analogue Output",
@@ -113,8 +125,9 @@ bacnet_master = [
     },
     # VRV
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 10,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "vrv",
+        "technica_name": "get_temp_status",
         "function": "Room Temp. (Get Temp. Status)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -122,8 +135,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 10,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "vrv",
+        "technica_name": "set_temp_thermostat",
         "function": "Set Temp ( Get set temp. from thermostat)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -131,8 +145,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 10,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "vrv",
+        "technica_name": "set_temp_ac",
         "function": "Set Point ( Set Temp. on AC)",
         "object_instance": "",
         "object_type": "Analogue Output",
@@ -141,8 +156,9 @@ bacnet_master = [
     },
     # VFV
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 11,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "vrf",
+        "technica_name": "get_temp_status",
         "function": "Room Temp. (Get Temp. Status)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -150,8 +166,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 11,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "vrf",
+        "technica_name": "set_temp_thermostat",
         "function": "Set Temp ( Get set temp. from thermostat)",
         "object_instance": "",
         "object_type": "Analogue Input",
@@ -159,8 +176,9 @@ bacnet_master = [
         "read_write": "Read",
     },
     {
-        "device_type_id": 2,
-        "sub_device_type_id": 11,
+        "device_type_id": "air_conditioner",
+        "sub_device_type_id": "vrf",
+        "technica_name": "set_temp_ac",
         "function": "Set Point ( Set Temp. on AC)",
         "object_instance": "",
         "object_type": "Analogue Output",

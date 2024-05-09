@@ -7,6 +7,7 @@ from sqlalchemy.orm import mapped_column
 class MasterRoomType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
+    technical_name = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
@@ -17,7 +18,7 @@ class MasterRoomType(db.Model):
 
 class MasterSubRoomType(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-
+    technical_name = db.Column(db.String(80), nullable=False)
     # id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())

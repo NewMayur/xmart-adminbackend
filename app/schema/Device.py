@@ -28,6 +28,7 @@ class BacNetDeviceSubTypeData(db.Model):
     sub_device_type_id = db.Column(
         db.Integer, db.ForeignKey("master_device_sub_type.id"), nullable=False
     )
+    technical_name = db.Column(db.String(80), nullable=False)
     function = db.Column(db.String(80), nullable=False)
     object_instance = db.Column(db.String(80), nullable=False)
     object_type = db.Column(db.String(80), nullable=False)

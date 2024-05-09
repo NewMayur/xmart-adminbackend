@@ -56,6 +56,7 @@ class PropertyContact(db.Model):
 class MasterPropertyType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
+    technical_name = db.Column(db.String(80), unique=True, nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 

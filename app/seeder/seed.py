@@ -14,76 +14,93 @@ from app.schema.Device import KnxDeviceSubTypeData, BacNetDeviceSubTypeData
 
 def seed():
     print(knx_master)
-    for dev_data in knx_master:
-        db.session.add(KnxDeviceSubTypeData(**dev_data))
-    db.session.commit()
-    for dev_data in bacnet_master:
-        db.session.add(BacNetDeviceSubTypeData(**dev_data))
-    db.session.commit()
-    exit()
-    # property_type = [
-    #     "Hotel",
-    #     "Resort",
-    #     "Apartment",
-    #     "Villa",
-    #     "Cruise",
-    #     "Hospital",
-    #     "Mall",
-    #     "Business Centre",
-    #     "Bungalow",
-    # ]
-    # room_type = [
-    #     "Standard Room",
-    #     "Suite",
-    #     "Deluxe Room",
-    #     "Studio Apartment",
-    #     "Conference Room",
-    #     "Lounge",
-    #     "Spa and Wellness",
-    #     "Gym",
-    #     "Green Room",
-    # ]
-    # sub_room_type = [
-    #     "Bedroom",
-    #     "Master Bedroom",
-    #     "Bathroom",
-    #     "Living Room",
-    #     "Balcony",
-    #     "Gallery",
-    #     "Dinning Room",
-    #     "Kitchen",
-    #     "Patio/Deck",
-    #     "Pool Area",
-    #     "Study Room",
-    #     "Powder Room",
-    # ]
-    # protocol_device = ["Bacnet", "KNX"]
+    # for dev_data in knx_master:
+    #     db.session.add(KnxDeviceSubTypeData(**dev_data))
+    # db.session.commit()
+    # for dev_data in bacnet_master:
+    #     db.session.add(BacNetDeviceSubTypeData(**dev_data))
+    # db.session.commit()
+    # exit()
+    property_type = [
+        {"name": "Hotel", "technical_name": "hotel"},
+        {"name": "Resort", "technical_name": "resort"},
+        {"name": "Apartment", "technical_name": "apartment"},
+        {"name": "Villa", "technical_name": "villa"},
+        {"name": "Cruise", "technical_name": "cruise"},
+        {"name": "Hospital", "technical_name": "hospital"},
+        {"name": "Mall", "technical_name": "mall"},
+        {"name": "Meal", "technical_name": "business_centre"},
+        {"name": "Bungalow", "technical_name": "bungalow"},
+    ]
+    room_type = [
+        {"name": "Standard Room", "technical_name": "standard_room"},
+        {"name": "Suite", "technical_name": "suite"},
+        {"name": "Deluxe Room", "technical_name": "deluxe_room"},
+        {"name": "Studio Apartment", "technical_name": "studio_apartment"},
+        {"name": "Conference Room", "technical_name": "conference_room"},
+        {"name": "Lounge", "technical_name": "lounge"},
+        {"name": "Spa and Wellness", "technical_name": "spa_and_wellness"},
+        {"name": "Gym", "technical_name": "gym"},
+        {"name": "Green Room", "technical_name": "green_room"},
+    ]
+    sub_room_type = [
+        {"name": "Bedroom", "technical_name": "bedroom"},
+        {"name": "Master Bedroom", "technical_name": "master_bedroom"},
+        {"name": "Bathroom", "technical_name": "bathroom"},
+        {"name": "Living Room", "technical_name": "living_room"},
+        {"name": "Balcony", "technical_name": "balcony"},
+        {"name": "Gallery", "technical_name": "gallery"},
+        {"name": "Dinning Room", "technical_name": "dinning_room"},
+        {"name": "Kitchen", "technical_name": "kitchen"},
+        {"name": "Patio/Deck", "technical_name": "patio/deck"},
+        {"name": "Pool Area", "technical_name": "pool_area"},
+        {"name": "Study Room", "technical_name": "study_room"},
+        {"name": "Powder Room", "technical_name": "powder_room"},
+    ]
+    protocol_device = ["Bacnet", "KNX"]
     device_sub_type = [
         {
             "name": "Lights",
+            "technical_name": "lights",
             "sub_type": [
-                "ON/OFF Light",
-                "Dimmer Light",
-                "RGB Light",
-                "CCT Light",
-                "Service Light",
+                {"name": "ON/OFF Light", "technical_name": "on/off_light"},
+                {"name": "Dimmer Light", "technical_name": "dimmer_light"},
+                {"name": "RGB Light", "technical_name": "rgb_light"},
+                {"name": "CCT Light", "technical_name": "cct_light"},
+                {"name": "Service Light", "technical_name": "service_light"},
             ],
         },
         {
             "name": "Air Conditioner",
-            "sub_type": ["HVAC", "AHU", "FCU", "Split AC", "VRV", "VRF"],
+            "technical_name": "air_conditioner",
+            "sub_type": [
+                {"name": "HVAC", "technical_name": "hvac"},
+                {"name": "AHU", "technical_name": "ahu"},
+                {"name": "FCU", "technical_name": "fcu"},
+                {"name": "Split AC", "technical_name": "split_ac"},
+                {"name": "VRV", "technical_name": "vrv"},
+                {"name": "VRF", "technical_name": "vrf"},
+            ],
         },
         {
             "name": "Curtains",
+            "technical_name": "curtains",
             "sub_type": [
-                "Horizontal Curtains",
-                "Vertical Curtains",
-                "Blinds",
+                {
+                    "name": "Horizontal Curtains",
+                    "technical_name": "horizontal_curtains",
+                },
+                {"name": "Vertical Curtains", "technical_name": "vertical_curtains"},
+                {"name": "Blinds", "technical_name": "blinds"},
             ],
         },
         {
             "name": "Fans",
-            "sub_type": ["AC Fans", "DC Fans"],
+            "technical_name": "fans",
+            "sub_type": [
+                {"name": "AC Fans", "technical_name": "ac_fans"},
+                {"name": "DC Fans", "technical_name": "dc_fans"},
+            ],
         },
         # {
         #     "name": "TV",
@@ -119,35 +136,80 @@ def seed():
         # {"name": "Toilet Seat", "protocol": 1, "sub_type": []},
     ]
 
-    # for proto in protocol_device:
-    #     db.session.add(MasterProtocol(name=proto))
+    for proto in protocol_device:
+        db.session.add(MasterProtocol(name=proto))
 
-    # for type in property_type:
-    #     prop_type = MasterPropertyType(name=type)
-    #     db.session.add(prop_type)
+    for type in property_type:
+        prop_type = MasterPropertyType(
+            name=type["name"], technical_name=type["technical_name"]
+        )
+        db.session.add(prop_type)
 
-    # for type in room_type:
-    #     room_type = MasterRoomType(name=type)
-    #     db.session.add(room_type)
+    for type in room_type:
+        room_type = MasterRoomType(
+            name=type["name"], technical_name=type["technical_name"]
+        )
+        db.session.add(room_type)
 
-    # for type in sub_room_type:
+    for type in sub_room_type:
 
-    #     sub_type = MasterSubRoomType(name=type)
-    #     db.session.add(sub_type)
-
+        sub_type = MasterSubRoomType(
+            name=type["name"], technical_name=type["technical_name"]
+        )
+        db.session.add(sub_type)
+    device_type_sub_type_id_mapper = {}
     for device in device_sub_type:
         device_type = MasterDeviceType(
-            name=device["name"], technical_name=device["name"]
+            name=device["name"], technical_name=device["technical_name"]
         )
         db.session.add(device_type)
         db.session.flush()
+        device_type_sub_type_id_mapper[device["technical_name"]] = device_type.id
         for sub_type in device["sub_type"]:
             device_sub_type = MasterDeviceSubType(
-                name=sub_type,
-                technical_name=sub_type,
+                name=sub_type["name"],
+                technical_name=sub_type["technical_name"],
                 master_device_type_id=device_type.id,
             )
             db.session.add(device_sub_type)
+            db.session.flush()
+            device_type_sub_type_id_mapper[sub_type["technical_name"]] = (
+                device_sub_type.id
+            )
+    for dev_data in knx_master:
+        db.session.add(
+            KnxDeviceSubTypeData(
+                device_type_id=device_type_sub_type_id_mapper[
+                    dev_data["device_type_id"]
+                ],
+                sub_device_type_id=device_type_sub_type_id_mapper[
+                    dev_data["sub_device_type_id"]
+                ],
+                address_name_technical=dev_data["address_name_technical"],
+                address_name=dev_data["address_name"],
+                value_data_type=dev_data["value_data_type"],
+                vale_data_range=dev_data["vale_data_range"],
+            )
+        )
+        # db.session.commit()
+    for dev_data in bacnet_master:
+        db.session.add(
+            BacNetDeviceSubTypeData(
+                device_type_id=device_type_sub_type_id_mapper[
+                    dev_data["device_type_id"]
+                ],
+                sub_device_type_id=device_type_sub_type_id_mapper[
+                    dev_data["sub_device_type_id"]
+                ],
+                technical_name=dev_data["technica_name"],
+                function=dev_data["function"],
+                object_instance="",
+                object_type=dev_data["object_type"],
+                range=dev_data["range"],
+                read_write=dev_data["read_write"],
+            )
+        )
+        # db.session.commit()
     db.session.commit()
 
 

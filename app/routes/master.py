@@ -151,6 +151,7 @@ def device_sub_data():
                     "object_type": dat.object_type,
                     "range": dat.range,
                     "read_write": dat.read_write,
+                    "technical_name": dat.technical_name,
                 }
             )
     return response_base(message="Success", status=200, data=final_list)
