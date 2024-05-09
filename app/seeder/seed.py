@@ -152,7 +152,7 @@ def seed():
         db.session.add(room_type)
 
     for type in sub_room_type:
-
+        print(type)
         sub_type = MasterSubRoomType(
             name=type["name"], technical_name=type["technical_name"]
         )

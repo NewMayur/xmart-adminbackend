@@ -19,7 +19,11 @@ def room_type_master_fetch():
     room_types = MasterRoomType.query.all()
     final_list = []
     for room_type in room_types:
-        data = {"id": room_type.id, "name": room_type.name}
+        data = {
+            "id": room_type.id,
+            "name": room_type.name,
+            "technical_name": room_type.technical_name,
+        }
         final_list.append(data)
     return response_base(message="Success", status=200, data=final_list)
 
@@ -29,7 +33,11 @@ def subroom_type_fetch():
     sub_room_types = MasterSubRoomType.query.all()
     final_list = []
     for sub_room_type in sub_room_types:
-        data = {"id": sub_room_type.id, "name": sub_room_type.name}
+        data = {
+            "id": sub_room_type.id,
+            "name": sub_room_type.name,
+            "technical_name": sub_room_type.technical_name,
+        }
         final_list.append(data)
     return response_base(message="Success", status=200, data=final_list)
 
