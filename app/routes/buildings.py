@@ -4,6 +4,7 @@ from server import app
 from app.schema.Building import Building, Floor
 from app.extensions.db import db
 from app.extensions.responses import response_base
+from app.extensions.utils import get_local_ip, get_ssid
 
 
 @app.route("/building/create", methods=["POST"])
@@ -108,3 +109,14 @@ def floor_list():
         }
         final_list.append(data)
     return response_base(message="Success", status=200, data=final_list)
+
+
+@app.route("/network/info", methods=["GET"])
+def network_info():
+    ip, subnet_mask = get_local_ip()
+    ssid = get_ssid()
+    return response_base(
+        message="Success",
+        status=200,
+        data=[{"ip": ip, "ssid": ssid, "sunet_mask": subnet_mask}],
+    )

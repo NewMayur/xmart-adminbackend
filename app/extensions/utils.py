@@ -5,6 +5,60 @@ from functools import wraps
 from flask import jsonify, request
 from server import app
 
+import platform
+import subprocess
+import socket
+import psutil  # For Windows
+
+
+def get_local_ip():
+    # Get a list of network interfaces
+    interfaces = psutil.net_if_addrs()
+    # Iterate through the interfaces to find the one with an IPv4 address
+    for interface in interfaces:
+        if interfaces[interface][0].family == socket.AF_INET:
+            # Return the IPv4 address of the first interface found
+            subnet_mask = interfaces[interface][0].netmask
+            ip = interfaces[interface][0].address
+            return ip, subnet_mask
+    return "Local IP not found"
+
+
+def get_ssid_windows():
+    try:
+        # Use subprocess to run the netsh command to get the SSID
+        output = subprocess.check_output(["netsh", "wlan", "show", "interfaces"])
+        output = output.decode("utf-8").split("\n")
+        for line in output:
+            if "SSID" in line:
+                ssid = line.split(": ")[1].strip()
+                return ssid
+    except subprocess.CalledProcessError:
+        pass
+    return "SSID not found"
+
+
+def get_ssid_linux():
+    try:
+        # Use subprocess to run the iwconfig command and grep the SSID
+        output = subprocess.check_output(["iwgetid", "--raw"])
+        # Decode the output and remove any trailing newline characters
+        ssid = output.decode("utf-8").strip()
+        return ssid
+    except subprocess.CalledProcessError:
+        pass
+    return "SSID not found"
+
+
+def get_ssid():
+    system = platform.system()
+    if system == "Windows":
+        return get_ssid_windows()
+    elif system == "Linux":
+        return get_ssid_linux()
+    else:
+        return "SSID not found"
+
 
 def save_base64_file(data):
     file_name = str(uuid.uuid4())
