@@ -42,8 +42,13 @@ def load_room_config():
     # current_user = get_jwt_identity()
     floor = Floor.query.filter_by(number=request.json["floor_number"]).first()
     if floor:
+        room = Room.query.filter_by(number=request.json["room_number"]).first()
+        if room == None:
+            return response_base(message="Failed", status=404)
+        else:
+            pass
         room_devices = RoomDevice.query.filter_by(
-            room_number=request.json["room_number"],
+            room_id=room.id,
             floor_id=floor.id,
             building_id=request.json["building_id"],
             is_published=1,
