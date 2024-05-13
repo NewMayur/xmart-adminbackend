@@ -65,6 +65,9 @@ class MasterDeviceSubType(db.Model):
     master_device_type_id = db.Column(
         db.Integer, db.ForeignKey("master_device_type.id"), nullable=False
     )
+    master_device_type_new = db.relationship(
+        "MasterDeviceType", backref="master_device_type_new"
+    )
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
