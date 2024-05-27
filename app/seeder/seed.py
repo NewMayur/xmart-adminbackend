@@ -151,61 +151,61 @@ def seed():
                 {"name": "DC Fans", "technical_name": "dc_fans"},
             ],
         },
-        # {
-        #     "name": "TV",
-        #     "sub_type": ["Smart TV", "Normal TV", "IP TV", "STB"],
-        #     "protocol": 1,
-        # },
-        # {"name": "Music System", "protocol": 1, "sub_type": []},
-        # {
-        #     "name": "Door Lock",
-        #     "sub_type": ["Bluetooth Lock", "WiFi Lock," "Wired Lock"],
-        #     "protocol": 1,
-        # },
-        # {"name": "Bathtub", "protocol": 1, "sub_type": []},
-        # {"name": "Jacuzzi", "protocol": 1, "sub_type": []},
-        # {
-        #     "name": "Sensors",
-        #     "sub_type": [
-        #         "CO2  Sensor",
-        #         "Temperature Sensor",
-        #         "Occupancy Sensor",
-        #         "Humidity Sensor",
-        #         "Smoke Detector Sensor",
-        #         "AQI Sensor",
-        #     ],
-        #     "protocol": 1,
-        # },
-        # {
-        #     "name": "Smart Switch Board",
-        #     "sub_type": ["HTTP", "Zigbee", "Z Wave", "MQTT"],
-        #     "protocol": 1,
-        # },
-        # {"name": "Media Server", "protocol": 1, "sub_type": []},
-        # {"name": "Toilet Seat", "protocol": 1, "sub_type": []},
+        {
+            "name": "TV",
+            "sub_type": ["Smart TV", "Normal TV", "IP TV", "STB"],
+            "protocol": 1,
+        },
+        {"name": "Music System", "protocol": 1, "sub_type": []},
+        {
+            "name": "Door Lock",
+            "sub_type": ["Bluetooth Lock", "WiFi Lock," "Wired Lock"],
+            "protocol": 1,
+        },
+        {"name": "Bathtub", "protocol": 1, "sub_type": []},
+        {"name": "Jacuzzi", "protocol": 1, "sub_type": []},
+        {
+            "name": "Sensors",
+            "sub_type": [
+                "CO2  Sensor",
+                "Temperature Sensor",
+                "Occupancy Sensor",
+                "Humidity Sensor",
+                "Smoke Detector Sensor",
+                "AQI Sensor",
+            ],
+            "protocol": 1,
+        },
+        {
+            "name": "Smart Switch Board",
+            "sub_type": ["HTTP", "Zigbee", "Z Wave", "MQTT"],
+            "protocol": 1,
+        },
+        {"name": "Media Server", "protocol": 1, "sub_type": []},
+        {"name": "Toilet Seat", "protocol": 1, "sub_type": []},
     ]
 
-    # for proto in protocol_device:
-    #     db.session.add(MasterProtocol(name=proto))
+    for proto in protocol_device:
+        db.session.add(MasterProtocol(name=proto))
 
-    # for type in property_type:
-    #     prop_type = MasterPropertyType(
-    #         name=type["name"], technical_name=type["technical_name"]
-    #     )
-    #     db.session.add(prop_type)
+    for type in property_type:
+        prop_type = MasterPropertyType(
+            name=type["name"], technical_name=type["technical_name"]
+        )
+        db.session.add(prop_type)
 
-    # for type in room_type:
-    #     room_type = MasterRoomType(
-    #         name=type["name"], technical_name=type["technical_name"]
-    #     )
-    #     db.session.add(room_type)
+    for type in room_type:
+        room_type = MasterRoomType(
+            name=type["name"], technical_name=type["technical_name"]
+        )
+        db.session.add(room_type)
 
-    # for type in sub_room_type:
-    #     print(type)
-    #     sub_type = MasterSubRoomType(
-    #         name=type["name"], technical_name=type["technical_name"]
-    #     )
-    #     db.session.add(sub_type)
+    for type in sub_room_type:
+        print(type)
+        sub_type = MasterSubRoomType(
+            name=type["name"], technical_name=type["technical_name"]
+        )
+        db.session.add(sub_type)
     device_type_sub_type_id_mapper = {}
     for device in device_sub_type:
         device_type = MasterDeviceType(
