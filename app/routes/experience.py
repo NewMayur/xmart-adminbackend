@@ -147,15 +147,18 @@ def update_experience():
 @app.route("/experience/delete", methods=["DELETE"])
 def delete_experience():
     try:
-        experience = Experience.query.filter_by(
-            id=request.json["experience_id"]
-        ).first()
-        if experience is not None:
-            db.session.delete(experience)
-            db.session.commit()
-            return response_base(message="Success", status=200)
-        else:
-            return response_base(message="Failed", status=404)
+        for exp in request.json["experience_ids:"] 
+            experience = Experience.query.filter_by(
+                id=exp
+            ).first()
+            if experience is not None:
+                db.session.delete(experience)
+                db.session.commit()
+                # return response_base(message="Success", status=200)
+            else:
+                pass
+                # return response_base(message="Failed", status=404)
+        return response_base(message="Success", status=200, data = [])
     except Exception as e:
         current_app.logger.error(e)
         return response_base(message="Server error", status=500)
