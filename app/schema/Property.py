@@ -17,6 +17,7 @@ class Property(db.Model):
     country = db.Column(db.String(100))
     state = db.Column(db.String(100))
     city = db.Column(db.String(100))
+    zip_code = db.Column(db.String(100))
     # country_master_id = db.Column(
     #     db.Integer, db.ForeignKey("master_country.id"), nullable=False
     # )
@@ -52,6 +53,7 @@ class PropertyContact(db.Model):
     email = db.Column(db.String(80), unique=False, nullable=False)
     job_title = db.Column(db.String(80), unique=False, nullable=False)
     phone_number = db.Column(db.String(80), unique=False, nullable=False)
+    phone_number_code = db.Column(db.String(80), unique=False, nullable=False)
     property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())

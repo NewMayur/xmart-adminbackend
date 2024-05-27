@@ -38,6 +38,7 @@ def property():
         address2=request.json["address2"],
         banner_image_path=banner_path,
         logo_image_path=logo_path,
+        zip_code=request.json["zip_code"],
     )
     db.session.add(property)
     db.session.commit()
@@ -46,6 +47,7 @@ def property():
         email=request.json["primary_contact_email"],
         phone_number=request.json["primary_contact_contact_number"],
         job_title=request.json["primary_contact_job_title"],
+        phone_number_code=request.json["primary_contact_phone_number_code"],
         property_id=property.id,
     )
     db.session.add(contact)
@@ -68,6 +70,7 @@ def property_fetch():
         "state": property.state,
         # "state_id": property.state_master_id,
         "city": property.city,
+        "zip_code": property.zip_code,
         # "city_id": property.city_master_id,
         "address1": property.address1,
         "address2": property.address2,
@@ -75,6 +78,9 @@ def property_fetch():
         "primary_contact_job_title": property.property_contact[0].job_title,
         "primary_contact_email": property.property_contact[0].email,
         "primary_contact_contact_number": property.property_contact[0].phone_number,
+        "primary_contact_contact_number_code": property.property_contact[
+            0
+        ].primary_contact_phone_number_code,
         "banner_url": app.config["IMAGE_URL"] + property.banner_image_path,
         "logo_url": app.config["IMAGE_URL"] + property.logo_image_path,
         # "banner_url": property.banner_image_path,
@@ -112,6 +118,7 @@ def property_list():
             "state": property.state,
             # "state_id": property.state_master_id,
             "city": property.city,
+            "zip_code": property.zip_code,
             # "city_id": property.city_master_id,
             "address1": property.address1,
             "address2": property.address2,
@@ -119,6 +126,9 @@ def property_list():
             "primary_contact_job_title": property.property_contact[0].job_title,
             "primary_contact_email": property.property_contact[0].email,
             "primary_contact_contact_number": property.property_contact[0].phone_number,
+            "primary_contact_contact_number_code": property.property_contact[
+                0
+            ].phone_number_code,
             "banner_url": app.config["IMAGE_URL"] + property.banner_image_path,
             "logo_url": app.config["IMAGE_URL"] + property.logo_image_path,
             "buildings": no_of_buildings,
@@ -151,6 +161,10 @@ def property_update():
     property.country = request.json["country"]
     property.state = request.json["state"]
     property.city = request.json["city"]
+    property.property_contact[0].phone_number_code = (
+        request.json["primary_contact_contact_number"],
+    )
+    property.zip_code = request.json["zip_code"]
     property.address1 = request.json["address1"]
     property.address2 = request.json["address2"]
     property.banner_image_path = banner_path
