@@ -34,6 +34,7 @@ class MasterDeviceType(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     technical_name = db.Column(db.String(80), nullable=False)
+    experience_config = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))

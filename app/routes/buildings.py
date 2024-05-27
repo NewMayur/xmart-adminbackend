@@ -78,6 +78,26 @@ def building_list():
     return response_base(message="Success", status=200, data=final_list)
 
 
+@app.route("/building/delete", methods=["DELETE"])
+def building_delete():
+    building_id = request.json["building_id"]
+    buildings = Building.query.filter_by(id=building_id).first()
+    if not buildings:
+        return response_base(message="Failed", status=404, data=[])
+    else:
+        for floor in buildings.floors:
+            for room in floor.rooms:
+                for device in room.devices:
+                    db.session.delete(device)
+                for room_sub_type in room.room_sub_types:
+                    db.session.delete(room_sub_type)
+                for room_device_type in room.room_device_types:
+                    db.session.delete(room_device_type)
+                db.session.delete(room)
+            db.session.delete(floor)
+        return response_base(message="Success", status=200, data=[])
+
+
 @app.route("/floor/list", methods=["POST"])
 def floor_list():
     property_id = request.json["property_id"]

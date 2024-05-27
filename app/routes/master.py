@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, send_file
 from server import app
 from app.schema.User import User
 from app.schema.Master import (
@@ -199,6 +199,34 @@ def upload_master():
                     else:
                         pass
                 db.session.commit()
+            if request.form["type"] == "room":
+                for row in df.iloc:
+                    room = MasterRoomType.query.filter_by(
+                        technical_name=row["technical_name"], name=row["name"]
+                    ).first()
+                    if room is None:
+                        new_room = MasterRoomType(
+                            name=row["name"],
+                            technical_name=row["technical_name"],
+                        )
+                        db.session.add(new_room)
+                    else:
+                        pass
+                db.session.commit()
+            if request.form["type"] == "sub_room":
+                for row in df.iloc:
+                    sub_room = MasterSubRoomType.query.filter_by(
+                        technical_name=row["technical_name"], name=row["name"]
+                    ).first()
+                    if sub_room is None:
+                        sub_room_new = MasterSubRoomType(
+                            name=row["name"],
+                            technical_name=row["technical_name"],
+                        )
+                        db.session.add(sub_room_new)
+                    else:
+                        pass
+                db.session.commit()
             elif request.form["type"] == "device":
                 for row in df.iloc:
                     device = MasterDeviceType.query.filter_by(
@@ -234,7 +262,7 @@ def upload_master():
                             db.session.add(sub_device_type)
                         else:
                             pass
-            elif request.form["type"] == "KNX":
+            elif request.form["type"] == "knx":
                 device_sub_device = MasterDeviceSubType.query.all()
                 device_sub_device_dat = {}
                 for sub_d in device_sub_device:
@@ -274,7 +302,7 @@ def upload_master():
                         db.session.add(new_device)
                     else:
                         pass
-            elif request.form["type"] == "BACnet":
+            elif request.form["type"] == "bacnet":
                 for row in df.iloc:
                     device = BacNetDeviceSubTypeData.query.filter_by(
                         device_type_id=dev_id,
@@ -304,3 +332,10 @@ def upload_master():
     except Exception as e:
         print(e)
         return response_base(message="Failed", status=500)
+
+
+@app.route("/downloadmasters", methods=["GET"])
+def download_master():
+    master = request.args.get("master")
+    print(master)
+    return send_file(f"master/master_{master}.xlsx", as_attachment=True)

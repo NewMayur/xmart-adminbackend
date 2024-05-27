@@ -14,15 +14,18 @@ class Property(db.Model):
     property_type_master_id = db.Column(
         db.Integer, db.ForeignKey("master_property_type.id"), nullable=False
     )
-    country_master_id = db.Column(
-        db.Integer, db.ForeignKey("master_country.id"), nullable=False
-    )
-    state_master_id = db.Column(
-        db.Integer, db.ForeignKey("master_state.id"), nullable=False
-    )
-    city_master_id = db.Column(
-        db.Integer, db.ForeignKey("master_city.id"), nullable=False
-    )
+    country = db.Column(db.String(100))
+    state = db.Column(db.String(100))
+    city = db.Column(db.String(100))
+    # country_master_id = db.Column(
+    #     db.Integer, db.ForeignKey("master_country.id"), nullable=False
+    # )
+    # state_master_id = db.Column(
+    #     db.Integer, db.ForeignKey("master_state.id"), nullable=False
+    # )
+    # city_master_id = db.Column(
+    #     db.Integer, db.ForeignKey("master_city.id"), nullable=False
+    # )
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # country = db.relationship(
@@ -30,16 +33,20 @@ class Property(db.Model):
     property_type = db.relationship(
         "MasterPropertyType", backref="master_property_type"
     )
-    country = db.relationship("MasterCountry", backref="country_master")
-    state = db.relationship("MasterState", backref="state_master")
-    city = db.relationship("MasterCity", backref="city_master")
+    # country = db.relationship("MasterCountry", backref="country_master")
+    # state = db.relationship("MasterState", backref="state_master")
+    # city = db.relationship("MasterCity", backref="city_master")
     property_contact = db.relationship("PropertyContact", backref="property_contact")
+    # rooms = db.relationship("Room", backref="room")
+    # floors = db.relationship("Floor", backref="floor")
+    # buildings = db.relationship("Building", backref="building")
 
     def __repr__(self):
         return f"<Property {self.name}>"
 
 
 class PropertyContact(db.Model):
+    __mapper_args__ = {"confirm_deleted_rows": False}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=False, nullable=False)
     email = db.Column(db.String(80), unique=False, nullable=False)
@@ -67,6 +74,8 @@ class MasterPropertyType(db.Model):
 class MasterCountry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
+    latitude = db.Column(db.String(80), unique=False)
+    longitude = db.Column(db.String(80), unique=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
@@ -77,6 +86,8 @@ class MasterCountry(db.Model):
 class MasterState(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
+    latitude = db.Column(db.String(80), unique=False)
+    longitude = db.Column(db.String(80), unique=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
@@ -87,6 +98,8 @@ class MasterState(db.Model):
 class MasterCity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
+    latitude = db.Column(db.String(80), unique=False)
+    longitude = db.Column(db.String(80), unique=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
 

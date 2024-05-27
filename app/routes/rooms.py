@@ -57,13 +57,20 @@ def create_room():
             print(room["device_types"])
             for device in room["device_types"]:
                 room_device_type = RoomDeviceType(
-                    room_id=room_new.id, device_type_id=device
+                    room_id=room_new.id,
+                    device_type_id=device,
+                    floor_id=room["floor_id"],
+                    building_id=room["building_id"],
+                    property_id=room["property_id"],
                 )
                 db.session.add(room_device_type)
             for sub_room in room["sub_room_type_ids"]:
                 room_sub_type = RoomRoomSubType(
                     room_id=room_new.id,
                     room_sub_type_id=sub_room,
+                    floor_id=room["floor_id"],
+                    building_id=room["building_id"],
+                    property_id=room["property_id"],
                 )
                 db.session.add(room_sub_type)
         db.session.commit()
@@ -244,6 +251,7 @@ def add_device_to_room():
             room_id=room.id,
             floor_id=request.json["floor_id"],
             building_id=request.json["building_id"],
+            property_id=request.json["property_id"],
             device_type_id=request.json["device_type_id"],
             device_sub_type_id=request.json["sub_device_type_id"],
             room_sub_type_id=(
@@ -434,4 +442,15 @@ def delete_room():
             db.session.commit()
         else:
             pass
+    return response_base(message="Success", status=200, data=[])
+
+
+@app.route("/roomdeviceunique/list", methods=["GET"])
+def room_device_unique():
+    # print(request.json)
+    rooms = Room.query.filter_by(room_type_id=request.json["room_type_id"]).all()
+    device_type_staging = []
+    for room in rooms:
+        device_type_staging.append(room.device_type_id)
+
     return response_base(message="Success", status=200, data=[])

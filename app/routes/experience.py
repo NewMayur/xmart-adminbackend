@@ -3,6 +3,7 @@ from flask import current_app, request
 from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.schema.Experience import Experience, ExperienceRoomType, ExperienceDevice
+from app.schema.Room import Room
 from server import app
 import json
 
@@ -189,3 +190,32 @@ def view_experience():
     except Exception as e:
         current_app.logger.error(e)
         return response_base(message="Server error", status=500)
+
+
+@app.route("/master/devicetype/experience", methods=["POST"])
+def device_type_experience():
+    rooms = Room.query.filter_by(room_type_id=request.json["room_type_id"]).all()
+    print(rooms)
+    device_type_data = []
+    for room in rooms:
+        print(room.room_device_types)
+        for device_type in room.room_device_types:
+            print(device_type.experience_config)
+            device_type_data.append(
+                {
+                    "id": device_type.id,
+                    "name": device_type.name,
+                    "technical_name": device_type.technical_name,
+                    "experience_config": json.loads(device_type.experience_config),
+                }
+            )
+    # print(device_type_id)
+    # final_list = []
+    # for device_type in device_types:
+    #     data = {
+    #         "id": device_type.id,
+    #         "name": device_type.name,
+    #         "technical_name": device_type.technical_name,
+    #     }
+    # final_list.append(data)
+    return response_base(message="Success", status=200, data=device_type_data)

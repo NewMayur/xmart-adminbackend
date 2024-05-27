@@ -11,16 +11,13 @@ from app.seeder.master_data_knx import knx_master
 from app.seeder.master_bacnet_data import bacnet_master
 from app.schema.Device import KnxDeviceSubTypeData, BacNetDeviceSubTypeData
 
+# import pandas as pd
+import json
+
+# from app.schema.Property import MasterCity, MasterCity
+
 
 def seed():
-    print(knx_master)
-    # for dev_data in knx_master:
-    #     db.session.add(KnxDeviceSubTypeData(**dev_data))
-    # db.session.commit()
-    # for dev_data in bacnet_master:
-    #     db.session.add(BacNetDeviceSubTypeData(**dev_data))
-    # db.session.commit()
-    # exit()
     property_type = [
         {"name": "Hotel", "technical_name": "hotel"},
         {"name": "Resort", "technical_name": "resort"},
@@ -33,35 +30,67 @@ def seed():
         {"name": "Bungalow", "technical_name": "bungalow"},
     ]
     room_type = [
-        {"name": "Standard Room", "technical_name": "standard_room"},
-        {"name": "Suite", "technical_name": "suite"},
-        {"name": "Deluxe Room", "technical_name": "deluxe_room"},
-        {"name": "Studio Apartment", "technical_name": "studio_apartment"},
-        {"name": "Conference Room", "technical_name": "conference_room"},
-        {"name": "Lounge", "technical_name": "lounge"},
-        {"name": "Spa and Wellness", "technical_name": "spa_and_wellness"},
+        {"name": "Standard Room", "technical_name": "standard_room", "image_path": ""},
+        {"name": "Suite", "technical_name": "suite", "image_path": ""},
+        {"name": "Deluxe Room", "technical_name": "deluxe_room", "image_path": ""},
+        {
+            "name": "Studio Apartment",
+            "technical_name": "studio_apartment",
+            "image_path": "",
+        },
+        {
+            "name": "Conference Room",
+            "technical_name": "conference_room",
+            "image_path": "",
+        },
+        {"name": "Lounge", "technical_name": "lounge", "image_path": ""},
+        {
+            "name": "Spa and Wellness",
+            "technical_name": "spa_and_wellness",
+            "image_path": "",
+        },
         {"name": "Gym", "technical_name": "gym"},
         {"name": "Green Room", "technical_name": "green_room"},
     ]
     sub_room_type = [
-        {"name": "Bedroom", "technical_name": "bedroom"},
-        {"name": "Master Bedroom", "technical_name": "master_bedroom"},
-        {"name": "Bathroom", "technical_name": "bathroom"},
-        {"name": "Living Room", "technical_name": "living_room"},
-        {"name": "Balcony", "technical_name": "balcony"},
-        {"name": "Gallery", "technical_name": "gallery"},
-        {"name": "Dinning Room", "technical_name": "dinning_room"},
-        {"name": "Kitchen", "technical_name": "kitchen"},
-        {"name": "Patio/Deck", "technical_name": "patio/deck"},
-        {"name": "Pool Area", "technical_name": "pool_area"},
-        {"name": "Study Room", "technical_name": "study_room"},
-        {"name": "Powder Room", "technical_name": "powder_room"},
+        {"name": "Bedroom", "technical_name": "bedroom", "image_path": ""},
+        {
+            "name": "Master Bedroom",
+            "technical_name": "master_bedroom",
+            "image_path": "",
+        },
+        {"name": "Bathroom", "technical_name": "bathroom", "image_path": ""},
+        {"name": "Living Room", "technical_name": "living_room", "image_path": ""},
+        {"name": "Balcony", "technical_name": "balcony", "image_path": ""},
+        {"name": "Gallery", "technical_name": "gallery", "image_path": "not data"},
+        {
+            "name": "Dinning Room",
+            "technical_name": "dinning_room",
+            "image_path": "no data",
+        },
+        {"name": "Kitchen", "technical_name": "kitchen", "image_path": ""},
+        {"name": "Patio/Deck", "technical_name": "patio/deck", "image_path": ""},
+        {"name": "Pool Area", "technical_name": "pool_area", "image_path": ""},
+        {"name": "Study Room", "technical_name": "study_room", "image_path": ""},
+        {
+            "name": "Powder Room",
+            "technical_name": "powder_room",
+            "image_path": "no data",
+        },
     ]
     protocol_device = ["Bacnet", "KNX"]
     device_sub_type = [
         {
             "name": "Lights",
             "technical_name": "lights",
+            "config": {
+                "lights": {
+                    "cct_light": {"brightness": "", "color": ""},
+                    "dimmer_light": "",
+                    "on/off_light": "",
+                    "rgb_light": {"brightness": "", "color": ""},
+                }
+            },
             "sub_type": [
                 {"name": "ON/OFF Light", "technical_name": "on/off_light"},
                 {"name": "Dimmer Light", "technical_name": "dimmer_light"},
@@ -73,6 +102,14 @@ def seed():
         {
             "name": "Air Conditioner",
             "technical_name": "air_conditioner",
+            "config": {
+                "hvac": {"fan_speed": "", "temperature": ""},
+                "ahu": {"fan_speed": "", "temperature": ""},
+                "fcu": {"fan_speed": "", "temperature": ""},
+                "split_aC": {"fan_speed": 1, "temperature": ""},
+                "vrv": {"fan_speed": "", "temperature": ""},
+                "vrf": {"fan_speed": "", "temperature": ""},
+            },
             "sub_type": [
                 {"name": "HVAC", "technical_name": "hvac"},
                 {"name": "AHU", "technical_name": "ahu"},
@@ -85,6 +122,11 @@ def seed():
         {
             "name": "Curtains",
             "technical_name": "curtains",
+            "config": {
+                "horizontal_curtains": {"percent_open": "", "state": ""},
+                "vertical_curtains": {"percentOpen": "", "state": ""},
+                "blinds": {"percent_open": "", "state": ""},
+            },
             "sub_type": [
                 {
                     "name": "Horizontal Curtains",
@@ -97,6 +139,13 @@ def seed():
         {
             "name": "Fans",
             "technical_name": "fans",
+            "config": {
+                "ac_fans": {
+                    "fan_speed": "",
+                    "state": "",
+                },
+                "dc_fans": {"fan_speed": "", "state": ""},
+            },
             "sub_type": [
                 {"name": "AC Fans", "technical_name": "ac_fans"},
                 {"name": "DC Fans", "technical_name": "dc_fans"},
@@ -136,31 +185,33 @@ def seed():
         # {"name": "Toilet Seat", "protocol": 1, "sub_type": []},
     ]
 
-    for proto in protocol_device:
-        db.session.add(MasterProtocol(name=proto))
+    # for proto in protocol_device:
+    #     db.session.add(MasterProtocol(name=proto))
 
-    for type in property_type:
-        prop_type = MasterPropertyType(
-            name=type["name"], technical_name=type["technical_name"]
-        )
-        db.session.add(prop_type)
+    # for type in property_type:
+    #     prop_type = MasterPropertyType(
+    #         name=type["name"], technical_name=type["technical_name"]
+    #     )
+    #     db.session.add(prop_type)
 
-    for type in room_type:
-        room_type = MasterRoomType(
-            name=type["name"], technical_name=type["technical_name"]
-        )
-        db.session.add(room_type)
+    # for type in room_type:
+    #     room_type = MasterRoomType(
+    #         name=type["name"], technical_name=type["technical_name"]
+    #     )
+    #     db.session.add(room_type)
 
-    for type in sub_room_type:
-        print(type)
-        sub_type = MasterSubRoomType(
-            name=type["name"], technical_name=type["technical_name"]
-        )
-        db.session.add(sub_type)
+    # for type in sub_room_type:
+    #     print(type)
+    #     sub_type = MasterSubRoomType(
+    #         name=type["name"], technical_name=type["technical_name"]
+    #     )
+    #     db.session.add(sub_type)
     device_type_sub_type_id_mapper = {}
     for device in device_sub_type:
         device_type = MasterDeviceType(
-            name=device["name"], technical_name=device["technical_name"]
+            name=device["name"],
+            technical_name=device["technical_name"],
+            experience_config=json.dumps(device["config"]),
         )
         db.session.add(device_type)
         db.session.flush()
@@ -188,7 +239,7 @@ def seed():
                 address_name_technical=dev_data["address_name_technical"],
                 address_name=dev_data["address_name"],
                 value_data_type=dev_data["value_data_type"],
-                vale_data_range=dev_data["vale_data_range"],
+                value_data_range=dev_data["vale_data_range"],
             )
         )
         # db.session.commit()
