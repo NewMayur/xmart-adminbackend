@@ -80,9 +80,9 @@ def property_fetch():
         "primary_contact_contact_number": property.property_contact[0].phone_number,
         "primary_contact_contact_number_code": property.property_contact[
             0
-        ].primary_contact_phone_number_code,
-        "banner_url": app.config["IMAGE_URL"] + property.banner_image_path,
-        "logo_url": app.config["IMAGE_URL"] + property.logo_image_path,
+        ].phone_number_code,
+        "banner_base64": app.config["IMAGE_URL"] + property.banner_image_path,
+        "logo_base64": app.config["IMAGE_URL"] + property.logo_image_path,
         # "banner_url": property.banner_image_path,
     }
     return response_base(message="Success", status=200, data=[data])
@@ -110,6 +110,7 @@ def property_list():
         print(no_of_rooms)
         print(no_of_buildings)
         data = {
+            "property_id": property.id,
             "name": property.name,
             "property_type": property.property_type.name,
             "property_master_id": property.property_type_master_id,
@@ -129,8 +130,8 @@ def property_list():
             "primary_contact_contact_number_code": property.property_contact[
                 0
             ].phone_number_code,
-            "banner_url": app.config["IMAGE_URL"] + property.banner_image_path,
-            "logo_url": app.config["IMAGE_URL"] + property.logo_image_path,
+            "banner_base64": app.config["IMAGE_URL"] + property.banner_image_path,
+            "logo_base64": app.config["IMAGE_URL"] + property.logo_image_path,
             "buildings": no_of_buildings,
             "floors": no_of_floors,
             "rooms": no_of_rooms,
@@ -143,14 +144,16 @@ def property_list():
 @app.route("/property/update", methods=["POST"])
 def property_update():
     # Save image to file system
+
+    logo_path = ""
     if request.json["banner_base64"] != "":
         banner_path = save_base64_file(request.json["banner_base64"])
     else:
-        pass
+        banner_path = ""
     if request.json["logo_base64"] != "":
         logo_path = save_base64_file(request.json["logo_base64"])
     else:
-        pass
+        logo_path = ""
     property = Property.query.filter_by(id=request.json["property_id"]).first()
     if not property:
         return response_base(message="Failed", status=404, data=[])
@@ -174,6 +177,9 @@ def property_update():
     property.property_contact[0].email = request.json["primary_contact_email"]
     property.property_contact[0].phone_number = request.json[
         "primary_contact_contact_number"
+    ]
+    property.property_contact[0].phone_number_code = request.json[
+        "primary_contact_contact_number_code"
     ]
     db.session.add(property)
     db.session.commit()

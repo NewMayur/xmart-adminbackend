@@ -153,36 +153,91 @@ def seed():
         },
         {
             "name": "TV",
-            "sub_type": ["Smart TV", "Normal TV", "IP TV", "STB"],
-            "protocol": 1,
-        },
-        {"name": "Music System", "protocol": 1, "sub_type": []},
-        {
-            "name": "Door Lock",
-            "sub_type": ["Bluetooth Lock", "WiFi Lock," "Wired Lock"],
-            "protocol": 1,
-        },
-        {"name": "Bathtub", "protocol": 1, "sub_type": []},
-        {"name": "Jacuzzi", "protocol": 1, "sub_type": []},
-        {
-            "name": "Sensors",
             "sub_type": [
-                "CO2  Sensor",
-                "Temperature Sensor",
-                "Occupancy Sensor",
-                "Humidity Sensor",
-                "Smoke Detector Sensor",
-                "AQI Sensor",
+                {"name": "Smart TV", "technical_name": "smart_tv"},
+                {"name": "Normal TV", "technical_name": "normal_tv"},
+                {"name": "IP TV", "technical_name": "ip_tv"},
+                {"name": "STB", "technical_name": "stb"},
             ],
             "protocol": 1,
+            "technical_name": "tv",
+            "config": {},
+        },
+        {
+            "name": "Music System",
+            "technical_name": "music_system",
+            "protocol": 1,
+            "sub_type": [],
+            "config": {},
+        },
+        {
+            "name": "Door Lock",
+            "sub_type": [
+                {"name": "Bluetooth Lock", "technical_name": "bluetooth_lock"},
+                {"name": "WiFi Lock", "technical_name": "wifi_lock"},
+                {"name": "Wired Lock", "technical_name": "wired_lock"},
+            ],
+            "protocol": 1,
+            "technical_name": "door_lock",
+            "config": {},
+        },
+        {
+            "name": "Bathtub",
+            "protocol": 1,
+            "technical_name": "bath_tub",
+            "sub_type": [],
+            "config": {},
+        },
+        {
+            "name": "Jacuzzi",
+            "protocol": 1,
+            "sub_type": [],
+            "technical_name": "jacuzzi",
+            "config": {},
+        },
+        {
+            "name": "Sensors",
+            "technical_name": "sensors",
+            "sub_type": [
+                {"name": "CO2  Sensor", "technical_name": "co2_sensor"},
+                {"name": "Temperature Sensor", "technical_name": "temperature_sensor"},
+                {"name": "Occupancy Sensor", "technical_name": "occupancy_sensor"},
+                {"name": "Humidity Sensor", "technical_name": "humidity_sensor"},
+                {
+                    "name": "Smoke Detector Sensor",
+                    "technical_name": "smoke_detector_sensor",
+                },
+                {"name": "AQI Sensor", "technical_name": "aqi_sensor"},
+            ],
+            "protocol": 1,
+            "config": {},
         },
         {
             "name": "Smart Switch Board",
-            "sub_type": ["HTTP", "Zigbee", "Z Wave", "MQTT"],
+            "sub_type": [
+                {"name": "HTTP", "technical_name": "http"},
+                {"name": "Zigbee", "technical_name": "zigbee"},
+                {"name": "Z Wave", "technical_name": "z_wave"},
+                {"name": "MQTT", "technical_name": "mqtt"},
+            ],
             "protocol": 1,
+            "technical_name": "smart_switch_board",
+            "config": {},
         },
-        {"name": "Media Server", "protocol": 1, "sub_type": []},
-        {"name": "Toilet Seat", "protocol": 1, "sub_type": []},
+        {
+            "name": "Media Server",
+            "protocol": 1,
+            "technical_name": "media_server",
+            "sub_type": [],
+            "config": {},
+        },
+        {
+            "name": "Toilet Seat",
+            "protocol": 1,
+            "sub_type": [],
+            "technical_name": "toilet_seat",
+            "config": {},
+        },
     ]
 
     for proto in protocol_device:
@@ -208,6 +263,7 @@ def seed():
         db.session.add(sub_type)
     device_type_sub_type_id_mapper = {}
     for device in device_sub_type:
+        print(device)
         device_type = MasterDeviceType(
             name=device["name"],
             technical_name=device["technical_name"],
@@ -217,6 +273,7 @@ def seed():
         db.session.flush()
         device_type_sub_type_id_mapper[device["technical_name"]] = device_type.id
         for sub_type in device["sub_type"]:
+            print(sub_type)
             device_sub_type = MasterDeviceSubType(
                 name=sub_type["name"],
                 technical_name=sub_type["technical_name"],
