@@ -240,7 +240,7 @@ def get_properties_floors_rooms():
         for floor in floors:
             floor_info = {
                 "floor_id": floor.id,
-                "floor_number": floor.number,
+                "floor_name": f"Floor {floor.number}",
                 "rooms": [],
             }
 
@@ -249,7 +249,7 @@ def get_properties_floors_rooms():
             for room in rooms:
                 room_info = {
                     "room_id": room.id,
-                    "room_number": room.number,
+                    "room_name": "Room " + room.number,
                     # Add more room details as needed
                 }
                 floor_info["rooms"].append(room_info)
