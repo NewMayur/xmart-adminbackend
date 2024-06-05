@@ -12,7 +12,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
 )
 from app.schema.Device import KnxDeviceSubTypeData
-from app.schema.Building import Floor
+from app.schema.Building import Floor, Building
 import json
 import ast
 
@@ -104,3 +104,57 @@ def load_room_config():
         )
     else:
         return response_base(message="Failed", status=404)
+
+
+@app.route("/buildings-floors-rooms", methods=["GET"])
+def get_buildings_floors_rooms():
+    buildings = Building.query.all()
+    if len(buildings) == 0:
+        return response_base(message="No buildings found", status=404, data=[])
+
+    building_data = []
+    for building in buildings:
+        building_info = {
+            "building_id": building.id,
+            "building_name": f"{ building.number } - { building.name }",
+            "number_of_floors": building.number_of_floors,
+            "property_id": building.property_id,
+            ""
+            "floors": []
+        }
+
+        # Fetch floors for each property
+        floors = Floor.query.filter_by(building_id=building.id).all()
+        for floor in floors:
+            floor_info = {
+                "floor_id": floor.id,
+                "floor_name": f"{floor.number} - {floor.name}",
+                "rooms": [],
+            }
+
+            # Fetch rooms for each floor
+            rooms = Room.query.filter_by(floor_id=floor.id).all()
+            for room in rooms:
+                room_info = {
+                    "room_id": room.id,
+                    "room_name": f"{room.number} - {room.name}"
+                }
+                floor_info["rooms"].append(room_info)
+
+            building_info["floors"].append(floor_info)
+
+        building_data.append(building_info)
+
+    return response_base(message="Success", status=200, data=building_data)
+
+@app.route("/test1", methods=["GET"])
+def get_buildings_floors_rums():
+    buildings = Building.query.all()
+    for building in buildings:
+        print(building)
+        for floor in building.floors:
+            print(floor)
+            print(floor.rooms)
+
+
+    return response_base(message="Success", status=200, data=[])
