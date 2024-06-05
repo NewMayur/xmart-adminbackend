@@ -1,5 +1,8 @@
 from flask import current_app
 from flask import request
+
+from app.schema.Property import Property
+from app.schema.Room import Room
 from server import app
 from app.schema.Building import Building, Floor
 from app.extensions.db import db
@@ -140,3 +143,46 @@ def network_info():
         status=200,
         data=[{"ip": ip, "ssid": ssid, "sunet_mask": subnet_mask}],
     )
+
+@app.route("/buildings-floors-rooms", methods=["GET"])
+def get_buildings_floors_rooms():
+    buildings = Building.query.all()
+    if len(buildings) == 0:
+        return response_base(message="No buildings found", status=404, data=[])
+
+    building_data = []
+    for building in buildings:
+        building_info = {
+            "building_id": building.id,
+            "building_name": building.name,
+            "building_number": building.number,
+            "number_of_floors": building.number_of_floors,
+            "property_id": building.property_id,
+            ""
+            "floors": [],
+        }
+
+        # Fetch floors for each property
+        floors = Floor.query.filter_by(building_id=building.id).all()
+        for floor in floors:
+            floor_info = {
+                "floor_id": floor.id,
+                "floor_name": f"Floor {floor.number}",
+                "rooms": [],
+            }
+
+            # Fetch rooms for each floor
+            rooms = Room.query.filter_by(floor_id=floor.id).all()
+            for room in rooms:
+                room_info = {
+                    "room_id": room.id,
+                    "room_name": "Room " + room.number,
+                    # Add more room details as needed
+                }
+                floor_info["rooms"].append(room_info)
+
+            building_info["floors"].append(floor_info)
+
+        building_data.append(building_info)
+
+    return response_base(message="Success", status=200, data=building_data)
