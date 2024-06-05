@@ -1,5 +1,7 @@
 from flask import current_app
 from flask import request, jsonify, url_for
+
+from app.schema.Room import Room
 from server import app, bcrypt
 from app.schema.User import User
 from app.schema.Property import Property, PropertyContact
@@ -41,7 +43,7 @@ def property():
         zip_code=request.json["zip_code"],
     )
     db.session.add(property)
-    db.session.commit()
+    db.session.flush()
     contact = PropertyContact(
         name=request.json["primary_contact_name"],
         email=request.json["primary_contact_email"],
@@ -211,3 +213,49 @@ def property_delete():
 @app.route("/images")
 def flask_logo():
     return current_app.send_static_file(request.args.get("image_name"))
+
+@app.route("/properties-floors-rooms", methods=["GET"])
+def get_properties_floors_rooms():
+    properties = Property.query.all()
+    if len(properties) == 0:
+        return response_base(message="No properties found", status=404, data=[])
+
+    property_data = []
+    for property in properties:
+        property_info = {
+            "property_id": property.id,
+            "name": property.name,
+            "property_type": property.property_type.name,
+            "country": property.country,
+            "state": property.state,
+            "city": property.city,
+            "zip_code": property.zip_code,
+            "address1": property.address1,
+            "address2": property.address2,
+            "floors": [],
+        }
+
+        # Fetch floors for each property
+        floors = Floor.query.filter_by(property_id=property.id).all()
+        for floor in floors:
+            floor_info = {
+                "floor_id": floor.id,
+                "floor_number": floor.number,
+                "rooms": [],
+            }
+
+            # Fetch rooms for each floor
+            rooms = Room.query.filter_by(floor_id=floor.id).all()
+            for room in rooms:
+                room_info = {
+                    "room_id": room.id,
+                    "room_number": room.number,
+                    # Add more room details as needed
+                }
+                floor_info["rooms"].append(room_info)
+
+            property_info["floors"].append(floor_info)
+
+        property_data.append(property_info)
+
+    return response_base(message="Success", status=200, data=property_data)
