@@ -105,6 +105,56 @@ def load_room_config():
     else:
         return response_base(message="Failed", status=404)
 
+@app.route("/guest/room/v1/config", methods=["POST"])
+def load_room_v1_config():
+    data = request.json
+    building_id = data.get("building_id")
+    floor_id = data.get("floor_id")
+    room_id = data.get("room_id")
+    password = data.get("password")
+
+    # Password validation logic
+
+    room = Room.query.filter_by(id=room_id).first()
+    if room:
+        print(room_id,floor_id,building_id)
+        room_devices = RoomDevice.query.filter_by(
+            room_id=room_id,
+            floor_id=floor_id,
+            building_id=building_id
+        ).all()
+        print(room_devices)
+        final_data = {"device_data": []}
+        for device in room_devices:
+            final_config = json.loads(device.device_config)
+            if not isinstance(final_config, dict):
+                    final_config = {dev_con["technical_name"]: dev_con["address"] for dev_con in final_config}
+
+            final_data["device_data"].append({
+                "id": device.id,
+                "name": device.name,
+                "add_to_home_screen": device.add_to_home_screen,
+                "sub_room": device.room_sub_type.name if device.room_sub_type else None,
+                "sub_room_technical": device.room_sub_type.technical_name if device.room_sub_type else None,
+                "device_sub_type": device.device_sub_type.name,
+                "device_sub_type_technical": device.device_sub_type.technical_name,
+                "device_type": device.device_type.name,
+                "device_type_technical": device.device_type.technical_name,
+                "protocol": device.protocol.name,
+                "controls": final_config,
+                "icon": device.icon,
+                "floor_id": device.floor_id,
+                "building_id": device.building_id,
+                "room_id": device.room_id,
+                "room_number": device.room_number,
+                "device_type_id": device.device_type_id,
+                "device_sub_type_id": device.device_sub_type_id,
+                "is_service": device.is_service,
+            })
+
+        return response_base(message="Success", status=200, data=final_data)
+    else:
+        return response_base(message="Failed", status=404)
 
 @app.route("/buildings-floors-rooms", methods=["GET"])
 def get_buildings_floors_rooms():
