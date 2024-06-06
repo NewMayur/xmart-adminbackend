@@ -143,3 +143,4 @@ def network_info():
         status=200,
         data=[{"ip": ip, "ssid": ssid, "sunet_mask": subnet_mask}],
     )
+

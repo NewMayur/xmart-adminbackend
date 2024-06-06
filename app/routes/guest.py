@@ -115,32 +115,46 @@ def load_room_v1_config():
 
     # Password validation logic
 
-    room = Room.query.filter_by(id=room_id).first()
-    if room:
-        print(room_id,floor_id,building_id)
-        room_devices = RoomDevice.query.filter_by(
-            room_id=room_id,
-            floor_id=floor_id,
-            building_id=building_id
-        ).all()
-        print(room_devices)
-        final_data = {"device_data": []}
-        for device in room_devices:
-            final_config = json.loads(device.device_config)
-            if not isinstance(final_config, dict):
-                    final_config = {dev_con["technical_name"]: dev_con["address"] for dev_con in final_config}
 
-            final_data["device_data"].append({
-                "id": device.id,
+    # if room:
+    print(room_id,floor_id,building_id)
+    room_devices = RoomDevice.query.filter_by(
+        room_id=room_id,
+        floor_id=floor_id,
+        building_id=building_id
+    ).all()
+    print(room_devices)
+    final_data = {"device_data": []}
+    for device in room_devices:
+        final_config = {}
+        if not isinstance(
+                json.loads(device.device_config), dict
+        ):  # json.loads(device.device_config)
+            for dev_con in json.loads(device.device_config):
+                print(dev_con)
+                final_config[dev_con["technical_name"]] = dev_con["address"]
+        else:
+            final_config = json.loads(device.device_config)
+
+
+        final_data["device_data"].append({
+            "id": device.id,
                 "name": device.name,
                 "add_to_home_screen": device.add_to_home_screen,
-                "sub_room": device.room_sub_type.name if device.room_sub_type else None,
-                "sub_room_technical": device.room_sub_type.technical_name if device.room_sub_type else None,
+                "sub_room": (
+                    device.room_sub_type.name if device.room_sub_type else None
+                ),
+                "sub_room_technical": (
+                    device.room_sub_type.technical_name
+                    if device.room_sub_type
+                    else None
+                ),
                 "device_sub_type": device.device_sub_type.name,
                 "device_sub_type_technical": device.device_sub_type.technical_name,
                 "device_type": device.device_type.name,
                 "device_type_technical": device.device_type.technical_name,
                 "protocol": device.protocol.name,
+                # "controls": json.loads(device.device_config),
                 "controls": final_config,
                 "icon": device.icon,
                 "floor_id": device.floor_id,
@@ -150,11 +164,16 @@ def load_room_v1_config():
                 "device_type_id": device.device_type_id,
                 "device_sub_type_id": device.device_sub_type_id,
                 "is_service": device.is_service,
-            })
+        })
 
-        return response_base(message="Success", status=200, data=final_data)
+
+
+
+    if len(final_data["device_data"]) == 0:
+        return response_base(message="No devices found in the room", status=404, data=final_data)
     else:
-        return response_base(message="Failed", status=404)
+        return response_base(message="Success", status=200, data=final_data)
+
 
 @app.route("/buildings-floors-rooms", methods=["GET"])
 def get_buildings_floors_rooms():
@@ -166,7 +185,7 @@ def get_buildings_floors_rooms():
     for building in buildings:
         building_info = {
             "building_id": building.id,
-            "building_name": f"{ building.number } - { building.name }",
+            "building_name": building.number if not building.name else f"{building.number} - {building.name}",
             "number_of_floors": building.number_of_floors,
             "property_id": building.property_id,
             ""
@@ -178,7 +197,7 @@ def get_buildings_floors_rooms():
         for floor in floors:
             floor_info = {
                 "floor_id": floor.id,
-                "floor_name": f"{floor.number} - {floor.name}",
+                "floor_name": floor.number if not floor.name else f"{floor.number} - {floor.name}",
                 "rooms": [],
             }
 
@@ -187,7 +206,7 @@ def get_buildings_floors_rooms():
             for room in rooms:
                 room_info = {
                     "room_id": room.id,
-                    "room_name": f"{room.number} - {room.name}"
+                    "room_name": room.number if not room.name else f"{room.number} - {room.name}"
                 }
                 floor_info["rooms"].append(room_info)
 
