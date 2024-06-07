@@ -1,3 +1,5 @@
+import os
+
 from flask import request, jsonify, make_response
 
 from server import app
@@ -105,8 +107,8 @@ def load_room_config():
     else:
         return response_base(message="Failed", status=404)
 
-@app.route("/guest/room/v1/config", methods=["POST"])
-def load_room_v1_config():
+@app.route("/guest/room/v2/config", methods=["POST"])
+def load_room_v2_config():
     data = request.json
     building_id = data.get("building_id")
     floor_id = data.get("floor_id")
@@ -114,31 +116,38 @@ def load_room_v1_config():
     password = data.get("password")
 
     # Password validation logic
+    print(request.json)
+    admin_password = os.environ.get("ADMIN_PASSWORD")
+    if request.json["admin_pass"] == admin_password:
+        token = create_access_token(
+            identity={
+                "building_id": request.json["building_id"],
+                "floor_id": request.json["floor_id"],
+                "room_id": request.json["room_id"]
+            }
+        )
+        response = jsonify({"token": token})
+        response.headers["auth-token"] = token
 
+        room_devices = RoomDevice.query.filter_by(
+            room_id=room_id,
+            floor_id=floor_id,
+            building_id=building_id
+        ).all()
+        final_data = {"device_data": []}
+        for device in room_devices:
+            final_config = {}
+            if not isinstance(
+                    json.loads(device.device_config), dict
+            ):  # json.loads(device.device_config)
+                for dev_con in json.loads(device.device_config):
+                    print(dev_con)
+                    final_config[dev_con["technical_name"]] = dev_con["address"]
+            else:
+                final_config = json.loads(device.device_config)
 
-    # if room:
-    print(room_id,floor_id,building_id)
-    room_devices = RoomDevice.query.filter_by(
-        room_id=room_id,
-        floor_id=floor_id,
-        building_id=building_id
-    ).all()
-    print(room_devices)
-    final_data = {"device_data": []}
-    for device in room_devices:
-        final_config = {}
-        if not isinstance(
-                json.loads(device.device_config), dict
-        ):  # json.loads(device.device_config)
-            for dev_con in json.loads(device.device_config):
-                print(dev_con)
-                final_config[dev_con["technical_name"]] = dev_con["address"]
-        else:
-            final_config = json.loads(device.device_config)
-
-
-        final_data["device_data"].append({
-            "id": device.id,
+            final_data["device_data"].append({
+                "id": device.id,
                 "name": device.name,
                 "add_to_home_screen": device.add_to_home_screen,
                 "sub_room": (
@@ -164,15 +173,17 @@ def load_room_v1_config():
                 "device_type_id": device.device_type_id,
                 "device_sub_type_id": device.device_sub_type_id,
                 "is_service": device.is_service,
-        })
+            })
 
-
-
-
-    if len(final_data["device_data"]) == 0:
-        return response_base(message="No devices found in the room", status=404, data=final_data)
+        if len(final_data["device_data"]) == 0:
+            return response_base(message="No devices found in the room", status=404, data=final_data)
+        else:
+            return response_base(message="Success", status=200, data=final_data)
+        # return response_base(message="Success", status=200, data=[{"token": token}]).headers['auth-token'] = token
     else:
-        return response_base(message="Success", status=200, data=final_data)
+        return response_base(message="Invalid Password", status=404)
+
+
 
 
 @app.route("/buildings-floors-rooms", methods=["GET"])

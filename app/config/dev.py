@@ -4,23 +4,22 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-ENV_FILE_PATH = BASE_DIR / ".env.dev"
+ENV_FILE_PATH = BASE_DIR / ".env"
 load_dotenv(ENV_FILE_PATH)
-
 # Flask
 SECRET_KEY = os.environ.get("SECRET_KEY", "YOUR-FALLBACK-SECRET-KEY")
-DATABASE_URI = "sqlite:///database.db"
+DATABASE_URI = os.environ.get("DATABASE_URI")
 # Ratelimit
-RATELIMIT_ENABLED = os.environ.get("RATELIMIT_ENABLED", "False") == "True"
-RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")
+RATELIMIT_ENABLED = os.environ.get("RATELIMIT_ENABLED") == "True"
+RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI")
 # Caching
-CACHE_TYPE = os.environ.get("CACHE_TYPE", "SimpleCache")
-CACHE_ENABLED = os.environ.get("CACHE_ENABLED", "False") == "True"
+CACHE_TYPE = os.environ.get("CACHE_TYPE")
+CACHE_ENABLED = os.environ.get("CACHE_ENABLED") == "True"
 CACHE_STORAGE_URL = os.environ.get("CACHE_STORAGE_URL", None)
 CACHE_EXEMPTED_ROUTES = [
     "/api/auth/",
 ]
-IMAGE_URL = os.environ.get("IMAGE_URL", "http://localhost:5000/images?image_name=")
+IMAGE_URL = os.environ.get("IMAGE_URL")
 JWT_SECRET_KEY = os.environ.get(
     "JWT_SECRET_KEY",
 )
