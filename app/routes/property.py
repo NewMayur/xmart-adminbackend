@@ -1,5 +1,9 @@
+from pathlib import Path
+
 from flask import current_app
 from flask import request, jsonify, url_for
+
+
 
 from app.schema.Room import Room
 from server import app, bcrypt
@@ -12,6 +16,11 @@ import base64
 import uuid
 from app.extensions.utils import save_base64_file
 
+from dotenv import load_dotenv
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+ENV_FILE_PATH = BASE_DIR / ".env"
+load_dotenv(ENV_FILE_PATH)
 
 @app.route("/property/create", methods=["POST"])
 def property():
@@ -61,6 +70,7 @@ def property():
 @app.route("/property/view", methods=["POST"])
 def property_fetch():
     property = Property.query.filter_by(id=request.json["property_id"]).first()
+    print(request.json["property_id"])
     if not property:
         return response_base(message="Failed", status=404, data=[])
     data = {

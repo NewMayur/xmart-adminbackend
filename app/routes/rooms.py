@@ -107,6 +107,24 @@ def get_room():
 
     return response_base(message="Success", status=200, data=final_data)
 
+@app.route("/floor/room/v1/list", methods=["POST"])
+def get_room_v1(offset: int = 0):
+    floor = Floor.query.get_or_404(request.json["floor_id"])
+    rooms = floor.rooms[offset:offset+5]
+    final_data = []
+    for room in rooms:
+        final_data.append(
+            {
+                "id": room.id,
+                "name": room.name,
+                "number": room.number,
+                "building": room.buildings.name,
+                "room_type": room.room_type.name,
+                "sub_room_types": [subtype.name for subtype in room.room_sub_types],
+            }
+        )
+
+    return response_base(message="Success", status=200, data=final_data)
 
 """
     Retrieves a room from the database based on the provided room ID in the request JSON.

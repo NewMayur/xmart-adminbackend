@@ -52,3 +52,4 @@ class DevConfig:
     else:
         CACHE_DEFAULT_TIMEOUT = 60
     IMAGE_URL = IMAGE_URL
+    JWT_SECRET_KEY = JWT_SECRET_KEY

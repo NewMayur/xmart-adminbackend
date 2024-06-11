@@ -181,7 +181,7 @@ def load_room_v2_config():
             return response_base(message="Success", status=200, data=final_data)
         # return response_base(message="Success", status=200, data=[{"token": token}]).headers['auth-token'] = token
     else:
-        return response_base(message="Invalid Password", status=404)
+        return response_base(message="Invalid Password", status=404,data=[])
 
 
 

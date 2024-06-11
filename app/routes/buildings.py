@@ -13,6 +13,7 @@ from app.extensions.utils import get_local_ip, get_ssid
 @app.route("/building/create", methods=["POST"])
 def building():
     try:
+        print(request.json)
         building = Building(
             name=request.json["name"],
             number=request.json["building_number"],
@@ -22,6 +23,7 @@ def building():
         db.session.add(building)
         db.session.flush()
     except Exception as e:
+        print(e)
         db.session.rollback()
         current_app.logger.error(e)
         return response_base(message="Server error", status=500)
