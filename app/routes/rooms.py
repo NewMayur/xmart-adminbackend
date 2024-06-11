@@ -107,6 +107,7 @@ def get_room():
 
     return response_base(message="Success", status=200, data=final_data)
 
+
 @app.route("/floor/room/v1/list", methods=["POST"])
 def get_room_v1(offset: int = 0):
     floor = Floor.query.get_or_404(request.json["floor_id"])
@@ -125,6 +126,24 @@ def get_room_v1(offset: int = 0):
         )
 
     return response_base(message="Success", status=200, data=final_data)
+
+@app.route("/floor/room/v1/list_w_param", methods=["POST"])
+def get_room_w_param_v1(offset: int = 0):
+    floor = Floor.query.get_or_404(request.json["floor_id"])
+    room_name = request.json.get("room_name")  # Assuming room name is provided in the request
+    room = next((room for room in floor.rooms if room.name == room_name), None)  # Find the first room with the specified name
+    if room:
+        room_data = {
+            "id": room.id,
+            "name": room.name,
+            "number": room.number,
+            "building": room.buildings.name,
+            "room_type": room.room_type.name,  # Assuming room type is still needed
+            "sub_room_types": [subtype.name for subtype in room.room_sub_types],
+        }
+        return response_base(message="Success", status=200, data=[room_data])
+    else:
+        return response_base(message="Room not found", status=404)
 
 """
     Retrieves a room from the database based on the provided room ID in the request JSON.
