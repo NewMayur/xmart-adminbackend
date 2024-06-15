@@ -148,7 +148,7 @@ def load_room_v2_config():
 
             final_data["device_data"].append({
                 "id": device.id,
-                "name": device.name,
+                "device_name": device.name,
                 "add_to_home_screen": device.add_to_home_screen,
                 "sub_room": (
                     device.room_sub_type.name if device.room_sub_type else None
@@ -164,7 +164,7 @@ def load_room_v2_config():
                 "device_type_technical": device.device_type.technical_name,
                 "protocol": device.protocol.name,
                 # "controls": json.loads(device.device_config),
-                "controls": final_config,
+                "device_meta": final_config,
                 "icon": device.icon,
                 "floor_id": device.floor_id,
                 "building_id": device.building_id,
