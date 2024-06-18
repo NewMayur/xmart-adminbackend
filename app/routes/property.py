@@ -10,6 +10,7 @@ from server import app, bcrypt
 from app.schema.User import User
 from app.schema.Property import Property, PropertyContact
 from app.schema.Building import Building, Floor
+from app.schema.Room import RoomRoomSubType, RoomDevice,RoomDeviceType
 from app.extensions.db import db
 from app.extensions.responses import response_base
 import base64
@@ -102,6 +103,7 @@ def property_fetch():
 
 @app.route("/property/list", methods=["GET"])
 def property_list():
+    # print("property_id",request.json["property_id"])
     properties = Property.query.all()
     if len(properties) == 0:
         return response_base(message="Failed", status=404, data=[])
@@ -191,7 +193,7 @@ def property_update():
         "primary_contact_contact_number"
     ]
     property.property_contact[0].phone_number_code = request.json[
-        "primary_contact_contact_number_code"
+        "primary_contact_phone_number_code"
     ]
     db.session.add(property)
     db.session.commit()
@@ -208,10 +210,22 @@ def property_delete():
     buildings = Building.query.filter_by(property_id=property.id).all()
     for building in buildings:
         for floor in building.floors:
+            print(floor.id,"floors")
             for room in floor.rooms:
+                print(room.id)
+                sub_rooms = RoomRoomSubType.query.filter_by(room_id=room.id).all()
+                for sub_room in sub_rooms:
+                    db.session.delete(sub_room)
+                room_devices = RoomDevice.query.filter_by(room_id=room.id).all()
+                for dev in room_devices:
+                    # print(dev)
+                    db.session.delete(dev)
+                room_device_types = RoomDeviceType.query.filter_by(room_id=room.id).all()
+                print(len(room_device_types),"types", room.id)
+                for room_device_type in room_device_types:
+                    db.session.delete(room_device_type)
                 db.session.delete(room)
-                for device in room.devices:
-                    db.session.delete(device)
+            # print("floors", floor.id)
             db.session.delete(floor)
         db.session.delete(building)
     db.session.delete(property.property_contact[0])

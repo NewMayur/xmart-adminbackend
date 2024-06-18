@@ -132,7 +132,7 @@ def master_protocol_list():
 @app.route("/master/subdevicedata", methods=["POST"])
 def device_sub_data():
     final_list = []
-    if request.json["protocol_id"] == 1:
+    if request.json["protocol_id"] == 2:
         data = KnxDeviceSubTypeData.query.filter_by(
             device_type_id=request.json["device_type_id"],
             sub_device_type_id=request.json["device_sub_type_id"],
@@ -145,7 +145,7 @@ def device_sub_data():
                     "name": dat.address_name,
                     "technical_name": dat.address_name_technical,
                     "value_data_type": dat.value_data_type,
-                    "vale_data_range": dat.vale_data_range,
+                    "value_data_range": dat.value_data_range,
                 }
             )
     else:

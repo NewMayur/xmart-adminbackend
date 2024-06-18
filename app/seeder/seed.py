@@ -296,7 +296,7 @@ def seed():
                 address_name_technical=dev_data["address_name_technical"],
                 address_name=dev_data["address_name"],
                 value_data_type=dev_data["value_data_type"],
-                value_data_range=dev_data["vale_data_range"],
+                value_data_range=dev_data["value_data_range"],
             )
         )
         # db.session.commit()
