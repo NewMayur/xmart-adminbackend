@@ -82,7 +82,71 @@ def create_room():
         current_app.logger.error(e)
         return response_base(message="Server error", status=500)
 
+@app.route("/room/v1/create", methods=["POST"])
+def create_room_v1():
+    building_id = None
+    floor_id = None
+    room_number_list = []
+    for room in request.json:
+        building_id = room["building_id"]
+        floor_id = room["floor_id"]
+        room_number_list.append(room["number"])
+    dupicate_room_check = (
+        Room.query.filter(Room.number.in_(room_number_list))
+        .filter(Room.building_id == building_id)
+        .filter(Room.floor_id == floor_id)
+        .all()
+    )
 
+    if len(dupicate_room_check) > 0:
+        duplicate_data = []
+        for data in dupicate_room_check:
+            duplicate_data.append({"number": data.number, "name": data.name})
+        return response_base(message="Failed", status=409, data=duplicate_data)
+    created_room_ids = []
+    try:
+        for room in request.json:
+            # print(room)
+            room_new = Room(
+                name=room["name"],
+                number=room["number"],
+                property_id=room["property_id"],
+                building_id=room["building_id"],
+                floor_id=room["floor_id"],
+                room_type_id=room["room_type_id"],
+            )
+            db.session.add(room_new)
+            db.session.flush()
+            created_room_ids.append(room_new.id)
+            if "sub_room_type_ids" in room and room["sub_room_type_ids"]:
+                for sub_room in room["sub_room_type_ids"]:
+                    room_sub_type = RoomRoomSubType(
+                        room_id=room_new.id,
+                        room_sub_type_id=sub_room,
+                        floor_id=room["floor_id"],
+                        building_id=room["building_id"],
+                        property_id=room["property_id"],
+                    )
+                    db.session.add(room_sub_type)
+
+            for device in room["device_types"]:
+                room_device_type = RoomDeviceType(
+                    room_id=room_new.id,
+                    device_type_id=device,
+                    floor_id=room["floor_id"],
+                    building_id=room["building_id"],
+                    property_id=room["property_id"],
+                )
+                db.session.add(room_device_type)
+            
+        db.session.commit()
+        return response_base(
+            message="Success", status=200, data=[{"ids": created_room_ids}]
+        )
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(e)
+        return response_base(message="Server error", status=500)
 """
 Get the list of rooms for a given floor and return the room details including id, name, number, building, room type, and sub-room types.
 """
