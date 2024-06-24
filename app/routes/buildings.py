@@ -43,6 +43,11 @@ def building():
 @app.route("/building/edit", methods=["PUT"])
 def edit_building():
     try:
+        property_id = request.json["property_id"]
+        property = Property.query.get(property_id)
+        if not property:
+            return response_base("Property not found", status=404)
+
         building_id = request.json["building_id"]
         building = Building.query.get(building_id)
         if not building:
