@@ -40,8 +40,8 @@ def building():
         message="Success", status=200, data={"building_id": building.id}
     )
 
-@app.route("/building/update", methods=["PUT"])
-def update_building():
+@app.route("/building/edit", methods=["PUT"])
+def edit_building():
     try:
         building_id = request.json["building_id"]
         building = Building.query.get(building_id)
@@ -67,6 +67,7 @@ def update_building():
         db.session.rollback()
         current_app.logger.error(e)
         return response_base(message="Server error", status=500)
+
 
 @app.route("/building/view", methods=["POST"])
 def building_view():
@@ -106,6 +107,7 @@ def building_list():
             "id": building.id,
             "name": building.name,
             "number": building.number,
+            "number_of_floors": building.number_of_floors,
         }
         final_list.append(data)
     return response_base(message="Success", status=200, data=final_list)
@@ -114,13 +116,13 @@ def building_list():
 @app.route("/building/delete", methods=["DELETE"])
 def building_delete():
     building_id = request.json["building_id"]
-    buildings = Building.query.filter_by(id=building_id).first()
-    if not buildings:
+    building = Building.query.filter_by(id=building_id).first()
+    if not building:
         return response_base(message="Failed", status=404, data=[])
     else:
-        for floor in buildings.floors:
+        for floor in building.floors:
             for room in floor.rooms:
-                for device in room.devices:
+                for device in room.room_devices:
                     db.session.delete(device)
                 for room_sub_type in room.room_sub_types:
                     db.session.delete(room_sub_type)
@@ -128,8 +130,10 @@ def building_delete():
                     db.session.delete(room_device_type)
                 db.session.delete(room)
             db.session.delete(floor)
+        
+        db.session.delete(building)
+        db.session.commit()  # Commit the changes to the database
         return response_base(message="Success", status=200, data=[])
-
 
 @app.route("/floor/list", methods=["POST"])
 def floor_list():

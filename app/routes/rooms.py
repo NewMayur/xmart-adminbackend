@@ -7,6 +7,7 @@ from app.schema.Room import Room, RoomDevice, RoomDeviceType, RoomRoomSubType
 from app.schema.Experience import Experience, ExperienceRoomType, ExperienceDevice
 from server import app
 import json
+import sqlalchemy.orm.exc 
 
 """
     A function to create a new room in the database based on the provided JSON data.
@@ -355,6 +356,57 @@ def edit_room():
     else:
         return response_base(message="Failed", status=404)
 
+@app.route('/room/v1/edit', methods=['PUT'])
+def edit_room_v1():
+    data = request.json
+    room_id = data.get('room_id')
+
+    room = Room.query.get(room_id)
+
+    if room:
+        # Update room details
+        room.name = data.get('name')
+        room.number = data.get('number')
+        room.room_type_id = data.get('room_type_id')
+        room.floor_id = data.get('floor_id')
+
+        # Add or remove devices
+        for device_id in data.get('device_type_new', []):
+            room_device_type = RoomDeviceType(
+                room_id=room.id, 
+                device_type_id=device_id, 
+                floor_id=room.floor_id, 
+                building_id=room.building_id, 
+                property_id=room.property_id
+            )
+            db.session.add(room_device_type)
+
+        for device_id in data.get('device_type_old', []):
+            room_device_type = RoomDeviceType.query.filter_by(room_id=room.id, device_type_id=device_id).first()
+            if room_device_type:
+                db.session.delete(room_device_type)
+
+        # Add or remove subrooms
+        for subroom_id in data.get('sub_room_type_new', []):
+            room_sub_type = RoomRoomSubType(
+                room_id=room.id, 
+                room_sub_type_id=subroom_id,
+                floor_id=room.floor_id,
+                building_id=room.building_id,
+                property_id=room.property_id
+            )
+            db.session.add(room_sub_type)
+
+        for subroom_id in data.get('sub_room_type_old', []):
+            room_sub_type = RoomRoomSubType.query.filter_by(room_id=room.id, room_sub_type_id=subroom_id).first()
+            if room_sub_type:
+                db.session.delete(room_sub_type)
+
+        db.session.commit()
+        return response_base(message="Success", status=200, data=[])
+    else:
+        return response_base(message="Room not found", status=404, data=[])
+
 
 @app.route("/room/device/add", methods=["POST"])
 def add_device_to_room():
@@ -394,6 +446,7 @@ def add_device_to_room():
         )
     else:
         return response_base(message="Failed", status=404)
+
 
 
 @app.route("/room/device/delete", methods=["DELETE"])
@@ -542,6 +595,46 @@ def delete_room():
         else:
             pass
     return response_base(message="Success", status=200, data=[])
+
+@app.route("/room/v1/delete", methods=["DELETE"])
+def delete_room_v1():
+    room_ids = request.json.get("room_ids", [])
+    if not room_ids:
+        return response_base(message="No room IDs provided", status=400, data=[])
+
+    try:
+        rooms = Room.query.filter(Room.id.in_(room_ids)).all()
+
+        for room in rooms:
+            if room is not None:
+                # Delete sub-rooms
+                sub_rooms = RoomRoomSubType.query.filter_by(room_id=room.id).all()
+                for sub_room in sub_rooms:
+                    db.session.delete(sub_room)
+
+                # Delete room devices
+                room_devices = RoomDevice.query.filter_by(room_id=room.id).all()
+                for dev in room_devices:
+                    db.session.delete(dev)
+
+                # Delete room device types
+                room_device_types = RoomDeviceType.query.filter_by(room_id=room.id).all()
+                for room_device_type in room_device_types:
+                    db.session.delete(room_device_type)
+
+                # Delete the room itself
+                db.session.delete(room)
+
+        db.session.commit()
+        return response_base(message="Success", status=200, data=[])
+
+    except sqlalchemy.orm.exc.StaleDataError as e:
+        db.session.rollback()
+        return response_base(message="Stale data error occurred", status=500, data=str(e))
+
+    except Exception as e:
+        db.session.rollback()
+        return response_base(message="An error occurred", status=500, data=str(e))
 
 
 @app.route("/roomdeviceunique/list", methods=["GET"])

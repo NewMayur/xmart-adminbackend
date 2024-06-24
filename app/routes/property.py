@@ -106,7 +106,7 @@ def property_list():
     # print("property_id",request.json["property_id"])
     properties = Property.query.all()
     if len(properties) == 0:
-        return response_base(message="Failed", status=404, data=[])
+        return response_base(message="Success", status=200, data=[])
     else:
         pass
     property_list = []
@@ -155,7 +155,7 @@ def property_list():
     return response_base(message="Success", status=200, data=property_list)
 
 
-@app.route("/property/update", methods=["POST"])
+@app.route("/property/edit", methods=["POST"])
 def property_update():
     # Save image to file system
 
