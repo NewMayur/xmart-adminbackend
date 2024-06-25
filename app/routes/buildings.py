@@ -65,7 +65,7 @@ def edit_building():
                 if floor:
                     floor.name = floor_data.get("name", floor.name)
                     floor.number = floor_data.get("floor_number", floor.number)
-                    db.session.commit()
+        db.session.commit()
 
         return response_base(message="Building updated successfully", status=200, data={"building_id": building_id})
     except Exception as e:
@@ -84,7 +84,7 @@ def building_view():
         for floor in building.floors:
             floor_data.append(
                 {
-                    "id": floor.id,
+                    "floor_id": floor.id,
                     "name": floor.name,
                     "number": floor.number,
                 }
