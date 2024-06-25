@@ -17,74 +17,8 @@ import sqlalchemy.orm.exc
     If an exception occurs during the process, it rolls back the session and returns a server error response.
 """
 
-
 @app.route("/room/create", methods=["POST"])
 def create_room():
-    building_id = None
-    floor_id = None
-    room_number_list = []
-    for room in request.json:
-        building_id = room["building_id"]
-        floor_id = room["floor_id"]
-        room_number_list.append(room["number"])
-    dupicate_room_check = (
-        Room.query.filter(Room.number.in_(room_number_list))
-        .filter(Room.building_id == building_id)
-        .filter(Room.floor_id == floor_id)
-        .all()
-    )
-
-    if len(dupicate_room_check) > 0:
-        duplicate_data = []
-        for data in dupicate_room_check:
-            duplicate_data.append({"number": data.number, "name": data.name})
-        return response_base(message="Failed", status=409, data=duplicate_data)
-    created_room_ids = []
-    try:
-        # print(request.json)
-        for room in request.json:
-            # print(room)
-            room_new = Room(
-                name=room["name"],
-                number=room["number"],
-                property_id=room["property_id"],
-                building_id=room["building_id"],
-                floor_id=room["floor_id"],
-                room_type_id=room["room_type_id"],
-            )
-            db.session.add(room_new)
-            db.session.flush()
-            created_room_ids.append(room_new.id)
-            print(room["device_types"])
-            for device in room["device_types"]:
-                room_device_type = RoomDeviceType(
-                    room_id=room_new.id,
-                    device_type_id=device,
-                    floor_id=room["floor_id"],
-                    building_id=room["building_id"],
-                    property_id=room["property_id"],
-                )
-                db.session.add(room_device_type)
-            for sub_room in room["sub_room_type_ids"]:
-                room_sub_type = RoomRoomSubType(
-                    room_id=room_new.id,
-                    room_sub_type_id=sub_room,
-                    floor_id=room["floor_id"],
-                    building_id=room["building_id"],
-                    property_id=room["property_id"],
-                )
-                db.session.add(room_sub_type)
-        db.session.commit()
-        return response_base(
-            message="Success", status=200, data=[{"ids": created_room_ids}]
-        )
-    except Exception as e:
-        db.session.rollback()
-        current_app.logger.error(e)
-        return response_base(message="Server error", status=500)
-
-@app.route("/room/v1/create", methods=["POST"])
-def create_room_v1():
     building_id = None
     floor_id = None
     room_number_list = []
@@ -173,6 +107,7 @@ def get_room():
     return response_base(message="Success", status=200, data=final_data)
 
 
+# Pagination
 @app.route("/floor/room/v1/list", methods=["POST"])
 def get_room_v1():
     page = int(request.json.get("page", 1))
@@ -200,6 +135,8 @@ def get_room_v1():
 
     return response_base(message="Success", status=200, data=final_data)
 
+
+# Pagination with Parameters
 @app.route("/floor/room/v1/list_with_param", methods=["POST"])
 def get_room_with_param_v1(page: int = 1, per_page: int = 5, room_name: str = None):
     floor = Floor.query.get_or_404(request.json["floor_id"])
@@ -297,67 +234,8 @@ def room_config_view():
         return response_base(message="Failed", status=404)
 
 
-@app.route("/room/edit", methods=["POST"])
+@app.route("/room/edit", methods=['PUT'])
 def edit_room():
-    print(request.json)
-    room = Room.query.filter_by(id=request.json["room_id"]).first()
-    if room is not None:
-        new_entries_devices = []
-        old_entries_devices = []
-        new_entries_room_sub = []
-        old_entries_room_sub = []
-        for dev in request.json["device_type_new"]:
-            if dev not in request.json["device_type_old"]:
-                new_entries_devices.append(dev)
-            else:
-                pass
-        for dev in request.json["device_type_old"]:
-            if dev not in request.json["device_type_new"]:
-                old_entries_devices.append(dev)
-            else:
-                pass
-        for dev in request.json["sub_room_type_new"]:
-            if dev not in request.json["sub_room_type_old"]:
-                new_entries_room_sub.append(dev)
-            else:
-                pass
-        for dev in request.json["sub_room_type_old"]:
-            if dev not in request.json["sub_room_type_new"]:
-                old_entries_room_sub.append(dev)
-            else:
-                pass
-        # print(new_entries_devices)
-        # print(old_entries_devices)
-        # exit()
-        # update device types
-        for device in new_entries_devices:
-            room_device_type = RoomDeviceType(room_id=room.id, device_type_id=device)
-            db.session.add(room_device_type)
-        for device in old_entries_devices:
-            room_device_type = RoomDeviceType.query.filter_by(
-                room_id=room.id, device_type_id=device
-            ).first()
-            db.session.delete(room_device_type)
-        # Update subroom types
-        for subroom in new_entries_room_sub:
-            room_sub_type = RoomRoomSubType(room_id=room.id, room_sub_type_id=subroom)
-            db.session.add(room_sub_type)
-        for subroom in old_entries_room_sub:
-            room_sub_type = RoomRoomSubType.query.filter_by(
-                room_id=room.id, room_sub_type_id=subroom
-            ).first()
-            db.session.delete(room_sub_type)
-        room.name = request.json["name"]
-        room.number = request.json["number"]
-        room.room_type_id = request.json["room_type_id"]
-        room.floor_id = request.json["floor_id"]
-        db.session.commit()
-        return response_base(message="Success", status=200, data=[])
-    else:
-        return response_base(message="Failed", status=404)
-
-@app.route('/room/v1/edit', methods=['PUT'])
-def edit_room_v1():
     data = request.json
     room_id = data.get('room_id')
 
@@ -446,7 +324,6 @@ def add_device_to_room():
         )
     else:
         return response_base(message="Failed", status=404)
-
 
 
 @app.route("/room/device/delete", methods=["DELETE"])
@@ -573,31 +450,9 @@ def list_device_in_room():
         return response_base(message="Failed", status=404)
 
 
+
 @app.route("/room/delete", methods=["DELETE"])
 def delete_room():
-    # print(request.json)
-    rooms = Room.query.filter(Room.id.in_(request.json["room_ids"])).all()
-    print(rooms)
-    for room in rooms:
-        if room is not None:
-            sub_rooms = RoomRoomSubType.query.filter_by(room_id=room.id).all()
-            for sub_room in sub_rooms:
-                db.session.delete(sub_room)
-            room_devices = RoomDevice.query.filter_by(room_id=room.id).all()
-            for dev in room_devices:
-                print(dev)
-                db.session.delete(dev)
-            room_device_types = RoomDeviceType.query.filter_by(room_id=room.id).all()
-            for room_device_type in room_device_types:
-                db.session.delete(room_device_type)
-            db.session.delete(room)
-            db.session.commit()
-        else:
-            pass
-    return response_base(message="Success", status=200, data=[])
-
-@app.route("/room/v1/delete", methods=["DELETE"])
-def delete_room_v1():
     room_ids = request.json.get("room_ids", [])
     if not room_ids:
         return response_base(message="No room IDs provided", status=400, data=[])
