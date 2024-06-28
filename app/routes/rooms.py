@@ -359,7 +359,7 @@ def view_device_in_room():
             "device_name": room_device.name,
             "protocol_id": room_device.protocol_id,
             "device_type_id": room_device.device_type_id,
-            "sub_room_type_id": room_device.room_sub_type_id,
+            "sub_room_type_id": room_device.room_sub_type.id if room_device.room_sub_type is not None else 0,
             "sub_device_type_id": room_device.device_sub_type_id,
             "is_multiple": room_device.is_group,
             "device_group_name": room_device.group_name,
@@ -372,11 +372,9 @@ def view_device_in_room():
             "is_service": room_device.is_service,
             "room_sub_type": (
                 {
-                    "name": room_device.room_sub_type.name,
-                    "id": room_device.room_sub_type.id,
+                    "name": room_device.room_sub_type.name if room_device.room_sub_type is not None else "",
+                    "id": room_device.room_sub_type.id if room_device.room_sub_type is not None else 0,
                 }
-                if room_device.room_sub_type is not None
-                else None
             ),
             "device_type": {
                 "name": room_device.device_type.name,
@@ -436,7 +434,7 @@ def list_device_in_room():
                 "device_id": device.id,
                 "device_name": device.name,
                 "device_sub_type": device.device_sub_type.name,
-                "room_sub_type": device.room_sub_type.name,
+                "room_sub_type": device.room_sub_type.name if device.room_sub_type is not None else "",
                 "device_type": device.device_type.name,
                 "is_published": device.is_published,
                 "icon": device.icon,
