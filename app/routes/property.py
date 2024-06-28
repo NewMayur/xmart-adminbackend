@@ -193,7 +193,7 @@ def edit_property():
         "primary_contact_contact_number"
     ]
     property.property_contact[0].phone_number_code = request.json[
-        "primary_contact_phone_number_code"
+        "primary_contact_contact_number_code"
     ]
     db.session.add(property)
     db.session.commit()
