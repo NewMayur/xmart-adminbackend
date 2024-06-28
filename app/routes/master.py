@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, send_file
 from server import app
 from app.schema.User import User
 from app.schema.Master import (
@@ -8,10 +8,13 @@ from app.schema.Master import (
     MasterDeviceSubType,
     MasterProtocol,
 )
+from app.schema.Property import MasterPropertyType
 from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.seeder.seed import seed
 from app.schema.Device import KnxDeviceSubTypeData, BacNetDeviceSubTypeData
+import os
+#import pandas as pd
 
 
 @app.route("/master/roomtype/list", methods=["GET"])
@@ -129,7 +132,7 @@ def master_protocol_list():
 @app.route("/master/subdevicedata", methods=["POST"])
 def device_sub_data():
     final_list = []
-    if request.json["protocol_id"] == 1:
+    if request.json["protocol_id"] == 2:
         data = KnxDeviceSubTypeData.query.filter_by(
             device_type_id=request.json["device_type_id"],
             sub_device_type_id=request.json["device_sub_type_id"],
@@ -142,7 +145,7 @@ def device_sub_data():
                     "name": dat.address_name,
                     "technical_name": dat.address_name_technical,
                     "value_data_type": dat.value_data_type,
-                    "vale_data_range": dat.vale_data_range,
+                    "value_data_range": dat.value_data_range,
                 }
             )
     else:
@@ -169,3 +172,179 @@ def device_sub_data():
 def heatlh_check():
 
     return response_base(message="Connected to server.", status=200, data=[])
+
+
+@app.route("/uploadmaster", methods=["POST"])
+def upload_master():
+    # print(request.files)
+    try:
+        request.files["file"].save(
+            os.path.join("static", request.files["file"].filename)
+        )
+        file_path = os.path.join("static", request.files["file"].filename)
+        if os.path.isfile(file_path):
+            df = pd.read_excel(file_path)
+            print(df)
+            if request.form["type"] == "property":
+                for row in df.iloc:
+                    property = MasterPropertyType.query.filter_by(
+                        technical_name=row["technical_name"], name=row["name"]
+                    ).first()
+                    if property is None:
+                        new_property = MasterPropertyType(
+                            name=row["name"],
+                            technical_name=row["technical_name"],
+                        )
+                        db.session.add(new_property)
+                    else:
+                        pass
+                db.session.commit()
+            if request.form["type"] == "room":
+                for row in df.iloc:
+                    room = MasterRoomType.query.filter_by(
+                        technical_name=row["technical_name"], name=row["name"]
+                    ).first()
+                    if room is None:
+                        new_room = MasterRoomType(
+                            name=row["name"],
+                            technical_name=row["technical_name"],
+                        )
+                        db.session.add(new_room)
+                    else:
+                        pass
+                db.session.commit()
+            if request.form["type"] == "sub_room":
+                for row in df.iloc:
+                    sub_room = MasterSubRoomType.query.filter_by(
+                        technical_name=row["technical_name"], name=row["name"]
+                    ).first()
+                    if sub_room is None:
+                        sub_room_new = MasterSubRoomType(
+                            name=row["name"],
+                            technical_name=row["technical_name"],
+                        )
+                        db.session.add(sub_room_new)
+                    else:
+                        pass
+                db.session.commit()
+            elif request.form["type"] == "device":
+                for row in df.iloc:
+                    device = MasterDeviceType.query.filter_by(
+                        technical_name=row["device_name_technical"],
+                        name=row["device_name"],
+                    ).first()
+                    if device is None:
+                        new_device = MasterDeviceType(
+                            name=row["device_name"],
+                            technical_name=row["device_name_technical"],
+                        )
+                        db.session.add(new_device)
+                        db.session.flush()
+                        sub_device_type = MasterDeviceSubType(
+                            name=row["subtype_name"],
+                            technical_name=row["subtype_name_technical"],
+                            master_device_type_id=new_device.id,
+                        )
+                        db.session.add(new_device)
+                        db.session.add(sub_device_type)
+                    else:
+                        device_sub_type = MasterDeviceSubType.query.filter_by(
+                            name=row["subtype_name"],
+                            technical_name=row["subtype_name_technical"],
+                            master_device_type_id=device.id,
+                        ).first()
+                        if device_sub_type is None:
+                            sub_device_type = MasterDeviceSubType(
+                                name=row["subtype_name"],
+                                technical_name=row["subtype_name_technical"],
+                                master_device_type_id=device.id,
+                            )
+                            db.session.add(sub_device_type)
+                        else:
+                            pass
+            elif request.form["type"] == "knx":
+                device_sub_device = MasterDeviceSubType.query.all()
+                device_sub_device_dat = {}
+                for sub_d in device_sub_device:
+                    device_sub_device_dat[
+                        sub_d.technical_name
+                        + "#"
+                        + sub_d.master_device_type_new.technical_name
+                    ] = (str(sub_d.id) + "#" + str(sub_d.master_device_type_new.id))
+                    # print(sub_d.master_device_type_new.id)
+                print(device_sub_device_dat)
+                # exit()
+                for row in df.iloc:
+                    print(row)
+                    sub_dev, dev_id = device_sub_device_dat[
+                        row["subdevice_name_technical"]
+                        + "#"
+                        + row["device_name_technical"]
+                    ].split("#")
+                    print(sub_dev, dev_id)
+                    device = KnxDeviceSubTypeData.query.filter_by(
+                        device_type_id=dev_id,
+                        sub_device_type_id=sub_dev,
+                        address_name_technical=row["address_name_technical"],
+                        address_name=row["address_name"],
+                        value_data_type=row["value_data_type"],
+                        value_data_range=row["value_data_range"],
+                    ).first()
+                    if device is None:
+                        new_device = KnxDeviceSubTypeData(
+                            device_type_id=dev_id,
+                            sub_device_type_id=sub_dev,
+                            address_name=row["address_name"],
+                            address_name_technical=row["address_name_technical"],
+                            value_data_type=row["value_data_type"],
+                            value_data_range=row["value_data_range"],
+                        )
+                        db.session.add(new_device)
+                    else:
+                        pass
+            elif request.form["type"] == "bacnet":
+                for row in df.iloc:
+                    device = BacNetDeviceSubTypeData.query.filter_by(
+                        device_type_id=dev_id,
+                        sub_device_type_id=sub_dev,
+                        function=row["function"],
+                        object_instance=row["object_instance"],
+                        object_type=row["object_type"],
+                        range=row["range"],
+                        read_write=row["read_write"],
+                    ).first()
+                    if device is None:
+                        new_device = BacNetDeviceSubTypeData(
+                            device_type_id=dev_id,
+                            sub_device_type_id=sub_dev,
+                            function=row["function"],
+                            object_instance=row["object_instance"],
+                            object_type=row["object_type"],
+                            range=row["range"],
+                            read_write=row["read_write"],
+                        )
+                        db.session.add(new_device)
+            db.session.commit()
+            return response_base(message="Success", status=200)
+        else:
+            return response_base(message="Something went wrong", status=500)
+        return response_base(message="Success", status=200)
+    except Exception as e:
+        print(e)
+        return response_base(message="Failed", status=500)
+
+
+@app.route("/downloadmasters", methods=["GET"])
+def download_master():
+    master = request.args.get("master")
+    print(master)
+    return send_file(f"master/master_{master}.xlsx", as_attachment=True)
+
+
+@app.route("/master/propertytype", methods=["GET"])
+def property_type_master():
+    data = MasterPropertyType.query.all()
+    final_data = []
+    for dat in data:
+        final_data.append({"id": dat.id, "name": dat.name})
+    return response_base(message="Success", status=200, data=final_data)

@@ -7,6 +7,7 @@ from app.schema.Room import Room, RoomDevice, RoomDeviceType, RoomRoomSubType
 from app.schema.Experience import Experience, ExperienceRoomType, ExperienceDevice
 from server import app
 import json
+import sqlalchemy.orm.exc 
 
 """
     A function to create a new room in the database based on the provided JSON data.
@@ -15,7 +16,6 @@ import json
     It then commits the changes to the database and returns a success response with the created room IDs if successful. 
     If an exception occurs during the process, it rolls back the session and returns a server error response.
 """
-
 
 @app.route("/room/create", methods=["POST"])
 def create_room():
@@ -40,7 +40,6 @@ def create_room():
         return response_base(message="Failed", status=409, data=duplicate_data)
     created_room_ids = []
     try:
-        # print(request.json)
         for room in request.json:
             # print(room)
             room_new = Room(
@@ -54,18 +53,27 @@ def create_room():
             db.session.add(room_new)
             db.session.flush()
             created_room_ids.append(room_new.id)
-            print(room["device_types"])
+            if "sub_room_type_ids" in room and room["sub_room_type_ids"]:
+                for sub_room in room["sub_room_type_ids"]:
+                    room_sub_type = RoomRoomSubType(
+                        room_id=room_new.id,
+                        room_sub_type_id=sub_room,
+                        floor_id=room["floor_id"],
+                        building_id=room["building_id"],
+                        property_id=room["property_id"],
+                    )
+                    db.session.add(room_sub_type)
+
             for device in room["device_types"]:
                 room_device_type = RoomDeviceType(
-                    room_id=room_new.id, device_type_id=device
+                    room_id=room_new.id,
+                    device_type_id=device,
+                    floor_id=room["floor_id"],
+                    building_id=room["building_id"],
+                    property_id=room["property_id"],
                 )
                 db.session.add(room_device_type)
-            for sub_room in room["sub_room_type_ids"]:
-                room_sub_type = RoomRoomSubType(
-                    room_id=room_new.id,
-                    room_sub_type_id=sub_room,
-                )
-                db.session.add(room_sub_type)
+            
         db.session.commit()
         return response_base(
             message="Success", status=200, data=[{"ids": created_room_ids}]
@@ -74,8 +82,6 @@ def create_room():
         db.session.rollback()
         current_app.logger.error(e)
         return response_base(message="Server error", status=500)
-
-
 """
 Get the list of rooms for a given floor and return the room details including id, name, number, building, room type, and sub-room types.
 """
@@ -100,6 +106,60 @@ def get_room():
 
     return response_base(message="Success", status=200, data=final_data)
 
+
+# Pagination
+@app.route("/floor/room/v1/list", methods=["POST"])
+def get_room_v1():
+    page = int(request.json.get("page", 1))
+    per_page = int(request.json.get("per_page", 5))
+
+    if page <= 0 :
+        page = 1
+    if per_page <= 0:
+        per_page = 5
+    
+    floor = Floor.query.get_or_404(request.json["floor_id"])
+    rooms = Room.query.filter_by(floor_id = floor.id).paginate(page=page,  per_page=per_page)
+    final_data = []
+    for room in rooms:
+        final_data.append(
+            {
+                "id": room.id,
+                "name": room.name,
+                "number": room.number,
+                "building": room.buildings.name,
+                "room_type": room.room_type.name,
+                "sub_room_types": [subtype.name for subtype in room.room_sub_types],
+            }
+        )
+
+    return response_base(message="Success", status=200, data=final_data)
+
+
+# Pagination with Parameters
+@app.route("/floor/room/v1/list_with_param", methods=["POST"])
+def get_room_with_param_v1(page: int = 1, per_page: int = 5, room_name: str = None):
+    floor = Floor.query.get_or_404(request.json["floor_id"])
+    rooms_query = Room.query.filter_by(floor_id=floor.id)
+
+    if room_name:
+        rooms_query = rooms_query.filter(Room.name == room_name)
+
+    rooms = rooms_query.paginate(page=page, per_page=per_page)
+    final_data = []
+    for room in rooms:
+        final_data.append(
+            {
+                "id": room.id,
+                "name": room.name,
+                "number": room.number,
+                "building": room.buildings.name,
+                "room_type": room.room_type.name,
+                "sub_room_types": [subtype.name for subtype in room.room_sub_types],
+            }
+        )
+
+    return response_base(message="Success", status=200, data=final_data)
 
 """
     Retrieves a room from the database based on the provided room ID in the request JSON.
@@ -174,64 +234,56 @@ def room_config_view():
         return response_base(message="Failed", status=404)
 
 
-@app.route("/room/edit", methods=["POST"])
+@app.route("/room/edit", methods=['PUT'])
 def edit_room():
-    print(request.json)
-    room = Room.query.filter_by(id=request.json["room_id"]).first()
-    if room is not None:
-        new_entries_devices = []
-        old_entries_devices = []
-        new_entries_room_sub = []
-        old_entries_room_sub = []
-        for dev in request.json["device_type_new"]:
-            if dev not in request.json["device_type_old"]:
-                new_entries_devices.append(dev)
-            else:
-                pass
-        for dev in request.json["device_type_old"]:
-            if dev not in request.json["device_type_new"]:
-                old_entries_devices.append(dev)
-            else:
-                pass
-        for dev in request.json["sub_room_type_new"]:
-            if dev not in request.json["sub_room_type_old"]:
-                new_entries_room_sub.append(dev)
-            else:
-                pass
-        for dev in request.json["sub_room_type_old"]:
-            if dev not in request.json["sub_room_type_new"]:
-                old_entries_room_sub.append(dev)
-            else:
-                pass
-        # print(new_entries_devices)
-        # print(old_entries_devices)
-        # exit()
-        # update device types
-        for device in new_entries_devices:
-            room_device_type = RoomDeviceType(room_id=room.id, device_type_id=device)
+    data = request.json
+    room_id = data.get('room_id')
+
+    room = Room.query.get(room_id)
+
+    if room:
+        # Update room details
+        room.name = data.get('name')
+        room.number = data.get('number')
+        room.room_type_id = data.get('room_type_id')
+        room.floor_id = data.get('floor_id')
+
+        # Add or remove devices
+        for device_id in data.get('device_type_new', []):
+            room_device_type = RoomDeviceType(
+                room_id=room.id, 
+                device_type_id=device_id, 
+                floor_id=room.floor_id, 
+                building_id=room.building_id, 
+                property_id=room.property_id
+            )
             db.session.add(room_device_type)
-        for device in old_entries_devices:
-            room_device_type = RoomDeviceType.query.filter_by(
-                room_id=room.id, device_type_id=device
-            ).first()
-            db.session.delete(room_device_type)
-        # Update subroom types
-        for subroom in new_entries_room_sub:
-            room_sub_type = RoomRoomSubType(room_id=room.id, room_sub_type_id=subroom)
+
+        for device_id in data.get('device_type_old', []):
+            room_device_type = RoomDeviceType.query.filter_by(room_id=room.id, device_type_id=device_id).first()
+            if room_device_type:
+                db.session.delete(room_device_type)
+
+        # Add or remove subrooms
+        for subroom_id in data.get('sub_room_type_new', []):
+            room_sub_type = RoomRoomSubType(
+                room_id=room.id, 
+                room_sub_type_id=subroom_id,
+                floor_id=room.floor_id,
+                building_id=room.building_id,
+                property_id=room.property_id
+            )
             db.session.add(room_sub_type)
-        for subroom in old_entries_room_sub:
-            room_sub_type = RoomRoomSubType.query.filter_by(
-                room_id=room.id, room_sub_type_id=subroom
-            ).first()
-            db.session.delete(room_sub_type)
-        room.name = request.json["name"]
-        room.number = request.json["number"]
-        room.room_type_id = request.json["room_type_id"]
-        room.floor_id = request.json["floor_id"]
+
+        for subroom_id in data.get('sub_room_type_old', []):
+            room_sub_type = RoomRoomSubType.query.filter_by(room_id=room.id, room_sub_type_id=subroom_id).first()
+            if room_sub_type:
+                db.session.delete(room_sub_type)
+
         db.session.commit()
         return response_base(message="Success", status=200, data=[])
     else:
-        return response_base(message="Failed", status=404)
+        return response_base(message="Room not found", status=404, data=[])
 
 
 @app.route("/room/device/add", methods=["POST"])
@@ -244,6 +296,7 @@ def add_device_to_room():
             room_id=room.id,
             floor_id=request.json["floor_id"],
             building_id=request.json["building_id"],
+            property_id=request.json["property_id"],
             device_type_id=request.json["device_type_id"],
             device_sub_type_id=request.json["sub_device_type_id"],
             room_sub_type_id=(
@@ -306,7 +359,7 @@ def view_device_in_room():
             "device_name": room_device.name,
             "protocol_id": room_device.protocol_id,
             "device_type_id": room_device.device_type_id,
-            "sub_room_type_id": room_device.room_sub_type_id,
+            "sub_room_type_id": room_device.room_sub_type.id if room_device.room_sub_type is not None else 0,
             "sub_device_type_id": room_device.device_sub_type_id,
             "is_multiple": room_device.is_group,
             "device_group_name": room_device.group_name,
@@ -319,11 +372,9 @@ def view_device_in_room():
             "is_service": room_device.is_service,
             "room_sub_type": (
                 {
-                    "name": room_device.room_sub_type.name,
-                    "id": room_device.room_sub_type.id,
+                    "name": room_device.room_sub_type.name if room_device.room_sub_type is not None else "",
+                    "id": room_device.room_sub_type.id if room_device.room_sub_type is not None else 0,
                 }
-                if room_device.room_sub_type is not None
-                else None
             ),
             "device_type": {
                 "name": room_device.device_type.name,
@@ -383,7 +434,7 @@ def list_device_in_room():
                 "device_id": device.id,
                 "device_name": device.name,
                 "device_sub_type": device.device_sub_type.name,
-                "room_sub_type": device.room_sub_type.name,
+                "room_sub_type": device.room_sub_type.name if device.room_sub_type is not None else "",
                 "device_type": device.device_type.name,
                 "is_published": device.is_published,
                 "icon": device.icon,
@@ -391,47 +442,60 @@ def list_device_in_room():
                 "is_service": device.is_service,
             }
         )
-    # for device in room_device:
-    #     devicez = {}
-    #     devicez["device_id"] = device.id
-    #     devicez["device_name"] = device.name
-    #     devicez["device_sub_type"] = device.device_sub_type.name
-    #     devicez["room_sub_type"] = device.room_sub_type.name
-    #     devicez["device_type"] = device.device_type.name
-    #     devicez["is_published"] = device.is_published
-    #     devicez["icon"] = device.icon
-    #     devicez["protocol"] = device.protocol.name
-    #     # devicez["is_service"] = device.is_service
-    #     if device.device_type.technical_name not in final_data.keys():
-    #         final_data[device.device_type.technical_name] = [devicez]
-    #     else:
-    #         final_data[device.device_type.technical_name].append(devicez)
-    # print(final_data)
     if room_device is not None:
         return response_base(message="Success", status=200, data=final_data)
     else:
         return response_base(message="Failed", status=404)
 
 
+
 @app.route("/room/delete", methods=["DELETE"])
 def delete_room():
+    room_ids = request.json.get("room_ids", [])
+    if not room_ids:
+        return response_base(message="No room IDs provided", status=400, data=[])
+
+    try:
+        rooms = Room.query.filter(Room.id.in_(room_ids)).all()
+
+        for room in rooms:
+            if room is not None:
+                # Delete sub-rooms
+                sub_rooms = RoomRoomSubType.query.filter_by(room_id=room.id).all()
+                for sub_room in sub_rooms:
+                    db.session.delete(sub_room)
+
+                # Delete room devices
+                room_devices = RoomDevice.query.filter_by(room_id=room.id).all()
+                for dev in room_devices:
+                    db.session.delete(dev)
+
+                # Delete room device types
+                room_device_types = RoomDeviceType.query.filter_by(room_id=room.id).all()
+                for room_device_type in room_device_types:
+                    db.session.delete(room_device_type)
+
+                # Delete the room itself
+                db.session.delete(room)
+
+        db.session.commit()
+        return response_base(message="Success", status=200, data=[])
+
+    except sqlalchemy.orm.exc.StaleDataError as e:
+        db.session.rollback()
+        return response_base(message="Stale data error occurred", status=500, data=str(e))
+
+    except Exception as e:
+        db.session.rollback()
+        return response_base(message="An error occurred", status=500, data=str(e))
+
+
+@app.route("/roomdeviceunique/list", methods=["GET"])
+def room_device_unique():
     # print(request.json)
-    rooms = Room.query.filter(Room.id.in_(request.json["room_ids"])).all()
-    print(rooms)
+    rooms = Room.query.filter_by(room_type_id=request.json["room_type_id"]).all()
+    device_type_staging = []
     for room in rooms:
-        if room is not None:
-            sub_rooms = RoomRoomSubType.query.filter_by(room_id=room.id).all()
-            for sub_room in sub_rooms:
-                db.session.delete(sub_room)
-            room_devices = RoomDevice.query.filter_by(room_id=room.id).all()
-            for dev in room_devices:
-                print(dev)
-                db.session.delete(dev)
-            room_device_types = RoomDeviceType.query.filter_by(room_id=room.id).all()
-            for room_device_type in room_device_types:
-                db.session.delete(room_device_type)
-            db.session.delete(room)
-            db.session.commit()
-        else:
-            pass
+        device_type_staging.append(room.device_type_id)
+
     return response_base(message="Success", status=200, data=[])

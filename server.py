@@ -99,15 +99,13 @@ if __name__ == "__main__":
         return response_base("Server Error", 500)
 
     basedir = os.path.abspath(os.path.dirname(__file__))
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
-        basedir, "database.db"
-    )
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     # app.run()
     run_simple(
         application=app,
         hostname=os.environ.get("BASE_IP", "0.0.0.0"),
-        port=os.environ.get("PORT", 5000),
+        port=int(os.environ.get("PORT", 5000)),
         use_debugger=True,
         use_reloader=True,
     )
