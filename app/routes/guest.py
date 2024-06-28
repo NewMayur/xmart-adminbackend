@@ -137,12 +137,21 @@ def load_room_v2_config():
         final_data = {"device_data": []}
         for device in room_devices:
             final_config = {}
-            if not isinstance(
-                    json.loads(device.device_config), dict
-            ):  # json.loads(device.device_config)
+            # if not isinstance(
+            #         json.loads(device.device_config), dict
+            # ):  # json.loads(device.device_config)
+            #     for dev_con in json.loads(device.device_config):
+            #         print(dev_con)
+            #         final_config[dev_con["technical_name"]] = dev_con["address"]
+            # else:
+            #     final_config = json.loads(device.device_config)
+            if isinstance(json.loads(device.device_config), list):
                 for dev_con in json.loads(device.device_config):
-                    print(dev_con)
-                    final_config[dev_con["technical_name"]] = dev_con["address"]
+                    if isinstance(dev_con, dict):
+                        print(dev_con)
+                        final_config[dev_con.get("technical_name", "")] = dev_con.get("address", "")
+                    else:
+                        print("Unexpected format in device configuration list")
             else:
                 final_config = json.loads(device.device_config)
 
