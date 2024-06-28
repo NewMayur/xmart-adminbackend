@@ -5,7 +5,7 @@ knx_master = [
         "address_name_technical": "on_off",
         "address_name": "On/Off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -13,7 +13,7 @@ knx_master = [
         "address_name_technical": "on_off_status",
         "address_name": "On/Off Status",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -21,7 +21,7 @@ knx_master = [
         "address_name_technical": "on_off",
         "address_name": "On/Off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -29,7 +29,7 @@ knx_master = [
         "address_name_technical": "on_off_status",
         "address_name": "On/Off Status",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -37,7 +37,7 @@ knx_master = [
         "address_name_technical": "dimming_level",
         "address_name": "Dimming Level",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -45,7 +45,7 @@ knx_master = [
         "address_name_technical": "dimming_status",
         "address_name": "Dimming Status",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     ## RGB color
     {
@@ -54,7 +54,7 @@ knx_master = [
         "address_name_technical": "on_off",
         "address_name": "On/Off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -62,7 +62,7 @@ knx_master = [
         "address_name_technical": "on_off_status",
         "address_name": "On/Off Status",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -70,7 +70,7 @@ knx_master = [
         "address_name_technical": "dimming_level",
         "address_name": "Dimming Level",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -78,7 +78,7 @@ knx_master = [
         "address_name_technical": "dimming_status",
         "address_name": "Dimming Status",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -86,7 +86,7 @@ knx_master = [
         "address_name_technical": "rgb_color",
         "address_name": "RGB Color",
         "value_data_type": "RGB",
-        "vale_data_range": "(0-255,0-255,0-255)",
+        "value_data_range": "(0-255,0-255,0-255)",
     },
     {
         "device_type_id": "lights",
@@ -94,7 +94,7 @@ knx_master = [
         "address_name_technical": "r_on_off",
         "address_name": "R On/Off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -102,7 +102,7 @@ knx_master = [
         "address_name_technical": "r_dimming",
         "address_name": "R Dimming",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -110,7 +110,7 @@ knx_master = [
         "address_name_technical": "r_status",
         "address_name": "R Status",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -118,7 +118,7 @@ knx_master = [
         "address_name_technical": "g_on_off",
         "address_name": "G On/Off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -126,7 +126,7 @@ knx_master = [
         "address_name_technical": "g_dimming",
         "address_name": "G Dimming",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -134,7 +134,7 @@ knx_master = [
         "address_name_technical": "g_status",
         "address_name": "G Status",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -142,7 +142,7 @@ knx_master = [
         "address_name_technical": "b_on_off",
         "address_name": "B On/Off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -150,7 +150,7 @@ knx_master = [
         "address_name_technical": "b_dimming",
         "address_name": "B Dimming",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -158,7 +158,7 @@ knx_master = [
         "address_name_technical": "b_status",
         "address_name": "B Status",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     ## CCT
     {
@@ -167,7 +167,7 @@ knx_master = [
         "address_name_technical": "on_off",
         "address_name": "On/Off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -175,7 +175,7 @@ knx_master = [
         "address_name_technical": "on_off_status",
         "address_name": "On/Off Status",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -183,7 +183,7 @@ knx_master = [
         "address_name_technical": "dimming_level",
         "address_name": "Dimming Level",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -191,7 +191,7 @@ knx_master = [
         "address_name_technical": "dimming_status",
         "address_name": "Dimming Status",
         "value_data_type": "Unsigned Int",
-        "vale_data_range": "0 to 255 (Dimming Level)",
+        "value_data_range": "0 to 255 (Dimming Level)",
     },
     {
         "device_type_id": "lights",
@@ -199,7 +199,7 @@ knx_master = [
         "address_name_technical": "color_temprature",
         "address_name": "Color Temperature",
         "value_data_type": "2 byte",
-        "vale_data_range": "1000k to 10000k",
+        "value_data_range": "1000k to 10000k",
     },
     {
         "device_type_id": "lights",
@@ -207,7 +207,7 @@ knx_master = [
         "address_name_technical": "color_temprature_status",
         "address_name": "Color Temperature Status",
         "value_data_type": "2 byte",
-        "vale_data_range": "1000k to 10000k",
+        "value_data_range": "1000k to 10000k",
     },
     # Service Light
     {
@@ -216,7 +216,7 @@ knx_master = [
         "address_name_technical": "on_off",
         "address_name": "On/Off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "lights",
@@ -224,7 +224,7 @@ knx_master = [
         "address_name_technical": "on_off_status",
         "address_name": "On/Off Status",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     ## AC- HVAC
     {
@@ -233,7 +233,7 @@ knx_master = [
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -241,7 +241,7 @@ knx_master = [
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -249,7 +249,7 @@ knx_master = [
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
-        "vale_data_range": "Cool,Heat",
+        "value_data_range": "Cool,Heat",
     },
     ## AC Split
     {
@@ -258,7 +258,7 @@ knx_master = [
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -266,7 +266,7 @@ knx_master = [
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -274,7 +274,7 @@ knx_master = [
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
-        "vale_data_range": "Cool,Heat",
+        "value_data_range": "Cool,Heat",
     },
     ## AHU Split
     {
@@ -283,7 +283,7 @@ knx_master = [
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -291,7 +291,7 @@ knx_master = [
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -299,7 +299,7 @@ knx_master = [
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
-        "vale_data_range": "Cool,Heat",
+        "value_data_range": "Cool,Heat",
     },
     # ## AHU Split
     # {
@@ -308,7 +308,7 @@ knx_master = [
     #     "address_name_technical": "",
     #     "address_name": "Basic Setpoint",
     #     "value_data_type": "2 byte",
-    #     "vale_data_range": "10-40 Degree Celcius",
+    #     "value_data_range": "10-40 Degree Celcius",
     # },
     # {
     #     "device_type_id": 2,
@@ -316,7 +316,7 @@ knx_master = [
     #     "address_name_technical": "",
     #     "address_name": "Setpoint Status",
     #     "value_data_type": "2 byte",
-    #     "vale_data_range": "10-40 Degree Celcius",
+    #     "value_data_range": "10-40 Degree Celcius",
     # },
     # {
     #     "device_type_id": 2,
@@ -324,7 +324,7 @@ knx_master = [
     #     "address_name_technical": "",
     #     "address_name": "Mode",
     #     "value_data_type": "1 byte",
-    #     "vale_data_range": "Cool,Heat",
+    #     "value_data_range": "Cool,Heat",
     # },
     ## FCU Split
     {
@@ -333,7 +333,7 @@ knx_master = [
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -341,7 +341,7 @@ knx_master = [
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -349,7 +349,7 @@ knx_master = [
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
-        "vale_data_range": "Cool,Heat",
+        "value_data_range": "Cool,Heat",
     },
     ## VRV Split
     {
@@ -358,7 +358,7 @@ knx_master = [
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -366,7 +366,7 @@ knx_master = [
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -374,7 +374,7 @@ knx_master = [
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
-        "vale_data_range": "Cool,Heat",
+        "value_data_range": "Cool,Heat",
     },
     ## VFV Split
     {
@@ -383,7 +383,7 @@ knx_master = [
         "address_name_technical": "basic_setpoint",
         "address_name": "Basic Setpoint",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -391,7 +391,7 @@ knx_master = [
         "address_name_technical": "setpoint_status",
         "address_name": "Setpoint Status",
         "value_data_type": "2 byte",
-        "vale_data_range": "10-40 Degree Celcius",
+        "value_data_range": "10-40 Degree Celcius",
     },
     {
         "device_type_id": "air_conditioner",
@@ -399,7 +399,7 @@ knx_master = [
         "address_name_technical": "mode",
         "address_name": "Mode",
         "value_data_type": "1 byte",
-        "vale_data_range": "Cool,Heat",
+        "value_data_range": "Cool,Heat",
     },
     ## Curtain Horizonatal
     {
@@ -408,7 +408,7 @@ knx_master = [
         "address_name_technical": "shutter_move",
         "address_name": "Shutter Move",
         "value_data_type": "1 byte",
-        "vale_data_range": "0 = Up,1 = Down",
+        "value_data_range": "0 = Up,1 = Down",
     },
     {
         "device_type_id": "curtains",
@@ -416,7 +416,7 @@ knx_master = [
         "address_name_technical": "shutter_stop",
         "address_name": "Shutter Stop",
         "value_data_type": "1 byte",
-        "vale_data_range": "0/1 = stop",
+        "value_data_range": "0/1 = stop",
     },
     {
         "device_type_id": "curtains",
@@ -424,7 +424,7 @@ knx_master = [
         "address_name_technical": "shutter_direct_position",
         "address_name": "Shutter Direct Position",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     {
         "device_type_id": "curtains",
@@ -432,7 +432,7 @@ knx_master = [
         "address_name_technical": "shutter_position_status",
         "address_name": "Shutter Position status",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     ## Curtain Vertical
     {
@@ -441,7 +441,7 @@ knx_master = [
         "address_name_technical": "shutter_move",
         "address_name": "Shutter Move",
         "value_data_type": "1 byte",
-        "vale_data_range": "0 = Up,1 = Down",
+        "value_data_range": "0 = Up,1 = Down",
     },
     {
         "device_type_id": "curtains",
@@ -449,7 +449,7 @@ knx_master = [
         "address_name_technical": "shutter_stop",
         "address_name": "Shutter Stop",
         "value_data_type": "1 byte",
-        "vale_data_range": "0/1 = stop",
+        "value_data_range": "0/1 = stop",
     },
     {
         "device_type_id": "curtains",
@@ -457,7 +457,7 @@ knx_master = [
         "address_name_technical": "shutter_direct_position",
         "address_name": "Shutter Direct Position",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     {
         "device_type_id": "curtains",
@@ -465,7 +465,7 @@ knx_master = [
         "address_name_technical": "shutter_direct_status",
         "address_name": "Shutter Position status",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     ## Curtains Blinds
     {
@@ -474,7 +474,7 @@ knx_master = [
         "address_name_technical": "shutter_move",
         "address_name": "Shutter Move",
         "value_data_type": "1 byte",
-        "vale_data_range": "0 = Up,1 = Down",
+        "value_data_range": "0 = Up,1 = Down",
     },
     {
         "device_type_id": "curtains",
@@ -482,7 +482,7 @@ knx_master = [
         "address_name_technical": "shutter_stop",
         "address_name": "Shutter Stop",
         "value_data_type": "1 byte",
-        "vale_data_range": "0/1 = stop",
+        "value_data_range": "0/1 = stop",
     },
     {
         "device_type_id": "curtains",
@@ -490,7 +490,7 @@ knx_master = [
         "address_name_technical": "shutter_direct_position",
         "address_name": "Shutter Direct Position",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     {
         "device_type_id": "curtains",
@@ -498,7 +498,7 @@ knx_master = [
         "address_name_technical": "shutter_position_status",
         "address_name": "Shutter Position status",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     ## Fan AC
     {
@@ -507,7 +507,7 @@ knx_master = [
         "address_name_technical": "fan_on_off",
         "address_name": "Fan on/off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "fans",
@@ -515,7 +515,7 @@ knx_master = [
         "address_name_technical": "fan_speed",
         "address_name": "Fan speed",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     {
         "device_type_id": "fans",
@@ -523,7 +523,7 @@ knx_master = [
         "address_name_technical": "fan_status",
         "address_name": "Fan Status",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     ## Fan DC
     {
@@ -532,7 +532,7 @@ knx_master = [
         "address_name_technical": "fan_on_off",
         "address_name": "Fan on/off",
         "value_data_type": "On/Off",
-        "vale_data_range": "0 or 1",
+        "value_data_range": "0 or 1",
     },
     {
         "device_type_id": "fans",
@@ -540,7 +540,7 @@ knx_master = [
         "address_name_technical": "fan_speed",
         "address_name": "Fan speed",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
     {
         "device_type_id": "fans",
@@ -548,6 +548,6 @@ knx_master = [
         "address_name_technical": "fan_status",
         "address_name": "Fan Status",
         "value_data_type": "1 byte",
-        "vale_data_range": "0-100%",
+        "value_data_range": "0-100%",
     },
 ]

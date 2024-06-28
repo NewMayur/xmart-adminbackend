@@ -16,6 +16,7 @@ from app.schema.Master import MasterSubRoomType, MasterDeviceType
 
 
 class Room(db.Model):
+    __mapper_args__ = {"confirm_deleted_rows": False}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     number = db.Column(db.String(80), nullable=False)
@@ -35,6 +36,9 @@ class Room(db.Model):
     room_device_types: Mapped[List[MasterDeviceType]] = db.relationship(
         secondary="room_device_type"
     )
+    room_devices: Mapped[List[RoomDevice]] = db.relationship(
+        "RoomDevice", backref="room"
+    )
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
@@ -51,6 +55,9 @@ class RoomRoomSubType(db.Model):
     room_sub_type_id = db.Column(
         db.Integer, db.ForeignKey("master_sub_room_type.id"), nullable=False
     )
+    floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
+    building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
     # room = db.relationship("Room", backref="rooms")
     # room_sub_type = db.relationship("MasterSubRoomType", backref="master_sub_room_type")
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
@@ -70,6 +77,7 @@ class RoomDevice(db.Model):
     room_sub_type_id = db.Column(
         db.Integer, db.ForeignKey("master_sub_room_type.id"), nullable=True
     )
+    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
     name = db.Column(db.String(80), nullable=False)
     group_name = db.Column(db.String(80), nullable=False)
     # device_make = db.Column(db.String(80), nullable=False)
@@ -105,5 +113,8 @@ class RoomDeviceType(db.Model):
     device_type_id = db.Column(
         db.Integer, db.ForeignKey("master_device_type.id"), nullable=False
     )
+    floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
+    building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())

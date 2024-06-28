@@ -34,6 +34,7 @@ class MasterDeviceType(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     technical_name = db.Column(db.String(80), nullable=False)
+    experience_config = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
@@ -64,6 +65,9 @@ class MasterDeviceSubType(db.Model):
     technical_name = db.Column(db.String(80), nullable=False)
     master_device_type_id = db.Column(
         db.Integer, db.ForeignKey("master_device_type.id"), nullable=False
+    )
+    master_device_type_new = db.relationship(
+        "MasterDeviceType", backref="master_device_type_new"
     )
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
