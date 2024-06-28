@@ -59,7 +59,7 @@ def edit_building():
         db.session.commit()
 
         for floor_data in request.json.get("floors", []):
-            floor_id = floor_data.get("floor_id")
+            floor_id = floor_data.get("id")
             if floor_id:
                 floor = Floor.query.get(floor_id)
                 if floor:
@@ -76,6 +76,7 @@ def edit_building():
 
 @app.route("/building/view", methods=["POST"])
 def building_view():
+
     building = Building.query.get_or_404(request.json["building_id"])
     if building is not None:
         print(building.name)
@@ -84,17 +85,18 @@ def building_view():
         for floor in building.floors:
             floor_data.append(
                 {
-                    "floor_id": floor.id,
+                    "id": floor.id,
                     "name": floor.name,
-                    "number": floor.number,
+                    "floor_number": floor.number,
                 }
             )
-        buidling_data = {
+        buidling_data = {   
             "building_id": building.id,
             "name": building.name,
-            "number": building.number,
+            "building_number": building.number,
             "number_of_floors": building.number_of_floors,
             "floors": floor_data,
+            "property_id": building.property_id
         }
         return response_base(message="Success", status=200, data=[buidling_data])
     else:
