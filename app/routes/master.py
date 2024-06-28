@@ -14,7 +14,7 @@ from app.extensions.responses import response_base
 from app.seeder.seed import seed
 from app.schema.Device import KnxDeviceSubTypeData, BacNetDeviceSubTypeData
 import os
-import pandas as pd
+#import pandas as pd
 
 
 @app.route("/master/roomtype/list", methods=["GET"])
