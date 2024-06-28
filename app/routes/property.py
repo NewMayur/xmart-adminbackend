@@ -156,7 +156,7 @@ def property_list():
 
 
 @app.route("/property/edit", methods=["POST"])
-def property_update():
+def edit_property():
     # Save image to file system
 
     logo_path = ""
