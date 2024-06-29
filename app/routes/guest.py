@@ -107,13 +107,14 @@ def load_room_config():
     else:
         return response_base(message="Failed", status=404)
 
+
 @app.route("/guest/room/v2/config", methods=["POST"])
 def load_room_v2_config():
     data = request.json
     building_id = data.get("building_id")
     floor_id = data.get("floor_id")
     room_id = data.get("room_id")
-    password = data.get("password")
+    password = data.get("admin_pass")
 
     # Password validation logic
     print(request.json)
@@ -137,18 +138,9 @@ def load_room_v2_config():
         final_data = {"device_data": []}
         for device in room_devices:
             final_config = {}
-            # if not isinstance(
-            #         json.loads(device.device_config), dict
-            # ):  # json.loads(device.device_config)
-            #     for dev_con in json.loads(device.device_config):
-            #         print(dev_con)
-            #         final_config[dev_con["technical_name"]] = dev_con["address"]
-            # else:
-            #     final_config = json.loads(device.device_config)
             if isinstance(json.loads(device.device_config), list):
                 for dev_con in json.loads(device.device_config):
                     if isinstance(dev_con, dict):
-                        print(dev_con)
                         final_config[dev_con.get("technical_name", "")] = dev_con.get("address", "")
                     else:
                         print("Unexpected format in device configuration list")
@@ -157,7 +149,7 @@ def load_room_v2_config():
 
             final_data["device_data"].append({
                 "id": device.id,
-                "device_name": device.name,
+                "name": device.name,
                 "add_to_home_screen": device.add_to_home_screen,
                 "sub_room": (
                     device.room_sub_type.name if device.room_sub_type else None
@@ -172,7 +164,7 @@ def load_room_v2_config():
                 "device_type": device.device_type.name,
                 "device_type_technical": device.device_type.technical_name,
                 "protocol": device.protocol.name,
-                # "controls": json.loads(device.device_config),
+                "controls": json.loads(device.device_config),
                 "device_meta": final_config,
                 "icon": device.icon,
                 "floor_id": device.floor_id,
@@ -208,7 +200,6 @@ def get_buildings_floors_rooms():
             "building_name": building.number if not building.name else f"{building.number} - {building.name}",
             "number_of_floors": building.number_of_floors,
             "property_id": building.property_id,
-            ""
             "floors": []
         }
 
