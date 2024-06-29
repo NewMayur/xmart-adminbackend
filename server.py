@@ -105,7 +105,7 @@ if __name__ == "__main__":
     run_simple(
         application=app,
         hostname=os.environ.get("BASE_IP", "0.0.0.0"),
-        port=int(os.environ.get("PORT", 5000)),
+        port=int(os.environ.get("PORT", 5005)),
         use_debugger=True,
         use_reloader=True,
     )
