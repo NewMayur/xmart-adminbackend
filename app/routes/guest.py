@@ -107,19 +107,17 @@ def load_room_config():
     else:
         return response_base(message="Failed", status=404)
 
-
 @app.route("/guest/room/v2/config", methods=["POST"])
 def load_room_v2_config():
     data = request.json
     building_id = data.get("building_id")
     floor_id = data.get("floor_id")
     room_id = data.get("room_id")
-    password = data.get("admin_pass")
+    password_input = data.get("admin_pass")
 
     # Password validation logic
-    print(request.json)
-    admin_password = os.environ.get("ADMIN_PASSWORD")
-    if request.json["admin_pass"] == admin_password:
+    password_env = os.environ.get("ADMIN_PASSWORD")
+    if password_input == password_env:
         token = create_access_token(
             identity={
                 "building_id": request.json["building_id"],
@@ -138,6 +136,7 @@ def load_room_v2_config():
         final_data = {"device_data": []}
         for device in room_devices:
             final_config = {}
+
             if isinstance(json.loads(device.device_config), list):
                 for dev_con in json.loads(device.device_config):
                     if isinstance(dev_con, dict):
@@ -164,8 +163,8 @@ def load_room_v2_config():
                 "device_type": device.device_type.name,
                 "device_type_technical": device.device_type.technical_name,
                 "protocol": device.protocol.name,
-                "controls": json.loads(device.device_config),
-                "device_meta": final_config,
+                #"controls": json.loads(device.device_config),
+                "controls": final_config,
                 "icon": device.icon,
                 "floor_id": device.floor_id,
                 "building_id": device.building_id,
@@ -182,8 +181,7 @@ def load_room_v2_config():
             return response_base(message="Success", status=200, data=final_data)
         # return response_base(message="Success", status=200, data=[{"token": token}]).headers['auth-token'] = token
     else:
-        return response_base(message="Invalid Password", status=404,data=[])
-
+        return response_base(message="Invalid Password", status=401,data=[])
 
 
 
