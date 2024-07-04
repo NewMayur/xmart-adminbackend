@@ -107,6 +107,7 @@ def load_room_config():
     else:
         return response_base(message="Failed", status=404)
 
+
 @app.route("/guest/room/v2/config", methods=["POST"])
 def load_room_v2_config():
     data = request.json
@@ -136,7 +137,6 @@ def load_room_v2_config():
         final_data = {"device_data": []}
         for device in room_devices:
             final_config = {}
-
             if isinstance(json.loads(device.device_config), list):
                 for dev_con in json.loads(device.device_config):
                     if isinstance(dev_con, dict):
