@@ -1,4 +1,5 @@
 knx_master = [
+    ## Light - On/Off
     {
         "device_type_id": "lights",
         "sub_device_type_id": "on/off_light",
@@ -15,6 +16,8 @@ knx_master = [
         "value_data_type": "On/Off",
         "value_data_range": "0 or 1",
     },
+
+    ## Light - Dimmer
     {
         "device_type_id": "lights",
         "sub_device_type_id": "dimmer_light",
@@ -47,6 +50,218 @@ knx_master = [
         "value_data_type": "Unsigned Int",
         "value_data_range": "0 to 255 (Dimming Level)",
     },
+
+    ## TV
+
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "tv_on",
+        "address_name": "TV ON",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "tv_off",
+        "address_name": "TV OFF",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "volume_up",
+        "address_name": "Volume +",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "volume_down",
+        "address_name": "Volume -",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "mute",
+        "address_name": "Mute",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "unmute",
+        "address_name": "Unmute",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "channel_up",
+        "address_name": "Channel +",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "channel_down",
+        "address_name": "Channel -",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "d_pad_ok",
+        "address_name": "D Pad Ok",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "d_pad_up",
+        "address_name": "D Pad Up",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "d_pad_down",
+        "address_name": "D Pad Down",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "d_pad_left",
+        "address_name": "D Pad left",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "ir_tv",
+        "address_name_technical": "d_pad_right",
+        "address_name": "D Pad Right",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "stb_on",
+        "address_name": "STB ON",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "stb_off",
+        "address_name": "STB OFF",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "volume_up",
+        "address_name": "Volume +",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "volume_down",
+        "address_name": "Volume -",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "mute",
+        "address_name": "Mute",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "unmute",
+        "address_name": "Unmute",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "channel_up",
+        "address_name": "Channel +",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "channel_down",
+        "address_name": "Channel -",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "d_pad_ok",
+        "address_name": "D Pad Ok",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "d_pad_up",
+        "address_name": "D Pad Up",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "d_pad_down",
+        "address_name": "D Pad Down",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "d_pad_left",
+        "address_name": "D Pad left",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    {
+        "device_type_id": "tv",
+        "sub_device_type_id": "stb_tv",
+        "address_name_technical": "d_pad_right",
+        "address_name": "D Pad Right",
+        "value_data_type": "On/Off",
+        "value_data_range": "1"
+    },
+    
     ## RGB color
     {
         "device_type_id": "lights",
