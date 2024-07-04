@@ -74,9 +74,25 @@ if __name__ == "__main__":
     from app.routes.rooms import *
     from app.routes.guest import *
     from app.routes.experience import *
+    from app.routes.rooms import *
+    from datetime import datetime
+    import pytz
 
     FLUTTER_WEB_APP = "templates"
 
+    test = True
+    @app.route("/testupdate/")
+    def testupdate():
+        current_time = datetime.now(pytz.timezone('Asia/Calcutta'))
+        formatted_time = current_time.strftime('%H:%M:%S')
+        global test
+        test = formatted_time
+        return "HI"
+    @app.route("/teststatus/")
+    def teststatus():
+        global test
+        return str(test)
+    
     @app.route("/web/")
     def render_page_web():
         return render_template("/index.html")
