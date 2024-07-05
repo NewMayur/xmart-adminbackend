@@ -18,21 +18,25 @@ def experience():
             add_to_home_screen=request.json["add_to_home_screen"],
             is_published=request.json["is_published"],
             experience_config=json.dumps(request.json["experience_config"]),
+            property_id =request.json["property_id"],
+            building_id = request.json["building_id"],
+            floor_id =  request.json["floor_id"]
         )
         db.session.add(experience)
         db.session.flush()
-        for roomtype in request.json["room_types"]:
-            roomtype = ExperienceRoomType(
-                experience_id=experience.id,
-                room_type_id=roomtype,
-            )
-            db.session.add(roomtype)
-        for device in request.json["devices"]:
-            device = ExperienceDevice(
-                experience_id=experience.id,
-                device_type_id=device,
-            )
-            db.session.add(device)
+        # for roomtype in request.json["room_types"]:
+        #     roomtype = ExperienceRoomType(
+        #         experience_id=experience.id,
+        #         room_type_id=roomtype,
+        #     )
+        #     db.session.add(roomtype)
+        # for device in request.json["devices"]:
+        #     device = ExperienceDevice(
+        #         experience_id=experience.id,
+        #         device_type_id=device
+
+        #     )
+        #     db.session.add(device)
         db.session.commit()
         return response_base(
             message="Success", status=200, data={"experience_id": experience.id}
@@ -65,6 +69,7 @@ def list_experience():
                         {"id": room_type.id, "name": room_type.name}
                         for room_type in experience.exp_room_types
                     ],
+                    
                 }
             )
             print(experience.exp_room_types)

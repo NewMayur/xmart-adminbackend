@@ -49,9 +49,9 @@ class ExperienceDevice(db.Model):
     device_type_id = db.Column(
         db.Integer, db.ForeignKey("master_device_type.id"), nullable=False
     )
-    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
-    floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
-    building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)
+    # property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
+    # floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
+    # building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
@@ -69,10 +69,9 @@ class ExperienceRoomType(db.Model):
     room_type_id = db.Column(
         db.Integer, db.ForeignKey("master_room_type.id"), nullable=False
     )
-    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
-    floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
-    building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)
-    property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
+    # property_id = db.Column(db.Integer, db.ForeignKey("property.id"), nullable=False)
+    # floor_id = db.Column(db.Integer, db.ForeignKey("floor.id"), nullable=False)
+    # building_id = db.Column(db.Integer, db.ForeignKey("building.id"), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
