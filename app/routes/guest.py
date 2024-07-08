@@ -228,8 +228,6 @@ def get_buildings_floors_rums():
         for floor in building.floors:
             print(floor)
             print(floor.rooms)
-
-
     return response_base(message="Success", status=200, data=[])
 
 @app.route("/admin-mode", methods=["POST"])

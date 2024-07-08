@@ -36,16 +36,6 @@ def all():
     else:
         return response_base(message="Incorrect credentials", status=403, data=[])
 
-@app.route("/admin-mode", methods=["POST"])
-def admin_mode():
-    student = User.query.filter_by(username=request.json["username"]).first()
-    print(student)
-    if (student is not None) and bcrypt.check_password_hash(
-        student.password, request.json["password"]
-    ):
-        return response_base(message="Authenticated", status=200, data=[])
-    else:
-        return response_base(message="Incorrect credentials", status=403, data=[])
 
 @app.route("/test-auth", methods=["POST"])
 @jwt_required()
