@@ -2,7 +2,7 @@ import os
 
 from flask import request, jsonify, make_response
 
-from server import app
+from server import app, bcrypt
 from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.extensions.utils import token_required
@@ -15,6 +15,7 @@ from flask_jwt_extended import (
 )
 from app.schema.Device import KnxDeviceSubTypeData
 from app.schema.Building import Floor, Building
+from app.schema.User import User
 import json
 import ast
 
@@ -114,27 +115,21 @@ def load_room_v2_config():
     building_id = data.get("building_id")
     floor_id = data.get("floor_id")
     room_id = data.get("room_id")
-    password_input = data.get("admin_pass")
+    password_input = data.get("password")
 
     # Password validation logic
-    password_env = os.environ.get("ADMIN_PASSWORD")
-    if password_input == password_env:
-        token = create_access_token(
-            identity={
-                "building_id": request.json["building_id"],
-                "floor_id": request.json["floor_id"],
-                "room_id": request.json["room_id"]
-            }
-        )
-        response = jsonify({"token": token})
-        response.headers["auth-token"] = token
-
+    user = User.query.filter_by(username=request.json["username"]).first()
+    if (user is not None) and bcrypt.check_password_hash(
+        user.password, password_input
+    ):
+        access_token = create_access_token(identity={"username": user.username})
+        # Load room configuration
         room_devices = RoomDevice.query.filter_by(
             room_id=room_id,
             floor_id=floor_id,
             building_id=building_id
         ).all()
-        final_data = {"device_data": []}
+        final_data = {"device_data": [], "token" : access_token}
         for device in room_devices:
             final_config = {}
             if isinstance(json.loads(device.device_config), list):
@@ -181,7 +176,7 @@ def load_room_v2_config():
             return response_base(message="Success", status=200, data=final_data)
         # return response_base(message="Success", status=200, data=[{"token": token}]).headers['auth-token'] = token
     else:
-        return response_base(message="Invalid Password", status=401,data=[])
+        return response_base(message="Invalid Password", status=403, data=[])
 
 
 
@@ -236,3 +231,14 @@ def get_buildings_floors_rums():
 
 
     return response_base(message="Success", status=200, data=[])
+
+@app.route("/admin-mode", methods=["POST"])
+def admin_mode():
+    student = User.query.filter_by(username=request.json["username"]).first()
+    print(student)
+    if (student is not None) and bcrypt.check_password_hash(
+        student.password, request.json["password"]
+    ):
+        return response_base(message="Authenticated", status=200, data=[])
+    else:
+        return response_base(message="Incorrect credentials", status=403, data=[])
