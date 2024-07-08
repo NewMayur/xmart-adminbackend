@@ -19,7 +19,7 @@ CACHE_STORAGE_URL = os.environ.get("CACHE_STORAGE_URL", None)
 CACHE_EXEMPTED_ROUTES = [
     "/api/auth/",
 ]
-IMAGE_URL = os.environ.get("IMAGE_URL", "http://65.0.22.105:5005/images?image_name=")
+IMAGE_URL = os.environ.get("IMAGE_URL")
 JWT_SECRET_KEY = os.environ.get(
     "JWT_SECRET_KEY",
 )

@@ -108,9 +108,86 @@ def load_room_config():
     else:
         return response_base(message="Failed", status=404)
 
-
 @app.route("/guest/room/v2/config", methods=["POST"])
 def load_room_v2_config():
+    data = request.json
+    building_id = data.get("building_id")
+    floor_id = data.get("floor_id")
+    room_id = data.get("room_id")
+    password_input = data.get("admin_pass")
+
+    # Password validation logic
+    password_env = os.environ.get("ADMIN_PASSWORD")
+    if password_input == password_env:
+        token = create_access_token(
+            identity={
+                "building_id": request.json["building_id"],
+                "floor_id": request.json["floor_id"],
+                "room_id": request.json["room_id"]
+            }
+        )
+        response = jsonify({"token": token})
+        response.headers["auth-token"] = token
+
+        room_devices = RoomDevice.query.filter_by(
+            room_id=room_id,
+            floor_id=floor_id,
+            building_id=building_id
+        ).all()
+        final_data = {"device_data": []}
+        for device in room_devices:
+            final_config = {}
+            if isinstance(json.loads(device.device_config), list):
+                for dev_con in json.loads(device.device_config):
+                    if isinstance(dev_con, dict):
+                        final_config[dev_con.get("technical_name", "")] = dev_con.get("address", "")
+                    else:
+                        print("Unexpected format in device configuration list")
+            else:
+                final_config = json.loads(device.device_config)
+
+            final_data["device_data"].append({
+                "id": device.id,
+                "name": device.name,
+                "add_to_home_screen": device.add_to_home_screen,
+                "sub_room": (
+                    device.room_sub_type.name if device.room_sub_type else None
+                ),
+                "sub_room_technical": (
+                    device.room_sub_type.technical_name
+                    if device.room_sub_type
+                    else None
+                ),
+                "device_sub_type": device.device_sub_type.name,
+                "device_sub_type_technical": device.device_sub_type.technical_name,
+                "device_type": device.device_type.name,
+                "device_type_technical": device.device_type.technical_name,
+                "protocol": device.protocol.name,
+                #"controls": json.loads(device.device_config),
+                "controls": final_config,
+                "icon": device.icon,
+                "floor_id": device.floor_id,
+                "building_id": device.building_id,
+                "room_id": device.room_id,
+                "room_number": device.room_number,
+                "device_type_id": device.device_type_id,
+                "device_sub_type_id": device.device_sub_type_id,
+                "is_service": device.is_service,
+            })
+
+        if len(final_data["device_data"]) == 0:
+            return response_base(message="No devices found in the room", status=404, data=final_data)
+        else:
+            return response_base(message="Success", status=200, data=final_data)
+        # return response_base(message="Success", status=200, data=[{"token": token}]).headers['auth-token'] = token
+    else:
+        return response_base(message="Invalid Password", status=401,data=[])
+
+
+
+
+@app.route("/guest/room/v3/config", methods=["POST"])
+def load_room_v3_config():
     data = request.json
     building_id = data.get("building_id")
     floor_id = data.get("floor_id")

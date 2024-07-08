@@ -108,6 +108,13 @@ if __name__ == "__main__":
                 DIR_NAME += "/" + datalist[i]
 
         return send_from_directory(DIR_NAME, datalist[-1])
+    
+
+    @app.route("/check-server", methods=['GET'])
+    def check_server():
+        return jsonify(status="ok", message="Server is running"), 200
+
+
 
     @app.errorhandler(Exception)
     def server_error(err):
@@ -121,7 +128,7 @@ if __name__ == "__main__":
     run_simple(
         application=app,
         hostname=os.environ.get("BASE_IP", "0.0.0.0"),
-        port=int(os.environ.get("PORT", 5005)),
+        port=int(os.environ.get("PORT")),
         use_debugger=True,
         use_reloader=True,
     )
