@@ -7,7 +7,7 @@ URL="http://127.0.0.1:5000/check-server"
 TIMEOUT=2
 
 # Command to reload the local server
-RELOAD_COMMAND="python server.py"
+RELOAD_COMMAND="python /home/mayurgharat/1\ Projects/Xperio/xperio-adminbackend/server.py"
 
 # Function to reload the server
 reload_server() {
@@ -17,8 +17,10 @@ reload_server() {
     echo "$(date): Server reloaded"
 }
 
-while true; do
-    # Check the response time of the API and capture the response
+i=0
+
+while [ $i -lt 12 ]; do # 12 five-second intervals in 1 minute
+  # Check the response time of the API and capture the response
     response=$(curl -s -w "%{time_total}" -o response_body.txt --max-time $TIMEOUT $URL)
     exit_code=$?
 
@@ -42,10 +44,6 @@ while true; do
             echo "$(date): Server response: $response_body"
         fi
     fi
-
-    # Clean up
-    rm -f response_body.txt
-
-    # Wait for a specified interval before the next check (e.g., 5 seconds)
-    sleep 5
+  sleep 5
+  i=$(( i + 1 ))
 done

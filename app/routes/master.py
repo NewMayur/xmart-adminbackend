@@ -170,7 +170,6 @@ def device_sub_data():
 
 @app.route("/health", methods=["GET"])
 def heatlh_check():
-
     return response_base(message="Connected to server.", status=200, data=[])
 
 
