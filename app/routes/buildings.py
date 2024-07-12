@@ -1,9 +1,12 @@
 from flask import current_app
 from flask import request
 
+from pydantic import ValidationError
+
 from app.schema.Property import Property
 from app.schema.Room import Room
 from app.schema.Building import Building, Floor
+from app.schema.building_models import BuildingCreateModel, BuildingEditModel, FloorModel
 from server import app
 from app.extensions.db import db
 from app.extensions.responses import response_base
@@ -13,65 +16,79 @@ from app.extensions.utils import get_local_ip, get_ssid
 @app.route("/building/create", methods=["POST"])
 def building():
     try:
-        print(request.json)
+        data = BuildingCreateModel(**request.json)
+        
         building = Building(
-            name=request.json["name"],
-            number=request.json["building_number"],
-            number_of_floors=request.json["number_of_floors"],
-            property_id=request.json["property_id"],
+            name=data.name,
+            number=data.building_number,
+            number_of_floors=data.number_of_floors,
+            property_id=data.property_id,
         )
         db.session.add(building)
         db.session.flush()
+
+        for floor in data.floors:
+            floor = FloorModel(
+                name=floor.name,
+                number=floor.floor_number,
+                building_id=building.id,
+                property_id=data.property_id,
+            )
+            db.session.add(floor)
+        db.session.commit()
+
+        return response_base(
+            message="Building created successfully", status=200, data={"building_id": building.id}
+        )
+
+    except ValidationError as e:
+        error_messages = [error['msg'] for error in e.errors()]
+        return response_base(message="Bad Request", status=400, data={"Errors" : error_messages})
+    
     except Exception as e:
-        print(e)
         db.session.rollback()
         current_app.logger.error(e)
-        return response_base(message="Server error", status=500)
-    for floor in request.json["floors"]:
-        floor = Floor(
-            name=floor["name"],
-            number=floor["floor_number"],
-            building_id=building.id,
-            property_id=request.json["property_id"],
-        )
-        db.session.add(floor)
-    db.session.commit()
-    return response_base(
-        message="Success", status=200, data={"building_id": building.id}
-    )
+        return response_base(message="Internal server error", status=500, data = [])
 
 @app.route("/building/edit", methods=["PUT"])
 def edit_building():
     try:
-        property_id = request.json["property_id"]
+        data = BuildingEditModel(**request.json)
+
+        property_id = data.property_id
         property = Property.query.get(property_id)
         if not property:
             return response_base("Property not found", status=404)
 
-        building_id = request.json["building_id"]
+        building_id = data.building_id
         building = Building.query.get(building_id)
         if not building:
             return response_base(message="Building not found", status=404)
 
-        building.name = request.json.get("name", building.name)
-        building.number = request.json.get("building_number", building.number)
+        building.name = data.name or building.name
+        building.number = data.building_number or building.number
         building.number_of_floors = request.json.get("number_of_floors", building.number_of_floors)
         db.session.commit()
 
-        for floor_data in request.json.get("floors", []):
-            floor_id = floor_data.get("id")
+        for floor_data in data.floors or building.floors:
+            floor_id = floor_data.id
             if floor_id:
                 floor = Floor.query.get(floor_id)
                 if floor:
-                    floor.name = floor_data.get("name", floor.name)
-                    floor.number = floor_data.get("floor_number", floor.number)
+                    floor.name = floor_data.name or floor.name
+                    floor.number = floor_data.floor_number or floor.number
         db.session.commit()
 
         return response_base(message="Building updated successfully", status=200, data={"building_id": building_id})
+
+    except ValidationError as e:
+        error_messages = [error['msg'] for error in e.errors()]
+        return response_base(message="Bad Request", status=400, data={"Errors" : error_messages})
+        
     except Exception as e:
         db.session.rollback()
         current_app.logger.error(e)
-        return response_base(message="Server error", status=500)
+        return response_base(message="Internal server error", status=500)
 
 
 @app.route("/building/view", methods=["POST"])
