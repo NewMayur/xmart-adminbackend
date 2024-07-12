@@ -5,7 +5,7 @@ from werkzeug.serving import run_simple
 from flask_bcrypt import Bcrypt
 from app.extensions.responses import response_base
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, create_access_token
 
 # Other modules
 import os
@@ -63,7 +63,6 @@ def create_app(debug: bool = False):
 
     return app
 
-
 app = create_app(debug=True)
 bcrypt = Bcrypt(app)
 if __name__ == "__main__":
@@ -96,6 +95,29 @@ if __name__ == "__main__":
     @app.route("/web/")
     def render_page_web():
         return render_template("/index.html")
+    
+    users = {
+    "testuser": {
+        "password": bcrypt.generate_password_hash("testpassword").decode('utf-8')
+    }
+}
+
+    @app.route("/login", methods=["GET", "POST"])
+    def login():
+        if request.method == "POST":
+            username = request.json.get("username")
+            password = request.json.get("password")
+            user = users.get(username)
+            if user and bcrypt.check_password_hash(user["password"], password):
+                token = create_access_token(identity=username)
+                return jsonify(status=200, data=[{"token": token}])
+            else:
+                return jsonify(status=401, message="Invalid credentials")
+        return render_template("login.html")
+
+    @app.route("/load-configuration")
+    def load_configuration():
+        return render_template("load-configuration.html")
 
     @app.route("/web/<path:name>")
     def return_flutter_doc(name):

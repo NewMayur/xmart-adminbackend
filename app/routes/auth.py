@@ -23,18 +23,18 @@ def register007():
     return response_base(message="Success", status=200,data=[])
 
 
-@app.route("/login", methods=["POST"])
-def all():
-    # db.create_all()
-    student = User.query.filter_by(username=request.json["username"]).first()
-    print(student)
-    if (student is not None) and bcrypt.check_password_hash(
-        student.password, request.json["password"]
-    ):
-        access_token = create_access_token(identity={'username': student.username})
-        return response_base(message="Authenticated", status=200, data=[{"token" : access_token}])
-    else:
-        return response_base(message="Incorrect credentials", status=403, data=[])
+# @app.route("/login", methods=["POST"])
+# def all():
+#     # db.create_all()
+#     student = User.query.filter_by(username=request.json["username"]).first()
+#     print(student)
+#     if (student is not None) and bcrypt.check_password_hash(
+#         student.password, request.json["password"]
+#     ):
+#         access_token = create_access_token(identity={'username': student.username})
+#         return response_base(message="Authenticated", status=200, data=[{"token" : access_token}])
+#     else:
+#         return response_base(message="Incorrect credentials", status=403, data=[])
 
 
 @app.route("/test-auth", methods=["POST"])
