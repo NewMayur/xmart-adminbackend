@@ -1,13 +1,12 @@
 #!/bin/bash
 
-# Local API endpoint to check
-URL="http://127.0.0.1:5000/check-server"
-
-# Timeout duration in seconds
-TIMEOUT=2
-
-# Command to reload the local server
-RELOAD_COMMAND="python /home/mayurgharat/1\ Projects/Xperio/xperio-adminbackend/server.py"
+# Load environment variables from .env file
+if [ -f .env ]; then
+    source .env
+else
+    echo "Error: .env file not found"
+    exit 1
+fi
 
 # Function to reload the server
 reload_server() {
@@ -17,11 +16,9 @@ reload_server() {
     echo "$(date): Server reloaded"
 }
 
-i=0
-
-while [ $i -lt 12 ]; do # 12 five-second intervals in 1 minute
-  # Check the response time of the API and capture the response
-    response=$(curl -s -w "%{time_total}" -o response_body.txt --max-time $TIMEOUT $URL)
+while true; do
+    # Check the response time of the API and capture the response
+    response=$(curl -s -w "%{time_total} %{http_code}" -o response_body.txt --max-time $TIMEOUT $URL)
     exit_code=$?
 
     if [ $exit_code -ne 0 ]; then
@@ -29,21 +26,26 @@ while [ $i -lt 12 ]; do # 12 five-second intervals in 1 minute
         echo "$(date): Server not reachable or request timed out"
         reload_server
     else
-        # Convert the response time to an integer (in milliseconds)
+        # Extract the response time and HTTP status code
         response_time=$(echo $response | awk '{print int($1*1000)}')
+        http_code=$(echo $response | awk '{print $2}')
         
-        # Log response time
-        echo "$(date): Response time: ${response_time}ms"
+        # Log response time and HTTP status code
+        echo "$(date): Response time: ${response_time}ms, HTTP status code: ${http_code}"
         
-        # Check if the response time exceeds the timeout
-        if [ $response_time -ge $((TIMEOUT*1000)) ]; then
+        # Check if the response time exceeds the timeout or if the HTTP status code is 502
+        if [ $response_time -ge $((TIMEOUT*1000)) ] || [ "$http_code" -eq 502 ]; then
             reload_server
-        else
+        else:
             # Print the response message from the server
             response_body=$(cat response_body.txt)
             echo "$(date): Server response: $response_body"
         fi
     fi
-  sleep 5
-  i=$(( i + 1 ))
+
+    # Clean up
+    rm -f response_body.txt
+
+    # Wait for a specified interval before the next check (e.g., 5 seconds)
+    sleep 5
 done

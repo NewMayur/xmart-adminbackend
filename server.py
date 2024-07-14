@@ -110,12 +110,6 @@ if __name__ == "__main__":
         return send_from_directory(DIR_NAME, datalist[-1])
     
 
-    @app.route("/check-server", methods=['GET'])
-    def check_server():
-        return jsonify(status="ok", message="Server is running"), 200
-
-
-
     @app.errorhandler(Exception)
     def server_error(err):
         app.logger.exception(err)
