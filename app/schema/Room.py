@@ -37,7 +37,7 @@ class Room(db.Model):
         secondary="room_device_type"
     )
     room_devices: Mapped[List[RoomDevice]] = db.relationship(
-        "RoomDevice", backref="room"
+        "RoomDevice", backref="room", cascade="all, delete"
     )
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
@@ -97,11 +97,12 @@ class RoomDevice(db.Model):
     protocol_id = db.Column(db.Integer, db.ForeignKey("master_protocol.id"))
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    # room_type_id = db.relationship("MasterRoomType", backref="master_room_type.id", cascade = "")
     room_sub_type = db.relationship("MasterSubRoomType", backref="master_sub_room_type")
     device_sub_type = db.relationship(
-        "MasterDeviceSubType", backref="master_device_sub_type"
+        "MasterDeviceSubType", backref="master_device_sub_type",cascade=""
     )
-    device_type = db.relationship("MasterDeviceType", backref="master_device_type")
+    device_type = db.relationship("MasterDeviceType", backref="master_device_type", cascade = "")
     protocol = db.relationship("MasterProtocol", backref="master_protocol")
 
 

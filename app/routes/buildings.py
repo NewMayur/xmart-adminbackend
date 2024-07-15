@@ -8,6 +8,7 @@ from server import app
 from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.extensions.utils import get_local_ip, get_ssid
+from app.schema.Room import Room, RoomDevice, RoomDeviceType, RoomRoomSubType
 
 
 @app.route("/building/create", methods=["POST"])
@@ -128,14 +129,29 @@ def building_delete():
         return response_base(message="Failed", status=404, data=[])
     else:
         for floor in building.floors:
+            # floor = Floor
             for room in floor.rooms:
-                for device in room.room_devices:
-                    db.session.delete(device)
-                for room_sub_type in room.room_sub_types:
-                    db.session.delete(room_sub_type)
-                for room_device_type in room.room_device_types:
+                sub_rooms = RoomRoomSubType.query.filter_by(room_id=room.id).all()
+                for sub_room in sub_rooms:
+                    db.session.delete(sub_room)
+
+                # Delete room devices
+                room_devices = RoomDevice.query.filter_by(room_id=room.id).all()
+                for dev in room_devices:
+                    db.session.delete(dev)
+
+                # Delete room device types
+                room_device_types = RoomDeviceType.query.filter_by(room_id=room.id).all()
+                for room_device_type in room_device_types:
                     db.session.delete(room_device_type)
-                db.session.delete(room)
+                db.session.flush()
+                # for device in room.room_devices:
+                #     db.session.delete(device)
+                # for room_sub_type in room.room_sub_types:
+                #     db.session.delete(room_sub_type)
+                # for room_device_type in room.room_device_types:
+                #     db.session.delete(room_device_type)
+                # db.session.delete(room)
             db.session.delete(floor)
         
         db.session.delete(building)

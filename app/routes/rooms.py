@@ -89,22 +89,25 @@ Get the list of rooms for a given floor and return the room details including id
 
 @app.route("/floor/room/list", methods=["POST"])
 def get_room():
-    floor = Floor.query.get_or_404(request.json["floor_id"])
-    # print(building.floors)
-    final_data = []
-    for room in floor.rooms:
-        final_data.append(
-            {
-                "id": room.id,
-                "name": room.name,
-                "number": room.number,
-                "building": room.buildings.name,
-                "room_type": room.room_type.name,
-                "sub_room_types": [subtype.name for subtype in room.room_sub_types],
-            }
-        )
+    floor = Floor.query.filter_by(id = request.json["floor_id"]).first()
+    if floor is None:
+        return response_base(message="Failed", status=404, data=[])
+    else:
+        # print(building.floors)
+        final_data = []
+        for room in floor.rooms:
+            final_data.append(
+                {
+                    "id": room.id,
+                    "name": room.name,
+                    "number": room.number,
+                    "building": room.buildings.name,
+                    "room_type": room.room_type.name,
+                    "sub_room_types": [subtype.name for subtype in room.room_sub_types],
+                }
+            )
 
-    return response_base(message="Success", status=200, data=final_data)
+        return response_base(message="Success", status=200, data=final_data)
 
 
 # Pagination
@@ -460,7 +463,7 @@ def delete_room():
 
         for room in rooms:
             if room is not None:
-                # Delete sub-rooms
+                # Delete sub rooms
                 sub_rooms = RoomRoomSubType.query.filter_by(room_id=room.id).all()
                 for sub_room in sub_rooms:
                     db.session.delete(sub_room)
@@ -474,9 +477,9 @@ def delete_room():
                 room_device_types = RoomDeviceType.query.filter_by(room_id=room.id).all()
                 for room_device_type in room_device_types:
                     db.session.delete(room_device_type)
-
+                db.session.flush()
                 # Delete the room itself
-                db.session.delete(room)
+            db.session.delete(room)
 
         db.session.commit()
         return response_base(message="Success", status=200, data=[])
