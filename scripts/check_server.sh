@@ -12,7 +12,7 @@ fi
 reload_server() {
     echo "$(date): Timeout occurred or server is down. Reloading the server"
     pkill -f "$RELOAD_COMMAND"  # Kill the running server process
-    nohup $RELOAD_COMMAND &> server.log &  # Restart the server in the background and log output
+    $RELOAD_COMMAND &> server.log &  # Restart the server in the background and log output
     echo "$(date): Server reloaded"
 }
 
