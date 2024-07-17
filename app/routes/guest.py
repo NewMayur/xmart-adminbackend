@@ -151,12 +151,12 @@ def load_room_v2_config():
                 "name": device.name,
                 "add_to_home_screen": device.add_to_home_screen,
                 "sub_room": (
-                    device.room_sub_type.name if device.room_sub_type else None
+                    device.room_sub_type.name if device.room_sub_type is not None else ""
                 ),
                 "sub_room_technical": (
                     device.room_sub_type.technical_name
-                    if device.room_sub_type
-                    else None
+                    if device.room_sub_type is not None
+                    else ""
                 ),
                 "device_sub_type": device.device_sub_type.name,
                 "device_sub_type_technical": device.device_sub_type.technical_name,
