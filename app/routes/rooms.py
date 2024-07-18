@@ -291,10 +291,37 @@ def edit_room():
 
 @app.route("/room/device/add", methods=["POST"])
 def add_device_to_room():
-    # print(request.json)
     room = Room.query.filter_by(id=request.json["room_id"]).first()
     if room is not None:
-        print(request.json)
+        if request.json["device_type_id"] == 5:  # TV device type
+            # Check how many remotes the TV already has
+            remotes_count = RoomDevice.query.filter_by(
+                room_id=room.id,
+                device_type_id=5,  # TV
+            ).count()
+
+            if remotes_count >= 2:
+                return response_base(message="TV can have only two remotes", status=400, data=[])
+
+            # Check for specific remote types
+            if request.json["sub_device_type_id"] == 17:  # IR TV remote
+                existing_ir_tv_remote = RoomDevice.query.filter_by(
+                    room_id=room.id,
+                    device_type_id=5,
+                    device_sub_type_id=17
+                ).first()
+                if existing_ir_tv_remote:
+                    return response_base(message="Already an IR TV remote exists", status=400, data=[])
+            elif request.json["sub_device_type_id"] == 18:  # IR STB remote
+                existing_ir_stb_remote = RoomDevice.query.filter_by(
+                    room_id=room.id,
+                    device_type_id=5,
+                    device_sub_type_id=18
+                ).first()
+                if existing_ir_stb_remote:
+                    return response_base(message="Already an IR STB remote exists", status=400, data=[])
+
+        # Proceed with adding the device
         room_device = RoomDevice(
             room_id=room.id,
             floor_id=request.json["floor_id"],
@@ -322,12 +349,9 @@ def add_device_to_room():
         )
         db.session.add(room_device)
         db.session.commit()
-        return response_base(
-            message="Success", status=200, data=[{"id": room_device.id}]
-        )
+        return response_base(message="Success", status=200, data=[{"id": room_device.id}])
     else:
-        return response_base(message="Failed", status=404)
-
+        return response_base(message="Failed", status=404, data=[])
 
 @app.route("/room/device/delete", methods=["DELETE"])
 def delete_device_from_room():

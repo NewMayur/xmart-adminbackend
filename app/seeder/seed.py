@@ -155,7 +155,7 @@ def seed():
             "name": "TV",
             "sub_type": [
                 {"name": "IR TV", "technical_name": "ir_tv"},
-                {"name": "STB TV", "technical_name": "stb_tv"},
+                {"name": "IR STB", "technical_name": "ir_stb"},
             ],
             "protocol": 1,
             "technical_name": "tv",
