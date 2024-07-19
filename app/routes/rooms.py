@@ -301,7 +301,7 @@ def add_device_to_room():
             ).count()
 
             if remotes_count >= 2:
-                return response_base(message="TV can have only two remotes", status=400, data=[])
+                return response_base(message="Maximum limit reached of adding the remote within the Room", status=400, data=[])
 
             # Check for specific remote types
             if request.json["sub_device_type_id"] == 17:  # IR TV remote
@@ -311,7 +311,7 @@ def add_device_to_room():
                     device_sub_type_id=17
                 ).first()
                 if existing_ir_tv_remote:
-                    return response_base(message="Already an IR TV remote exists", status=400, data=[])
+                    return response_base(message="An IR TV remote is already added within the Room", status=400, data=[])
             elif request.json["sub_device_type_id"] == 18:  # IR STB remote
                 existing_ir_stb_remote = RoomDevice.query.filter_by(
                     room_id=room.id,
@@ -319,7 +319,7 @@ def add_device_to_room():
                     device_sub_type_id=18
                 ).first()
                 if existing_ir_stb_remote:
-                    return response_base(message="Already an IR STB remote exists", status=400, data=[])
+                    return response_base(message="An IR STB remote is already added within the Room", status=400, data=[])
 
         # Proceed with adding the device
         room_device = RoomDevice(
