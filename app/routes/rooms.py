@@ -332,7 +332,7 @@ def add_device_to_room():
             room_sub_type_id=(
                 request.json["sub_room_type_id"]
                 if request.json["sub_room_type_id"] not in ["0", 0, None]
-                else None
+                else 0
             ),
             is_published=request.json["is_published"],
             add_to_home_screen=request.json["add_to_home_screen"],
