@@ -143,7 +143,7 @@ def load_room_v2_config():
                         if device.protocol_id == 1:
                             final_config[dev_con.get("technical_name", "")] = dev_con.get("object_instance", "")
                         else:
-                            final_config[dev_con.get("technica_name", "")] = dev_con.get("address", "")
+                            final_config[dev_con.get("technical_name", "")] = dev_con.get("address", "")
                     else:
                         print("Unexpected format in device configuration list")
             else:
@@ -232,7 +232,7 @@ def load_room_v3_config():
                         if device.protocol_id == 1:
                             final_config[dev_con.get("technical_name", "")] = dev_con.get("object_instance", "")
                         else:
-                            final_config[dev_con.get("technica_name", "")] = dev_con.get("address", "")
+                            final_config[dev_con.get("technical_name", "")] = dev_con.get("address", "")
                     else:
                         print("Unexpected format in device configuration list")
             else:
