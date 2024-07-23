@@ -140,7 +140,10 @@ def load_room_v2_config():
             if isinstance(json.loads(device.device_config), list):
                 for dev_con in json.loads(device.device_config):
                     if isinstance(dev_con, dict):
-                        final_config[dev_con.get("technical_name", "")] = dev_con.get("address", "")
+                        if device.protocol_id == 1:
+                            final_config[dev_con.get("technical_name", "")] = dev_con.get("object_instance", "")
+                        else:
+                            final_config[dev_con.get("technica_name", "")] = dev_con.get("address", "")
                     else:
                         print("Unexpected format in device configuration list")
             else:
@@ -226,7 +229,10 @@ def load_room_v3_config():
             if isinstance(json.loads(device.device_config), list):
                 for dev_con in json.loads(device.device_config):
                     if isinstance(dev_con, dict):
-                        final_config[dev_con.get("technical_name", "")] = dev_con.get("address", "")
+                        if device.protocol_id == 1:
+                            final_config[dev_con.get("technical_name", "")] = dev_con.get("object_instance", "")
+                        else:
+                            final_config[dev_con.get("technica_name", "")] = dev_con.get("address", "")
                     else:
                         print("Unexpected format in device configuration list")
             else:
