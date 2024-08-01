@@ -388,23 +388,24 @@ def add_test_device():
             db.session.flush()  # Ensure the new subtype ID is available
 
             # Check for KNX and BACnet data
-            knx_data = subtype.get("knx_data")
+            knx_data_list = subtype.get("knx_data")
             bacnet_data_list = subtype.get("bacnet_data")
 
-            if knx_data and bacnet_data_list:
+            if knx_data_list and bacnet_data_list:
                 return response_base(message="Device can't have both protocols", status=400, data=[])
 
             # Add KNX data
-            if knx_data:
-                knx_entry = KnxDeviceSubTypeData(
-                    device_type_id=device_type.id,
-                    sub_device_type_id=new_subtype.id,
-                    address_name_technical=knx_data["address_name_technical"],
-                    address_name=knx_data["address_name"],
-                    value_data_type=knx_data["value_data_type"],
-                    value_data_range=knx_data["value_data_range"],
-                )
-                db.session.add(knx_entry)
+            if knx_data_list:
+                for knx_entry_data in knx_data_list:
+                    knx_entry = KnxDeviceSubTypeData(
+                        device_type_id=device_type.id,
+                        sub_device_type_id=new_subtype.id,
+                        address_name_technical=knx_entry_data["address_name_technical"],
+                        address_name=knx_entry_data["address_name"],
+                        value_data_type=knx_entry_data["value_data_type"],
+                        value_data_range=knx_entry_data["value_data_range"],
+                    )
+                    db.session.add(knx_entry)
 
             # Add BACnet data
             if bacnet_data_list:
@@ -457,6 +458,7 @@ def delete_device_type():
         return response_base(message=str(e), status=500, data=[])
     
 
+
 @app.route("/master/update_device_type", methods=["POST"])
 def update_device_type():
     try:
@@ -504,33 +506,34 @@ def update_device_type():
                 subtype = new_subtype  # Assign to subtype for later use
 
             # Check for KNX and BACnet data
-            knx_data = subtype_data.get("knx_data")
-            bacnet_data_list = subtype_data.get("bacnet_data")
+            knx_data_list = subtype_data.get("knx_data", [])
+            bacnet_data_list = subtype_data.get("bacnet_data", [])
 
-            if knx_data and bacnet_data_list:
+            if knx_data_list and bacnet_data_list:
                 return response_base(message="Device can't have both protocols", status=400, data=[])
 
-            if knx_data:
-                print(f"Processing KNX data: {knx_data}")
-                knx_entry = KnxDeviceSubTypeData.query.filter_by(
-                    device_type_id=device_type.id,
-                    sub_device_type_id=subtype.id,
-                    address_name_technical=knx_data["address_name_technical"]
-                ).first()
-                if knx_entry:
-                    knx_entry.address_name = knx_data.get("address_name", knx_entry.address_name)
-                    knx_entry.value_data_type = knx_data.get("value_data_type", knx_entry.value_data_type)
-                    knx_entry.value_data_range = knx_data.get("value_data_range", knx_entry.value_data_range)
-                else:
-                    knx_entry = KnxDeviceSubTypeData(
+            if knx_data_list:
+                for knx_data in knx_data_list:
+                    print(f"Processing KNX data: {knx_data}")
+                    knx_entry = KnxDeviceSubTypeData.query.filter_by(
                         device_type_id=device_type.id,
                         sub_device_type_id=subtype.id,
-                        address_name_technical=knx_data["address_name_technical"],
-                        address_name=knx_data["address_name"],
-                        value_data_type=knx_data["value_data_type"],
-                        value_data_range=knx_data["value_data_range"],
-                    )
-                    db.session.add(knx_entry)
+                        address_name_technical=knx_data["address_name_technical"]
+                    ).first()
+                    if knx_entry:
+                        knx_entry.address_name = knx_data.get("address_name", knx_entry.address_name)
+                        knx_entry.value_data_type = knx_data.get("value_data_type", knx_entry.value_data_type)
+                        knx_entry.value_data_range = knx_data.get("value_data_range", knx_entry.value_data_range)
+                    else:
+                        knx_entry = KnxDeviceSubTypeData(
+                            device_type_id=device_type.id,
+                            sub_device_type_id=subtype.id,
+                            address_name_technical=knx_data["address_name_technical"],
+                            address_name=knx_data["address_name"],
+                            value_data_type=knx_data["value_data_type"],
+                            value_data_range=knx_data["value_data_range"],
+                        )
+                        db.session.add(knx_entry)
 
             if bacnet_data_list:
                 for bacnet_data in bacnet_data_list:
@@ -564,4 +567,7 @@ def update_device_type():
     except Exception as e:
         db.session.rollback()
         return response_base(message=str(e), status=500, data=[])
+
+
+
 

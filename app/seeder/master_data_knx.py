@@ -53,6 +53,7 @@ knx_master = [
 
     ## TV
 
+    ## IR TV Remote
     {
         "device_type_id": "tv",
         "sub_device_type_id": "ir_tv",
@@ -157,6 +158,9 @@ knx_master = [
         "value_data_type": "On/Off",
         "value_data_range": "1"
     },
+
+    ## IR STB Remote
+    
     {
         "device_type_id": "tv",
         "sub_device_type_id": "ir_stb",
