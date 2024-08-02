@@ -13,6 +13,7 @@ from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.seeder.seed import seed
 from app.schema.Device import KnxDeviceSubTypeData, BacNetDeviceSubTypeData
+from app.schema.Room import RoomDevice
 import os
 #import pandas as pd
 import json
@@ -456,9 +457,55 @@ def delete_device_type():
     except Exception as e:
         db.session.rollback()
         return response_base(message=str(e), status=500, data=[])
-    
 
+  
+@app.route("/master/delete_sub_device_type", methods=["DELETE"])
+def delete_sub_device_type():
+    try:
+        data = request.json
 
+        # Extract device type ID and sub-device type ID
+        device_type_id = data.get("device_type_id")
+        sub_device_type_id = data.get("sub_device_type_id")
+
+        if not device_type_id or not sub_device_type_id:
+            return response_base(message="Device type ID and sub-device type ID are required", status=400, data=[])
+
+        # Fetch the sub-device type
+        sub_device_type = MasterDeviceSubType.query.filter_by(
+            id=sub_device_type_id, master_device_type_id=device_type_id
+        ).first()
+
+        if not sub_device_type:
+            return response_base(message="Sub-device type not found", status=404, data=[])
+
+        # Delete associated KNX data
+        knx_data = KnxDeviceSubTypeData.query.filter_by(
+            device_type_id=device_type_id, sub_device_type_id=sub_device_type_id
+        ).all()
+        for knx_entry in knx_data:
+            db.session.delete(knx_entry)
+
+        # Delete associated BACnet data
+        bacnet_data = BacNetDeviceSubTypeData.query.filter_by(
+            device_type_id=device_type_id, sub_device_type_id=sub_device_type_id
+        ).all()
+        for bacnet_entry in bacnet_data:
+            db.session.delete(bacnet_entry)
+
+        # Delete RoomDevice entries that reference the sub-device type
+        room_devices = RoomDevice.query.filter_by(device_sub_type_id=sub_device_type_id).all()
+        for room_device in room_devices:
+            db.session.delete(room_device)
+
+        # Delete the sub-device type
+        db.session.delete(sub_device_type)
+        db.session.commit()
+
+        return response_base(message="Sub-device type and associated fields deleted successfully", status=200, data=[])
+    except Exception as e:
+        db.session.rollback()
+        return response_base(message=str(e), status=500, data=[])
 @app.route("/master/update_device_type", methods=["POST"])
 def update_device_type():
     try:
