@@ -13,9 +13,10 @@ from app.extensions.db import db
 from app.extensions.responses import response_base
 from app.seeder.seed import seed
 from app.schema.Device import KnxDeviceSubTypeData, BacNetDeviceSubTypeData
+from app.schema.Room import RoomDevice
 import os
 #import pandas as pd
-
+import json
 
 @app.route("/master/roomtype/list", methods=["GET"])
 def room_type_master_fetch():
@@ -340,10 +341,280 @@ def download_master():
     return send_file(f"master/master_{master}.xlsx", as_attachment=True)
 
 
-@app.route("/master/propertytype", methods=["GET"])
-def property_type_master():
-    data = MasterPropertyType.query.all()
-    final_data = []
-    for dat in data:
-        final_data.append({"id": dat.id, "name": dat.name})
-    return response_base(message="Success", status=200, data=final_data)
+import json
+
+@app.route("/master/add_test_device", methods=["POST"])
+def add_test_device():
+    try:
+        data = request.json
+        print(f"Received data: {data}")
+
+        # Extract device type information
+        device_type_info = data.get("device_type")
+        device_type_name = device_type_info.get("name")
+        device_type_technical_name = device_type_info.get("technical_name")
+        experience_config = json.dumps(device_type_info.get("experience_config", '{}'))
+
+        # Extract subtypes information
+        subtypes = data.get("subtypes", [])
+
+        # Check if the device type already exists
+        device_type = MasterDeviceType.query.filter_by(technical_name=device_type_technical_name).first()
+        if device_type:
+            # Remove existing sub-device types and their fields
+            existing_subtypes = MasterDeviceSubType.query.filter_by(master_device_type_id=device_type.id).all()
+            for subtype in existing_subtypes:
+                KnxDeviceSubTypeData.query.filter_by(sub_device_type_id=subtype.id).delete()
+                BacNetDeviceSubTypeData.query.filter_by(sub_device_type_id=subtype.id).delete()
+                db.session.delete(subtype)
+            db.session.flush()
+        else:
+            # Create the new device type
+            device_type = MasterDeviceType(
+                name=device_type_name,
+                technical_name=device_type_technical_name,
+                experience_config=experience_config  # Provide the experience config
+            )
+            db.session.add(device_type)
+            db.session.flush()  # Ensure the new device type ID is available
+
+        # Add the new sub-device types
+        for subtype in subtypes:
+            new_subtype = MasterDeviceSubType(
+                name=subtype["name"],
+                technical_name=subtype["technical_name"],
+                master_device_type_id=device_type.id,
+            )
+            db.session.add(new_subtype)
+            db.session.flush()  # Ensure the new subtype ID is available
+
+            # Check for KNX and BACnet data
+            knx_data_list = subtype.get("knx_data")
+            bacnet_data_list = subtype.get("bacnet_data")
+
+            if knx_data_list and bacnet_data_list:
+                return response_base(message="Device can't have both protocols", status=400, data=[])
+
+            # Add KNX data
+            if knx_data_list:
+                for knx_entry_data in knx_data_list:
+                    knx_entry = KnxDeviceSubTypeData(
+                        device_type_id=device_type.id,
+                        sub_device_type_id=new_subtype.id,
+                        address_name_technical=knx_entry_data["address_name_technical"],
+                        address_name=knx_entry_data["address_name"],
+                        value_data_type=knx_entry_data["value_data_type"],
+                        value_data_range=knx_entry_data["value_data_range"],
+                    )
+                    db.session.add(knx_entry)
+
+            # Add BACnet data
+            if bacnet_data_list:
+                for bacnet_data in bacnet_data_list:
+                    bacnet_entry = BacNetDeviceSubTypeData(
+                        device_type_id=device_type.id,
+                        sub_device_type_id=new_subtype.id,
+                        technical_name=bacnet_data["technical_name"],
+                        function=bacnet_data["function"],
+                        object_instance=bacnet_data["object_instance"],
+                        object_type=bacnet_data["object_type"],
+                        range=bacnet_data["range"],
+                        read_write=bacnet_data["read_write"],
+                    )
+                    db.session.add(bacnet_entry)
+
+        db.session.commit()
+        return response_base(message="Test device and sub-device added successfully", status=200, data=[])
+    except Exception as e:
+        db.session.rollback()
+        return response_base(message=str(e), status=500, data=[])
+
+
+@app.route("/master/delete_device_type", methods=["POST"])
+def delete_device_type():
+    try:
+        device_type_id = request.json.get("device_type_id")
+        if not device_type_id:
+            return response_base(message="Device type ID is required", status=400, data=[])
+
+        # Fetch the device type
+        device_type = MasterDeviceType.query.get(device_type_id)
+        if not device_type:
+            return response_base(message="Device type not found", status=404, data=[])
+
+        # Fetch and delete all sub-device types and their fields
+        sub_device_types = MasterDeviceSubType.query.filter_by(master_device_type_id=device_type_id).all()
+        for subtype in sub_device_types:
+            KnxDeviceSubTypeData.query.filter_by(sub_device_type_id=subtype.id).delete()
+            BacNetDeviceSubTypeData.query.filter_by(sub_device_type_id=subtype.id).delete()
+            db.session.delete(subtype)
+
+        # Delete the master device type
+        db.session.delete(device_type)
+        db.session.commit()
+
+        return response_base(message="Device type and its sub-device types deleted successfully", status=200, data=[])
+    except Exception as e:
+        db.session.rollback()
+        return response_base(message=str(e), status=500, data=[])
+
+  
+@app.route("/master/delete_sub_device_type", methods=["DELETE"])
+def delete_sub_device_type():
+    try:
+        data = request.json
+
+        # Extract device type ID and sub-device type ID
+        device_type_id = data.get("device_type_id")
+        sub_device_type_id = data.get("sub_device_type_id")
+
+        if not device_type_id or not sub_device_type_id:
+            return response_base(message="Device type ID and sub-device type ID are required", status=400, data=[])
+
+        # Fetch the sub-device type
+        sub_device_type = MasterDeviceSubType.query.filter_by(
+            id=sub_device_type_id, master_device_type_id=device_type_id
+        ).first()
+
+        if not sub_device_type:
+            return response_base(message="Sub-device type not found", status=404, data=[])
+
+        # Delete associated KNX data
+        knx_data = KnxDeviceSubTypeData.query.filter_by(
+            device_type_id=device_type_id, sub_device_type_id=sub_device_type_id
+        ).all()
+        for knx_entry in knx_data:
+            db.session.delete(knx_entry)
+
+        # Delete associated BACnet data
+        bacnet_data = BacNetDeviceSubTypeData.query.filter_by(
+            device_type_id=device_type_id, sub_device_type_id=sub_device_type_id
+        ).all()
+        for bacnet_entry in bacnet_data:
+            db.session.delete(bacnet_entry)
+
+        # Delete RoomDevice entries that reference the sub-device type
+        room_devices = RoomDevice.query.filter_by(device_sub_type_id=sub_device_type_id).all()
+        for room_device in room_devices:
+            db.session.delete(room_device)
+
+        # Delete the sub-device type
+        db.session.delete(sub_device_type)
+        db.session.commit()
+
+        return response_base(message="Sub-device type and associated fields deleted successfully", status=200, data=[])
+    except Exception as e:
+        db.session.rollback()
+        return response_base(message=str(e), status=500, data=[])
+@app.route("/master/update_device_type", methods=["POST"])
+def update_device_type():
+    try:
+        data = request.json
+        print(f"Received data: {data}")
+
+        # Extract device type information
+        device_type_id = data.get("device_type_id")
+        device_type_info = data.get("device_type")
+        subtypes = data.get("subtypes", [])
+
+        if not device_type_id or not device_type_info:
+            return response_base(message="Device type ID and information are required", status=400, data=[])
+
+        # Fetch the existing device type
+        device_type = MasterDeviceType.query.get(device_type_id)
+        if not device_type:
+            return response_base(message="Device type not found", status=404, data=[])
+
+        # Update device type information
+        device_type.name = device_type_info.get("name", device_type.name)
+        device_type.technical_name = device_type_info.get("technical_name", device_type.technical_name)
+        device_type.experience_config = json.dumps(device_type_info.get("experience_config", device_type.experience_config))
+
+        # Update or add sub-device types
+        existing_subtypes = {subtype.id: subtype for subtype in MasterDeviceSubType.query.filter_by(master_device_type_id=device_type_id).all()}
+        for subtype_data in subtypes:
+            print(f"Processing subtype_data: {subtype_data}")
+
+            subtype_id = subtype_data.get("id")
+            if subtype_id and subtype_id in existing_subtypes:
+                # Update existing sub-device type
+                subtype = existing_subtypes[subtype_id]
+                subtype.name = subtype_data.get("name", subtype.name)
+                subtype.technical_name = subtype_data.get("technical_name", subtype.technical_name)
+            else:
+                # Add new sub-device type
+                new_subtype = MasterDeviceSubType(
+                    name=subtype_data["name"],
+                    technical_name=subtype_data["technical_name"],
+                    master_device_type_id=device_type.id,
+                )
+                db.session.add(new_subtype)
+                db.session.flush()  # Ensure the new subtype ID is available
+                subtype = new_subtype  # Assign to subtype for later use
+
+            # Check for KNX and BACnet data
+            knx_data_list = subtype_data.get("knx_data", [])
+            bacnet_data_list = subtype_data.get("bacnet_data", [])
+
+            if knx_data_list and bacnet_data_list:
+                return response_base(message="Device can't have both protocols", status=400, data=[])
+
+            if knx_data_list:
+                for knx_data in knx_data_list:
+                    print(f"Processing KNX data: {knx_data}")
+                    knx_entry = KnxDeviceSubTypeData.query.filter_by(
+                        device_type_id=device_type.id,
+                        sub_device_type_id=subtype.id,
+                        address_name_technical=knx_data["address_name_technical"]
+                    ).first()
+                    if knx_entry:
+                        knx_entry.address_name = knx_data.get("address_name", knx_entry.address_name)
+                        knx_entry.value_data_type = knx_data.get("value_data_type", knx_entry.value_data_type)
+                        knx_entry.value_data_range = knx_data.get("value_data_range", knx_entry.value_data_range)
+                    else:
+                        knx_entry = KnxDeviceSubTypeData(
+                            device_type_id=device_type.id,
+                            sub_device_type_id=subtype.id,
+                            address_name_technical=knx_data["address_name_technical"],
+                            address_name=knx_data["address_name"],
+                            value_data_type=knx_data["value_data_type"],
+                            value_data_range=knx_data["value_data_range"],
+                        )
+                        db.session.add(knx_entry)
+
+            if bacnet_data_list:
+                for bacnet_data in bacnet_data_list:
+                    print(f"Processing BACnet data: {bacnet_data}")
+                    bacnet_entry = BacNetDeviceSubTypeData.query.filter_by(
+                        device_type_id=device_type.id,
+                        sub_device_type_id=subtype.id,
+                        technical_name=bacnet_data["technical_name"]
+                    ).first()
+                    if bacnet_entry:
+                        bacnet_entry.function = bacnet_data.get("function", bacnet_entry.function)
+                        bacnet_entry.object_instance = bacnet_data.get("object_instance", bacnet_entry.object_instance)
+                        bacnet_entry.object_type = bacnet_data.get("object_type", bacnet_entry.object_type)
+                        bacnet_entry.range = bacnet_data.get("range", bacnet_entry.range)
+                        bacnet_entry.read_write = bacnet_data.get("read_write", bacnet_entry.read_write)
+                    else:
+                        bacnet_entry = BacNetDeviceSubTypeData(
+                            device_type_id=device_type.id,
+                            sub_device_type_id=subtype.id,
+                            technical_name=bacnet_data["technical_name"],
+                            function=bacnet_data["function"],
+                            object_instance=bacnet_data["object_instance"],
+                            object_type=bacnet_data["object_type"],
+                            range=bacnet_data["range"],
+                            read_write=bacnet_data["read_write"],
+                        )
+                        db.session.add(bacnet_entry)
+
+        db.session.commit()
+        return response_base(message="Device type and sub-device types updated successfully", status=200, data=[])
+    except Exception as e:
+        db.session.rollback()
+        return response_base(message=str(e), status=500, data=[])
+
+
+
+
