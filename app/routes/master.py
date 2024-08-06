@@ -340,6 +340,14 @@ def download_master():
     print(master)
     return send_file(f"master/master_{master}.xlsx", as_attachment=True)
 
+@app.route("/master/propertytype", methods=["GET"])
+def property_type_master():
+    data = MasterPropertyType.query.all()
+    final_data = []
+    for dat in data:
+        final_data.append({"id": dat.id, "name": dat.name})
+    return response_base(message="Success", status=200, data=final_data)
+
 
 import json
 
