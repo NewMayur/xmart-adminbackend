@@ -67,9 +67,26 @@ class MasterDeviceSubType(db.Model):
     master_device_type_new = db.relationship(
         "MasterDeviceType", backref="master_device_type_new"
     )
+    icon_id = db.Column(db.Integer, db.ForeignKey('icon.id'), nullable=False)
+    icon = db.relationship('Icon', foreign_keys="Icon.device_sub_type_id", back_populates="device_sub_type")
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     # deleted_at = db.Column(db.DateTime(timezone=True))
 
     def __repr__(self):
         return f"<MasterDeviceSubType {self.name}>"
+
+class Icon(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), nullable=False, unique=True)
+    file_path = db.Column(db.String(255), nullable=False)
+    device_sub_type_id = db.Column(db.Integer, db.ForeignKey('master_device_sub_type.id'), nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    # Relationship
+    device_sub_type = db.relationship('MasterDeviceSubType', foreign_keys=[device_sub_type_id], backref='icons')
+
+    def __repr__(self):
+        return f"<Icon {self.filename}>"

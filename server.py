@@ -6,6 +6,8 @@ from flask_bcrypt import Bcrypt
 from app.extensions.responses import response_base
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
+
 
 # Other modules
 import os
@@ -43,15 +45,20 @@ def create_app(debug: bool = False):
     # setup_flask_logger()
 
     # Initialize extensions
-    from app.extensions import db
+    from app.extensions.db import db
 
     # print(db.db.ini)
-    db.db.init_app(app)
+    db.init_app(app)
+    
+    # Set up Flask-Migrate
+    migrate = Migrate(app, db)
 
     # Import all models and Create database tables
     # from app import models
 
     # db.create_all()
+    with app.app_context():
+        db.create_all()
 
     # Register blueprints or routes
 
@@ -62,6 +69,8 @@ def create_app(debug: bool = False):
     # app.before_request(lambda: limiter.check())
 
     return app
+
+
 
 
 app = create_app(debug=True)
