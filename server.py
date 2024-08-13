@@ -57,9 +57,9 @@ def create_app(debug: bool = False):
     # from app import models
 
     # db.create_all()
-    with app.app_context():
-        db.create_all()
-
+    # with app.app_context():
+    #     from app.seeder import icons_seeder
+    #     icons_seeder.add_icons_to_db(app)
     # Register blueprints or routes
 
     # app.register_blueprint(auth)

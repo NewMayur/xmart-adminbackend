@@ -10,9 +10,9 @@ def add_icons_to_db(app):
             # Convert filename to lowercase and replace spaces with hyphens
             new_filename = filename.lower().replace(' ', '-')
             
-            existing_icon = Icon.query.filter_by(name=new_filename).first()
+            existing_icon = Icon.query.filter_by(filename=new_filename).first()
             if existing_icon is None:
-                icon_path = os.path.join('static', 'icons', filename)
-                new_icon = Icon(name=new_filename, path=icon_path)
+                icon_path = os.path.join('static', 'icons', new_filename)
+                new_icon = Icon(filename=new_filename, file_path=icon_path)
                 db.session.add(new_icon)
     db.session.commit()

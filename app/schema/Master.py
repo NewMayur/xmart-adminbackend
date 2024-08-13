@@ -80,7 +80,7 @@ class Icon(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(255), nullable=False, unique=True)
     file_path = db.Column(db.String(255), nullable=False)
-    device_sub_type_id = db.Column(db.Integer, db.ForeignKey('master_device_sub_type.id'), nullable=False)
+    device_sub_type_id = db.Column(db.Integer, db.ForeignKey('master_device_sub_type.id'), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
     updated_at = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

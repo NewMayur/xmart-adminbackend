@@ -79,6 +79,165 @@ def seed():
         },
     ]
     protocol_device = ["Bacnet", "KNX"]
+    # device_sub_type = [
+    #     {
+    #         "name": "Lights",
+    #         "technical_name": "lights",
+    #         "config": {
+    #             "lights": {
+    #                 "cct_light": {"brightness": "", "color": ""},
+    #                 "dimmer_light": "",
+    #                 "on/off_light": "",
+    #                 "rgb_light": {"brightness": "", "color": ""},
+    #             }
+    #         },
+    #         "sub_type": [
+    #             {"name": "ON/OFF Light", "technical_name": "on/off_light", "icon_id":1},
+    #             {"name": "Dimmer Light", "technical_name": "dimmer_light", "icon_id":2},
+    #             {"name": "RGB Light", "technical_name": "rgb_light", "icon_id":3},
+    #             {"name": "CCT Light", "technical_name": "cct_light", "icon_id":4},
+    #             {"name": "Service Light", "technical_name": "service_light", "icon_id":5},
+    #         ],
+    #     },
+    #     {
+    #         "name": "Air Conditioner",
+    #         "technical_name": "air_conditioner",
+    #         "config": {
+    #             "hvac": {"fan_speed": "", "temperature": ""},
+    #             "ahu": {"fan_speed": "", "temperature": ""},
+    #             "fcu": {"fan_speed": "", "temperature": ""},
+    #             "split_aC": {"fan_speed": 1, "temperature": ""},
+    #             "vrv": {"fan_speed": "", "temperature": ""},
+    #             "vrf": {"fan_speed": "", "temperature": ""},
+    #         },
+    #         "sub_type": [
+    #             {"name": "HVAC", "technical_name": "hvac"},
+    #             {"name": "AHU", "technical_name": "ahu"},
+    #             {"name": "FCU", "technical_name": "fcu"},
+    #             {"name": "Split AC", "technical_name": "split_ac"},
+    #             {"name": "VRV", "technical_name": "vrv"},
+    #             {"name": "VRF", "technical_name": "vrf"},
+    #         ],
+    #     },
+    #     {
+    #         "name": "Curtains",
+    #         "technical_name": "curtains",
+    #         "config": {
+    #             "horizontal_curtains": {"percent_open": "", "state": ""},
+    #             "vertical_curtains": {"percentOpen": "", "state": ""},
+    #             "blinds": {"percent_open": "", "state": ""},
+    #         },
+    #         "sub_type": [
+    #             {
+    #                 "name": "Horizontal Curtains",
+    #                 "technical_name": "horizontal_curtains",
+    #             },
+    #             {"name": "Vertical Curtains", "technical_name": "vertical_curtains"},
+    #             {"name": "Blinds", "technical_name": "blinds"},
+    #         ],
+    #     },
+    #     {
+    #         "name": "Fans",
+    #         "technical_name": "fans",
+    #         "config": {
+    #             "ac_fans": {
+    #                 "fan_speed": "",
+    #                 "state": "",
+    #             },
+    #             "dc_fans": {"fan_speed": "", "state": ""},
+    #         },
+    #         "sub_type": [
+    #             {"name": "AC Fans", "technical_name": "ac_fans"},
+    #             {"name": "DC Fans", "technical_name": "dc_fans"},
+    #         ],
+    #     },
+    #     {
+    #         "name": "TV",
+    #         "sub_type": [
+    #             {"name": "IR TV", "technical_name": "ir_tv"},
+    #             {"name": "IR STB", "technical_name": "ir_stb"},
+    #         ],
+    #         "protocol": 1,
+    #         "technical_name": "tv",
+    #         "config": {},
+    #     },
+    #     {
+    #         "name": "Music System",
+    #         "technical_name": "music_system",
+    #         "protocol": 1,
+    #         "sub_type": [],
+    #         "config": {},
+    #     },
+    #     {
+    #         "name": "Door Lock",
+    #         "sub_type": [
+    #             {"name": "Bluetooth Lock", "technical_name": "bluetooth_lock"},
+    #             {"name": "WiFi Lock", "technical_name": "wifi_lock"},
+    #             {"name": "Wired Lock", "technical_name": "wired_lock"},
+    #         ],
+    #         "protocol": 1,
+    #         "technical_name": "door_lock",
+    #         "config": {},
+    #     },
+    #     {
+    #         "name": "Bathtub",
+    #         "protocol": 1,
+    #         "technical_name": "bath_tub",
+    #         "sub_type": [],
+    #         "config": {},
+    #     },
+    #     {
+    #         "name": "Jacuzzi",
+    #         "protocol": 1,
+    #         "sub_type": [],
+    #         "technical_name": "jacuzzi",
+    #         "config": {},
+    #     },
+    #     {
+    #         "name": "Sensors",
+    #         "technical_name": "sensors",
+    #         "sub_type": [
+    #             {"name": "CO2  Sensor", "technical_name": "co2_sensor"},
+    #             {"name": "Temperature Sensor", "technical_name": "temperature_sensor"},
+    #             {"name": "Occupancy Sensor", "technical_name": "occupancy_sensor"},
+    #             {"name": "Humidity Sensor", "technical_name": "humidity_sensor"},
+    #             {
+    #                 "name": "Smoke Detector Sensor",
+    #                 "technical_name": "smoke_detector_sensor",
+    #             },
+    #             {"name": "AQI Sensor", "technical_name": "aqi_sensor"},
+    #         ],
+    #         "protocol": 1,
+    #         "config": {},
+    #     },
+    #     {
+    #         "name": "Smart Switch Board",
+    #         "sub_type": [
+    #             {"name": "HTTP", "technical_name": "http"},
+    #             {"name": "Zigbee", "technical_name": "zigbee"},
+    #             {"name": "Z Wave", "technical_name": "z_wave"},
+    #             {"name": "MQTT", "technical_name": "mqtt"},
+    #         ],
+    #         "protocol": 1,
+    #         "technical_name": "smart_switch_board",
+    #         "config": {},
+    #     },
+    #     {
+    #         "name": "Media Server",
+    #         "protocol": 1,
+    #         "technical_name": "media_server",
+    #         "sub_type": [],
+    #         "config": {},
+    #     },
+    #     {
+    #         "name": "Toilet Seat",
+    #         "protocol": 1,
+    #         "sub_type": [],
+    #         "technical_name": "toilet_seat",
+    #         "config": {},
+    #     },
+    # ]
+
     device_sub_type = [
         {
             "name": "Lights",
@@ -92,11 +251,11 @@ def seed():
                 }
             },
             "sub_type": [
-                {"name": "ON/OFF Light", "technical_name": "on/off_light"},
-                {"name": "Dimmer Light", "technical_name": "dimmer_light"},
-                {"name": "RGB Light", "technical_name": "rgb_light"},
-                {"name": "CCT Light", "technical_name": "cct_light"},
-                {"name": "Service Light", "technical_name": "service_light"},
+                {"name": "ON/OFF Light", "technical_name": "on/off_light", "icon_id": 1},
+                {"name": "Dimmer Light", "technical_name": "dimmer_light", "icon_id": 2},
+                {"name": "RGB Light", "technical_name": "rgb_light", "icon_id": 3},
+                {"name": "CCT Light", "technical_name": "cct_light", "icon_id": 4},
+                {"name": "Service Light", "technical_name": "service_light", "icon_id": 5},
             ],
         },
         {
@@ -111,12 +270,12 @@ def seed():
                 "vrf": {"fan_speed": "", "temperature": ""},
             },
             "sub_type": [
-                {"name": "HVAC", "technical_name": "hvac"},
-                {"name": "AHU", "technical_name": "ahu"},
-                {"name": "FCU", "technical_name": "fcu"},
-                {"name": "Split AC", "technical_name": "split_ac"},
-                {"name": "VRV", "technical_name": "vrv"},
-                {"name": "VRF", "technical_name": "vrf"},
+                {"name": "HVAC", "technical_name": "hvac", "icon_id": 6},
+                {"name": "AHU", "technical_name": "ahu", "icon_id": 7},
+                {"name": "FCU", "technical_name": "fcu", "icon_id": 8},
+                {"name": "Split AC", "technical_name": "split_ac", "icon_id": 9},
+                {"name": "VRV", "technical_name": "vrv", "icon_id": 10},
+                {"name": "VRF", "technical_name": "vrf", "icon_id": 11},
             ],
         },
         {
@@ -131,31 +290,33 @@ def seed():
                 {
                     "name": "Horizontal Curtains",
                     "technical_name": "horizontal_curtains",
+                    "icon_id": 12,
                 },
-                {"name": "Vertical Curtains", "technical_name": "vertical_curtains"},
-                {"name": "Blinds", "technical_name": "blinds"},
+                {
+                    "name": "Vertical Curtains",
+                    "technical_name": "vertical_curtains",
+                    "icon_id": 13,
+                },
+                {"name": "Blinds", "technical_name": "blinds", "icon_id": 14},
             ],
         },
         {
             "name": "Fans",
             "technical_name": "fans",
             "config": {
-                "ac_fans": {
-                    "fan_speed": "",
-                    "state": "",
-                },
+                "ac_fans": {"fan_speed": "", "state": ""},
                 "dc_fans": {"fan_speed": "", "state": ""},
             },
             "sub_type": [
-                {"name": "AC Fans", "technical_name": "ac_fans"},
-                {"name": "DC Fans", "technical_name": "dc_fans"},
+                {"name": "AC Fans", "technical_name": "ac_fans", "icon_id": 15},
+                {"name": "DC Fans", "technical_name": "dc_fans", "icon_id": 16},
             ],
         },
         {
             "name": "TV",
             "sub_type": [
-                {"name": "IR TV", "technical_name": "ir_tv"},
-                {"name": "IR STB", "technical_name": "ir_stb"},
+                {"name": "IR TV", "technical_name": "ir_tv", "icon_id": 17},
+                {"name": "IR STB", "technical_name": "ir_stb", "icon_id": 18},
             ],
             "protocol": 1,
             "technical_name": "tv",
@@ -171,9 +332,9 @@ def seed():
         {
             "name": "Door Lock",
             "sub_type": [
-                {"name": "Bluetooth Lock", "technical_name": "bluetooth_lock"},
-                {"name": "WiFi Lock", "technical_name": "wifi_lock"},
-                {"name": "Wired Lock", "technical_name": "wired_lock"},
+                {"name": "Bluetooth Lock", "technical_name": "bluetooth_lock", "icon_id": 19},
+                {"name": "WiFi Lock", "technical_name": "wifi_lock", "icon_id": 20},
+                {"name": "Wired Lock", "technical_name": "wired_lock", "icon_id": 21},
             ],
             "protocol": 1,
             "technical_name": "door_lock",
@@ -197,15 +358,28 @@ def seed():
             "name": "Sensors",
             "technical_name": "sensors",
             "sub_type": [
-                {"name": "CO2  Sensor", "technical_name": "co2_sensor"},
-                {"name": "Temperature Sensor", "technical_name": "temperature_sensor"},
-                {"name": "Occupancy Sensor", "technical_name": "occupancy_sensor"},
-                {"name": "Humidity Sensor", "technical_name": "humidity_sensor"},
+                {"name": "CO2  Sensor", "technical_name": "co2_sensor", "icon_id": 22},
+                {
+                    "name": "Temperature Sensor",
+                    "technical_name": "temperature_sensor",
+                    "icon_id": 23,
+                },
+                {
+                    "name": "Occupancy Sensor",
+                    "technical_name": "occupancy_sensor",
+                    "icon_id": 24,
+                },
+                {
+                    "name": "Humidity Sensor",
+                    "technical_name": "humidity_sensor",
+                    "icon_id": 25,
+                },
                 {
                     "name": "Smoke Detector Sensor",
                     "technical_name": "smoke_detector_sensor",
+                    "icon_id": 26,
                 },
-                {"name": "AQI Sensor", "technical_name": "aqi_sensor"},
+                {"name": "AQI Sensor", "technical_name": "aqi_sensor", "icon_id": 27},
             ],
             "protocol": 1,
             "config": {},
@@ -213,10 +387,10 @@ def seed():
         {
             "name": "Smart Switch Board",
             "sub_type": [
-                {"name": "HTTP", "technical_name": "http"},
-                {"name": "Zigbee", "technical_name": "zigbee"},
-                {"name": "Z Wave", "technical_name": "z_wave"},
-                {"name": "MQTT", "technical_name": "mqtt"},
+                {"name": "HTTP", "technical_name": "http", "icon_id": 28},
+                {"name": "Zigbee", "technical_name": "zigbee", "icon_id": 29},
+                {"name": "Z Wave", "technical_name": "z_wave", "icon_id": 30},
+                {"name": "MQTT", "technical_name": "mqtt", "icon_id": 31},
             ],
             "protocol": 1,
             "technical_name": "smart_switch_board",
@@ -237,6 +411,7 @@ def seed():
             "config": {},
         },
     ]
+
 
     for proto in protocol_device:
         db.session.add(MasterProtocol(name=proto))
@@ -276,6 +451,7 @@ def seed():
                 name=sub_type["name"],
                 technical_name=sub_type["technical_name"],
                 master_device_type_id=device_type.id,
+                icon_id=sub_type.get("icon_id")
             )
             db.session.add(device_sub_type)
             db.session.flush()
