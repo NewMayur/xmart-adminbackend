@@ -24,7 +24,7 @@ def create_app(debug: bool = False):
         __name__,
         template_folder="./templates",
         static_folder="./static",
-        static_url_path="/",
+        static_url_path="/static",
     )
     CORS(app)
     JWTManager(app)
@@ -118,7 +118,10 @@ if __name__ == "__main__":
 
         return send_from_directory(DIR_NAME, datalist[-1])
     
-
+    @app.route('/static/icons/<path:filename>')
+    def serve_icon(filename):
+        return send_from_directory(os.path.join(app.root_path, 'static', 'icons'), filename)
+    
     @app.errorhandler(Exception)
     def server_error(err):
         app.logger.exception(err)

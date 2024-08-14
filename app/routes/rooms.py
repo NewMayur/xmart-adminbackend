@@ -2,9 +2,10 @@ from flask import current_app, request
 
 from app.extensions.db import db
 from app.extensions.responses import response_base
-from app.schema.Building import Building, Floor
+from app.schema.Building import Floor
+from app.schema.Master import Icon, MasterDeviceSubType
 from app.schema.Room import Room, RoomDevice, RoomDeviceType, RoomRoomSubType
-from app.schema.Experience import Experience, ExperienceRoomType, ExperienceDevice
+
 from server import app
 import json
 import sqlalchemy.orm.exc 
@@ -352,6 +353,81 @@ def add_device_to_room():
         return response_base(message="Success", status=200, data=[{"id": room_device.id}])
     else:
         return response_base(message="Failed", status=404, data=[])
+
+
+@app.route("/v1/room/device/add", methods=["POST"])
+def v1_add_device_to_room():
+    room = Room.query.filter_by(id=request.json["room_id"]).first()
+    if room is not None:
+        if request.json["device_type_id"] == 5:  # TV device type
+            # Check how many remotes the TV already has
+            remotes_count = RoomDevice.query.filter_by(
+                room_id=room.id,
+                device_type_id=5,  # TV
+            ).count()
+
+            if remotes_count >= 2:
+                return response_base(message="Maximum limit reached of adding the remote within the Room", status=400, data=[])
+
+            # Check for specific remote types
+            if request.json["sub_device_type_id"] == 17:  # IR TV remote
+                existing_ir_tv_remote = RoomDevice.query.filter_by(
+                    room_id=room.id,
+                    device_type_id=5,
+                    device_sub_type_id=17
+                ).first()
+                if existing_ir_tv_remote:
+                    return response_base(message="An IR TV remote is already added within the Room", status=400, data=[])
+
+            elif request.json["sub_device_type_id"] == 18:  # IR STB remote
+                existing_ir_stb_remote = RoomDevice.query.filter_by(
+                    room_id=room.id,
+                    device_type_id=5,
+                    device_sub_type_id=18
+                ).first()
+                if existing_ir_stb_remote:
+                    return response_base(message="An IR STB remote is already added within the Room", status=400, data=[])
+        
+        # Get the icon file path
+        sub_device_type = MasterDeviceSubType.query.get(request.json["sub_device_type_id"])
+        icon_path = None
+        if sub_device_type and sub_device_type.icon_id:
+            icon = Icon.query.get(sub_device_type.icon_id)
+            if icon:
+                icon_path = icon.file_path
+        
+        # Proceed with adding the device
+        room_device = RoomDevice(
+            room_id=room.id,
+            floor_id=request.json["floor_id"],
+            building_id=request.json["building_id"],
+            property_id=request.json["property_id"],
+            device_type_id=request.json["device_type_id"],
+            device_sub_type_id=request.json["sub_device_type_id"],
+            room_sub_type_id=(
+                request.json["sub_room_type_id"]
+                if request.json["sub_room_type_id"] not in ["0", 0, None]
+                else 0
+            ),
+            is_published=request.json["is_published"],
+            add_to_home_screen=request.json["add_to_home_screen"],
+            icon=icon_path or request.json["icon"],
+            remark=request.json["remark"],
+            protocol_id=request.json["protocol_id"],
+            name=request.json["device_name"],
+            group_name=request.json["device_group_name"],
+            is_group=request.json["is_multiple"],
+            is_service=1 if request.json["sub_device_type_id"] == 5 else 0,
+            device_meta=json.dumps(request.json["device_meta"]),
+            device_config=json.dumps(request.json["device_config"]),
+            room_number=room.number,
+        )
+        db.session.add(room_device)
+        db.session.commit()
+        return response_base(message="Success", status=200, data=[{"id": room_device.id}])
+    else:
+        return response_base(message="Failed", status=404, data=[])
+
 
 @app.route("/room/device/delete", methods=["DELETE"])
 def delete_device_from_room():
