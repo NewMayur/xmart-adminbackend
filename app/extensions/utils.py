@@ -10,18 +10,31 @@ import subprocess
 import socket
 import psutil  # For Windows
 
+# def get_local_ip():
+#     # Get a list of network interfaces
+#     interfaces = psutil.net_if_addrs()
+#     # Iterate through the interfaces to find the one with an IPv4 address
+#     for interface in interfaces:
+#         if interfaces[interface][0].family == socket.AF_INET:
+#             # Return the IPv4 address of the first interface found
+#             subnet_mask = interfaces[interface][0].netmask
+#             ip = interfaces[interface][0].address
+#             return ip, subnet_mask
+#     return "Local IP not found"
 
+# For windows
 def get_local_ip():
-    # Get a list of network interfaces
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+    
     interfaces = psutil.net_if_addrs()
-    # Iterate through the interfaces to find the one with an IPv4 address
-    for interface in interfaces:
-        if interfaces[interface][0].family == socket.AF_INET:
-            # Return the IPv4 address of the first interface found
-            subnet_mask = interfaces[interface][0].netmask
-            ip = interfaces[interface][0].address
-            return ip, subnet_mask
-    return "Local IP not found"
+    for interface_name, interface_addresses in interfaces.items():
+        if interface_name.startswith('Ethernet'):  # Adjust the interface name as needed
+            for address in interface_addresses:
+                if address.family == socket.AF_INET:
+                    return ip_address, address.netmask
+
+    return ip_address, None  # Return None if subnet mask is not found
 
 
 def get_ssid_windows():
