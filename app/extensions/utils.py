@@ -23,19 +23,23 @@ import psutil  # For Windows
 #     return "Local IP not found"
 
 # For windows
+# def get_local_ip():
+#     hostname = socket.gethostname()
+#     ip_address = socket.gethostbyname(hostname)
+    
+#     interfaces = psutil.net_if_addrs()
+#     for interface_name, interface_addresses in interfaces.items():
+#         if interface_name.startswith('Ethernet'):  # Adjust the interface name as needed
+#             for address in interface_addresses:
+#                 if address.family == socket.AF_INET:
+#                     return [ip_address, 'localhost'], address.netmask
+
+#     return ip_address, None  # Return None if subnet mask is not found
+
 def get_local_ip():
     hostname = socket.gethostname()
     ip_address = socket.gethostbyname(hostname)
-    
-    interfaces = psutil.net_if_addrs()
-    for interface_name, interface_addresses in interfaces.items():
-        if interface_name.startswith('Ethernet'):  # Adjust the interface name as needed
-            for address in interface_addresses:
-                if address.family == socket.AF_INET:
-                    return ip_address, address.netmask
-
-    return ip_address, None  # Return None if subnet mask is not found
-
+    return ip_address
 
 def get_ssid_windows():
     try:
