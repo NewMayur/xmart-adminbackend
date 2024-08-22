@@ -6,7 +6,6 @@ from flask_bcrypt import Bcrypt
 from app.extensions.responses import response_base
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-import logging
 
 # Other modules
 import os
@@ -68,74 +67,62 @@ def create_app(debug: bool = False):
 
 app = create_app(debug=True)
 bcrypt = Bcrypt(app)
-# if __name__ == "__main__":
-from app.routes.auth import *
-from app.routes.property import *
-from app.routes.buildings import *
-from app.routes.master import *
-from app.routes.rooms import *
-from app.routes.guest import *
-from app.routes.experience import *
-from app.routes.rooms import *
-from datetime import datetime
-#import pytz
+if __name__ == "__main__":
+    from app.routes.auth import *
+    from app.routes.property import *
+    from app.routes.buildings import *
+    from app.routes.master import *
+    from app.routes.rooms import *
+    from app.routes.guest import *
+    from app.routes.experience import *
+    from app.routes.rooms import *
+    from datetime import datetime
+    #import pytz
 
-FLUTTER_WEB_APP = "templates"
+    FLUTTER_WEB_APP = "templates"
 
-test = True
-# @app.route("/testupdate/")
-# def testupdate():
-#     # current_time = datetime.now(pytz.timezone('Asia/Calcutta'))
-#     formatted_time = current_time.strftime('%H:%M:%S')
-#     global test
-#     test = formatted_time
-#     return "HI"
-@app.route("/teststatus/")
-def teststatus():
-    global test
-    return str(test)
+    test = True
+    # @app.route("/testupdate/")
+    # def testupdate():
+    #     # current_time = datetime.now(pytz.timezone('Asia/Calcutta'))
+    #     formatted_time = current_time.strftime('%H:%M:%S')
+    #     global test
+    #     test = formatted_time
+    #     return "HI"
+    @app.route("/teststatus/")
+    def teststatus():
+        global test
+        return str(test)
 
-@app.route("/web/")
-def render_page_web():
-    return render_template("/index.html")
+    @app.route("/web/")
+    def render_page_web():
+        return render_template("/index.html")
 
-@app.route("/web/<path:name>")
-def return_flutter_doc(name):
+    @app.route("/web/<path:name>")
+    def return_flutter_doc(name):
 
-    datalist = str(name).split("/")
-    DIR_NAME = FLUTTER_WEB_APP
+        datalist = str(name).split("/")
+        DIR_NAME = FLUTTER_WEB_APP
 
-    if len(datalist) > 1:
-        for i in range(0, len(datalist) - 1):
-            DIR_NAME += "/" + datalist[i]
+        if len(datalist) > 1:
+            for i in range(0, len(datalist) - 1):
+                DIR_NAME += "/" + datalist[i]
 
-    return send_from_directory(DIR_NAME, datalist[-1])
-    
-from app.extensions.utils import get_local_ip
+        return send_from_directory(DIR_NAME, datalist[-1])
+        
 
-@app.route("/local_ip")
-def local_ip():
-    return get_local_ip()
+    @app.errorhandler(Exception)
+    def server_error(err):
+        app.logger.exception('An error occurred: %s', str(err), extra={'status': 500})
+        return response_base("Server Error", 500)
 
-@app.after_request
-def log_response_info(response):
-    app.logger.info('Status: %s %s %s', response.status, request.method, request.endpoint)
-    # app.logger.info(request.endpoint, request.method, '%s', response.status)
-    return response
-
-@app.errorhandler(Exception)
-def server_error(err):
-    app.logger.exception('An error occurred: %s', str(err), extra={'status': 500})
-    return response_base("Server Error", 500)
-
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-# app.run()
-# run_simple(
-#     application=app,
-#     hostname=os.environ.get("BASE_IP", "0.0.0.0"),
-#     port=int(os.environ.get("PORT")),
-#     use_debugger=True,
-#     use_reloader=True,
-# )
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("SQLALCHEMY_DATABASE_URI")
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    run_simple(
+        application=app,
+        hostname=os.environ.get("BASE_IP", "0.0.0.0"),
+        port=int(os.environ.get("PORT")),
+        use_debugger=True,
+        use_reloader=True,
+    )
