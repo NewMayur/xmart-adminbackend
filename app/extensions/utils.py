@@ -41,6 +41,13 @@ def get_local_ip():
     ip_address = socket.gethostbyname(hostname)
     return ip_address
 
+# def get_local_ip():
+#     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+#     s.connect(("8.8.8.8", 80))
+#     local_ip = s.getsockname()[0]
+#     s.close()
+#     return local_ip
+
 def get_ssid_windows():
     try:
         # Use subprocess to run the netsh command to get the SSID
