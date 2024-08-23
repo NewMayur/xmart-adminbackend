@@ -9,4 +9,4 @@ services:
       - BASE_IP=0.0.0.0
       - FLASK_DEBUG=True
     volumes:
-      - ./instance:/app/instance
+    - ./instance:/app/instance
